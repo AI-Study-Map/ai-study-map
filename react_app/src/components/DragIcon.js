@@ -2,7 +2,7 @@
 
 function DragIcon() {
     return (
-      <svg viewBox="0 0 24 24">
+      <svg viewBox="0 0 48 24">
         <path
           fill="#333"
           stroke="#333"

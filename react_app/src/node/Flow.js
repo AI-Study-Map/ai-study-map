@@ -6,7 +6,7 @@ import ReactFlow, {
   Controls,
   Panel,
 } from 'reactflow';
-import shallow from 'zustand/shallow';
+import {shallow} from 'zustand/shallow';
 
 import useStore from './store';
 import MindMapNode from '../components/Node';
@@ -119,6 +119,7 @@ function Flow() {
       fitView
     >
       <Controls showInteractive={false} />
+      
       <Panel position="top-left" className="header">
         React Flow Mind Map
       </Panel>
