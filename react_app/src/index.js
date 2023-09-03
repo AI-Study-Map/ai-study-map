@@ -4,6 +4,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import Flow from './node/Flow';
 import { ReactFlowProvider } from 'reactflow';
+import NodeContents from './NodeContents/NodeContents';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
