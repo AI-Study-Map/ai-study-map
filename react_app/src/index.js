@@ -8,10 +8,8 @@ import NodeContents from './NodeContents/NodeContents';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <ReactFlowProvider>
-    <Flow/>
-    </ReactFlowProvider>
+  <React.StrictMode>  
+  <NodeContents />
   </React.StrictMode>
 );
 
