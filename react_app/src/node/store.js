@@ -2,11 +2,10 @@ import {
     applyNodeChanges,
     applyEdgeChanges,
   } from 'reactflow';
-//   import create from 'zustand';
   import { nanoid } from 'nanoid/non-secure';
-  import { create } from 'zustand'
+  import { createWithEqualityFn } from 'zustand/traditional'
   
-  const useStore = create((set, get) => ({
+  const useStore = createWithEqualityFn((set, get) => ({
     nodes: [
       {
         id: 'root',
@@ -60,6 +59,12 @@ import {
         edges: [...get().edges, newEdge],
       });
     },
+    
+    // 現在選択されているノードのID
+    selectedNodeId: null,
+
+    // 選択されたノードのIDを設定
+    setSelectedNodeId: (id) => set({ selectedNodeId: id }),
   }));
   
   export default useStore;

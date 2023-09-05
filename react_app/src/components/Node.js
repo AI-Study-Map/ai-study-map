@@ -15,30 +15,32 @@ const Test = styled.div`
 `
 
 const InputWrapper = styled.div`
-  /* display: flex;  // 横並びにする
-  align-items: center;  // 縦方向中央に配置 */
-  /* display: inline-block; */
+  background-color: ${(props) => props.id === "root" ? "#17594A": "#7BC74D" };
+  border-radius: 10px;
 `;
 
 const DragHandleArea = styled.div`
   width: 100%;
   flex: 1;  // 余ったスペースを埋める
   padding: 6px 10px;
-  font-size: 14px;
+  font-size: 12px;
   background: transparent;
   height: 90%;
   display: flex;
   align-items: center;
   pointer-events: all;
+  text-align: center;
 `
 
 const P = styled.p`
   color: white;
+  width: 600px;
 `;
 
 function MindMapNode({ id, data }) {
   const inputRef = useRef(null);
   const updateNodeLabel = useStore((state) => state.updateNodeLabel);
+  const { setSelectedNodeId } = useStore(state => ({ setSelectedNodeId: state.setSelectedNodeId }));
 
   const tmpData = { label: 'Python' }
 
@@ -54,9 +56,13 @@ function MindMapNode({ id, data }) {
     }
   }, [data.label.length]);
 
+  const onNodeClick = (event, element) => {
+    setSelectedNodeId(id);
+  };
+
   return (
-    <Test>
-      <InputWrapper className="inputWrapper">
+    <Test onClick={() => onNodeClick()}>
+      <InputWrapper className="inputWrapper" id={id}>
         <DragHandleArea className="dragHandle">
           <P
             value={data.label}
@@ -67,8 +73,8 @@ function MindMapNode({ id, data }) {
         </DragHandleArea>
       </InputWrapper>
 
-      {/* <Handle type="target" position={Position.Top} />
-      <Handle type="source" position={Position.Top} /> */}
+      <Handle type="target" position={Position.Top} />
+      <Handle type="source" position={Position.Top} />
     </Test>
     
   );

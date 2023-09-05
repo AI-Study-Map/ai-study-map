@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import useAddNode from '../node/useAddNode';
 
 const StyledHeader = styled.header`
   background-color: #FFE867;
@@ -82,6 +83,8 @@ const Spinner = styled.div`
 const Header = ({ title }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const addNewNode = useAddNode();
+
   return (
     <>
       <StyledHeader>
@@ -95,7 +98,7 @@ const Header = ({ title }) => {
       <SidebarMenu $isOpen={isOpen}>
         <SidebarMenuInner>
           <li><p>ホーム</p></li>
-          <li><p>ノードを追加</p></li>
+          <li onClick={addNewNode}><p>ノードを追加</p></li>
         </SidebarMenuInner>
       </SidebarMenu>
     </>

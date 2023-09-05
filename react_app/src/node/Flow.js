@@ -23,6 +23,8 @@ const selector = (state) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   addChildNode: state.addChildNode,
+  // selectedNodeId: state.selectedNodeId,
+  // setSelectedNodeId: state.setSelectedNodeId,
 });
 
 const nodeTypes = {
@@ -44,6 +46,7 @@ const Flow = () =>  {
     selector,
     shallow
   );
+
   const { project } = useReactFlow();
   const connectingNodeId = useRef(null);
 
@@ -121,7 +124,7 @@ const Flow = () =>  {
         connectionLineType={ConnectionLineType.Straight}
         fitView
       >
-        <Background />
+        <Background color="#FAFFF7" style={{"backgroundColor": "#FAFFF7"}}/>
         <Controls showInteractive={false} />
         
         <Panel position="top-left" className="header">
