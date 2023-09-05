@@ -15,6 +15,7 @@ import MindMapEdge from '../components/Edge';
 
 // we need to import the React Flow styles to make it work
 import 'reactflow/dist/style.css';
+import Header from '../layout/Header';
 
 const selector = (state) => ({
   nodes: state.nodes,
@@ -103,29 +104,30 @@ const Flow = () =>  {
   );
 
   return (
-    <div style={{height: 100 + "vh"}}>
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnectStart={onConnectStart}
-      onConnectEnd={onConnectEnd}
-      nodeTypes={nodeTypes}
-      edgeTypes={edgeTypes}
-      nodeOrigin={nodeOrigin}
-      defaultEdgeOptions={defaultEdgeOptions}
-      connectionLineStyle={connectionLineStyle}
-      connectionLineType={ConnectionLineType.Straight}
-      fitView
-    >
-      <Background />
-      <Controls showInteractive={false} />
-      
-      <Panel position="top-left" className="header">
-        React Flow Mind Map
-      </Panel>
-    </ReactFlow>
+    <div style={{height: 93 + "vh"}}>
+      <Header />
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnectStart={onConnectStart}
+        onConnectEnd={onConnectEnd}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        nodeOrigin={nodeOrigin}
+        defaultEdgeOptions={defaultEdgeOptions}
+        connectionLineStyle={connectionLineStyle}
+        connectionLineType={ConnectionLineType.Straight}
+        fitView
+      >
+        <Background />
+        <Controls showInteractive={false} />
+        
+        <Panel position="top-left" className="header">
+          AI Study Map
+        </Panel>
+      </ReactFlow>
     </div>
   );
 }

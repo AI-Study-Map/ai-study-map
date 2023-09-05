@@ -58,21 +58,13 @@ function MindMapNode({ id, data }) {
     <Test>
       <InputWrapper className="inputWrapper">
         <DragHandleArea className="dragHandle">
-            {/* <DragIcon /> */}
           <P
             value={data.label}
             className="input"
             ref={inputRef}
           >{data.label}</P>
-        {/* <input
-          value={data.label}
-          onChange={(evt) => updateNodeLabel(id, evt.target.value)}
-          className="input"
-          ref={inputRef}
-        /> */}
-         <SwitchBtn></SwitchBtn>
+         <SwitchBtn />
         </DragHandleArea>
-        {/* <button>O</button> */}
       </InputWrapper>
 
       {/* <Handle type="target" position={Position.Top} />

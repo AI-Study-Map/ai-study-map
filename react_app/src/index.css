@@ -34,10 +34,11 @@ body,
 
 .react-flow__node-mindmap {
   background: #17594A;
-  border-radius: 2px;
+  border-radius: 10px;
   border: none;
   /* padding: 6px 10px; */
   font-weight: 700;
+  box-shadow: 0 10px 25px 0 rgba(0, 0, 0, .5);
 }
 
 .react-flow__handle.target {
@@ -81,7 +82,7 @@ body,
 .input {
   border: none;
   /* padding: 0 2px; */
-  border-radius: 1px;
+  border-radius: 10px;
   font-weight: 700;
   background: transparent;
   height: 100%;
