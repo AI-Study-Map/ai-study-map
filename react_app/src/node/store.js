@@ -11,7 +11,7 @@ import {
       {
         id: 'root',
         type: 'mindmap',
-        data: { label: 'React Flow Mind Map' },
+        data: { label: 'React Flow' },
         position: { x: 0, y: 0 },
         dragHandle: '.dragHandle',
       },

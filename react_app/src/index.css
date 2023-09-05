@@ -33,10 +33,10 @@ body,
 }
 
 .react-flow__node-mindmap {
-  background: white;
+  background: #17594A;
   border-radius: 2px;
   border: none;
-  padding: 6px 10px;
+  /* padding: 6px 10px; */
   font-weight: 700;
 }
 
@@ -50,7 +50,7 @@ body,
   top: 0;
   left: 0;
   transform: none;
-  background: #f6ad55;
+  background: #00a025;
   height: 100%;
   width: 100%;
   border-radius: 2px;
@@ -63,25 +63,24 @@ body,
 
 .inputWrapper {
   display: flex;
-  height: 20px;
+  height: 34px;
   z-index: 1;
   position: relative;
   pointer-events: none;
 }
 
-.dragHandle {
+/* .dragHandle {
   background: transparent;
   width: 14px;
-  height: 100%;
-  margin-right: 4px;
+  height: 90%;
   display: flex;
   align-items: center;
   pointer-events: all;
-}
+} */
 
 .input {
   border: none;
-  padding: 0 2px;
+  /* padding: 0 2px; */
   border-radius: 1px;
   font-weight: 700;
   background: transparent;

@@ -5,6 +5,7 @@ import ReactFlow, {
   useStoreApi,
   Controls,
   Panel,
+  Background,
 } from 'reactflow';
 import {shallow} from 'zustand/shallow';
 
@@ -33,10 +34,10 @@ const edgeTypes = {
 
 const nodeOrigin = [0.5, 0.5];
 
-const connectionLineStyle = { stroke: '#F6AD55', strokeWidth: 3 };
+const connectionLineStyle = { stroke: '#000', strokeWidth: 2 };
 const defaultEdgeOptions = { style: connectionLineStyle, type: 'mindmap' };
 
-function Flow() {
+const Flow = () =>  {
   const store = useStoreApi();
   const { nodes, edges, onNodesChange, onEdgesChange, addChildNode } = useStore(
     selector,
@@ -118,6 +119,7 @@ function Flow() {
       connectionLineType={ConnectionLineType.Straight}
       fitView
     >
+      <Background />
       <Controls showInteractive={false} />
       
       <Panel position="top-left" className="header">
