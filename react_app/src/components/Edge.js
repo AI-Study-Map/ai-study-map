@@ -1,4 +1,5 @@
 import { BaseEdge, getStraightPath } from 'reactflow';
+// import { getSimpleBezierPath } from 'reactflow'; 少し曲がるエッジ
 
 function MindMapEdge(props) {
   const { sourceX, sourceY, targetX, targetY } = props;

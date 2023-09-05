@@ -5,8 +5,9 @@ import ReactFlow, {
   useStoreApi,
   Controls,
   Panel,
+  Background,
 } from 'reactflow';
-import shallow from 'zustand/shallow';
+import {shallow} from 'zustand/shallow';
 
 import useStore from './store';
 import MindMapNode from '../components/Node';
@@ -14,6 +15,7 @@ import MindMapEdge from '../components/Edge';
 
 // we need to import the React Flow styles to make it work
 import 'reactflow/dist/style.css';
+import Header from '../layout/Header';
 
 const selector = (state) => ({
   nodes: state.nodes,
@@ -21,6 +23,8 @@ const selector = (state) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   addChildNode: state.addChildNode,
+  // selectedNodeId: state.selectedNodeId,
+  // setSelectedNodeId: state.setSelectedNodeId,
 });
 
 const nodeTypes = {
@@ -33,15 +37,16 @@ const edgeTypes = {
 
 const nodeOrigin = [0.5, 0.5];
 
-const connectionLineStyle = { stroke: '#F6AD55', strokeWidth: 3 };
+const connectionLineStyle = { stroke: '#000', strokeWidth: 2 };
 const defaultEdgeOptions = { style: connectionLineStyle, type: 'mindmap' };
 
-function Flow() {
+const Flow = () =>  {
   const store = useStoreApi();
   const { nodes, edges, onNodesChange, onEdgesChange, addChildNode } = useStore(
     selector,
     shallow
   );
+
   const { project } = useReactFlow();
   const connectingNodeId = useRef(null);
 
@@ -102,27 +107,30 @@ function Flow() {
   );
 
   return (
-    <div style={{height: 100 + "vh"}}>
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnectStart={onConnectStart}
-      onConnectEnd={onConnectEnd}
-      nodeTypes={nodeTypes}
-      edgeTypes={edgeTypes}
-      nodeOrigin={nodeOrigin}
-      defaultEdgeOptions={defaultEdgeOptions}
-      connectionLineStyle={connectionLineStyle}
-      connectionLineType={ConnectionLineType.Straight}
-      fitView
-    >
-      <Controls showInteractive={false} />
-      <Panel position="top-left" className="header">
-        React Flow Mind Map
-      </Panel>
-    </ReactFlow>
+    <div style={{height: 93 + "vh"}}>
+      <Header />
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnectStart={onConnectStart}
+        onConnectEnd={onConnectEnd}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        nodeOrigin={nodeOrigin}
+        defaultEdgeOptions={defaultEdgeOptions}
+        connectionLineStyle={connectionLineStyle}
+        connectionLineType={ConnectionLineType.Straight}
+        fitView
+      >
+        <Background color="#FAFFF7" style={{"backgroundColor": "#FAFFF7"}}/>
+        <Controls showInteractive={false} />
+        
+        <Panel position="top-left" className="header">
+          AI Study Map
+        </Panel>
+      </ReactFlow>
     </div>
   );
 }
