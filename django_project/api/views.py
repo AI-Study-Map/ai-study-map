@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from .serializers import PostSerializer
 from .models import Gpt_call
@@ -7,30 +8,40 @@ import openai
 
 
 
-@api_view(['GET'])
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
 def gpt_calling(request):
+    print('POSTING')
 
-    queryset = Gpt_call.objects.all()
-    serializer = PostSerializer(queryset, many=True)
-    return Response(serializer.data) # returns a JSON response 
+    user_input = request.POST.get('user_input')
+    print("USER INPUT: ", user_input)
 
-    #ここから
-    
-    # print('POSTING')
+    response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            #stream=True,
+            messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": f"{user_input}"}
+        ]
+    )
 
-    # user_input = request.POST.get('user_input')
-    # print("USER INPUT: ", user_input)
+    print("RESPONSE:", response)
+    chat_reply = response['choices'][0]['message']['content']
 
-    # response = openai.ChatCompletion.create(
-    #     model="gpt-3.5-turbo",
-    #     #stream=True,
-    #     messages=[
-    #         {"role": "system", "content": "You are a helpful assistant."},
-    #         {"role": "user", "content": f"{user_input}"}
-    #     ]
-    # )
+    # queryset = {'body': response}
+    # print("QUERYSET: ", queryset)
+    # serializer = PostSerializer(queryset, many=True)
+    serializer = PostSerializer(data={"body": response})
+    if serializer.is_valid():
+        print("SERIALIZER IS VALID")
+        serializer.save()
+    else:
+        print("SERIALIZE ERROR") # 35行でresponseを渡すとここでエラーになる (動きはする)
+        print(serializer.errors)
 
-    # print("RESPONSE:", response)
-    # chat_reply = response['choices'][0]['message']['content']
+    print("SERIALIZER: ", serializer.data)
+    return Response(serializer.data) # returns a JSON response
 
-    # return JsonResponse({'response': response, 'chat_reply': chat_reply})
+def test(request):
+    print("test")
+    return render(request, 'api/test.html')
