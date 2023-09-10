@@ -25,6 +25,7 @@ function NodeContents() {
         .then((response) => response.json())
         .then((data) => {
         const chatReply = data.body.choices[0].message.content;
+        console.log(chatReply);
         // ChatGPTからの応答をログに追加
         setResponse([...responseLog, `ChatGPT: ${chatReply}`]);
       });
@@ -40,7 +41,6 @@ function NodeContents() {
             <h1>NodeContents</h1>
             <div id='input_log'>
                 <p>inputlog</p>
-                <button onClick={add}>add</button>
                 <ul>
                     {inputList}
                 </ul>
