@@ -5,6 +5,7 @@ import useStore from '../node/store';
 import DragIcon from './DragIcon';
 import { styled } from 'styled-components';
 import SwitchBtn from './SwitchBtn';
+import NodeContents from '../NodeContents/NodeContents';
 
 const Test = styled.div`
   /* width: 200px;
@@ -41,6 +42,9 @@ function MindMapNode({ id, data }) {
   const inputRef = useRef(null);
   const updateNodeLabel = useStore((state) => state.updateNodeLabel);
   const { setSelectedNodeId } = useStore(state => ({ setSelectedNodeId: state.setSelectedNodeId }));
+  const { flipped, setFlipped } = useStore(
+    state => ({flipped: state.flipped, setFlipped: state.setFlipped})
+    );
 
   const tmpData = { label: 'Python' }
 
@@ -58,9 +62,11 @@ function MindMapNode({ id, data }) {
 
   const onNodeClick = (event, element) => {
     setSelectedNodeId(id);
+    console.log("onNodeClick: ", flipped);
   };
 
   return (
+    <>
     <Test onClick={() => onNodeClick()}>
       <InputWrapper className="inputWrapper" id={id}>
         <DragHandleArea className="dragHandle">
@@ -71,12 +77,15 @@ function MindMapNode({ id, data }) {
           >{data.label}</P>
          <SwitchBtn />
         </DragHandleArea>
+        
+        {flipped ? <NodeContents /> : <></>}
       </InputWrapper>
 
       <Handle type="target" position={Position.Top} />
       <Handle type="source" position={Position.Top} />
     </Test>
     
+    </>
   );
 }
 

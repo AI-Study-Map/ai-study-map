@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import useStore from "../node/store";
 
 const Svg = styled.svg`
   width: 18px;
@@ -8,14 +9,16 @@ const Svg = styled.svg`
 `;
 
 const SwitchBtn = () => {
-  const [flipped, setFlipped] = useState(false);
+  const { flipped, setFlipped } = useStore(
+    state => ({flipped: state.flipped, setFlipped: state.setFlipped})
+    );
 
   return (
     <div>
       <Svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 1024 1024"
-        onClick={() => setFlipped(!flipped)}
+        onClick={() => setFlipped()}
       >
         {flipped ? (
           <g transform="translate(0, 1024) scale(1, -1)">

@@ -65,6 +65,9 @@ import {
 
     // 選択されたノードのIDを設定
     setSelectedNodeId: (id) => set({ selectedNodeId: id }),
+
+    flipped: false,
+    setFlipped: () => set({ flipped: !get().flipped}),
   }));
   
   export default useStore;
