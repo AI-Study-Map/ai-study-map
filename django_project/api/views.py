@@ -6,8 +6,10 @@ from .serializers import PostSerializer
 from django.middleware.csrf import get_token
 import openai
 import requests
+from ..django_project.settings_local import *
 
-
+openai.api_key = OPENAI_API_KEY
+openai.api_base = OPENAI_API_BASE
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
