@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatGPT Web App</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    {% load static %}
+    
+    <h1>Chat with ChatGPT</h1>
+    <div id="chat-container">
+        <div id="input">
+            input<br>
+            <input type="text" id="user-input">
+        </div>
+        <div id="chat-log"></div>
+        <div id="response"></div>
+        <button id="send-button">Send</button>
+        <button id="resend">再生成</button>
+        <button id="additional_explanation">説明文を追加</button>
+    </div>
+
+    <script>
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                }
+            }
+        });
+
+        $(document).ready(function() {
+            $('#send-button').click(function() {
+                var user_input = $('#user-input').val();
+                $('#chat-log').append('<p>User: ' + user_input + '</p>');
+                $('#user-input').val('');
+                console.log(user_input);
+
+                $.post('http://localhost:8000/api/gpt_calling/', { 'user_input': user_input }, function(data) {
+                    console.log(data);
+                    var chat_reply = data.body.choices[0].message.content
+                    $('#response').append('<p>ChatGPT: ' + chat_reply + '</p>');
+                });
+            });
+            $('#resend').click(function() {
+                var user_input = $('#user-input').val();
+                $('#chat-log').replaceWith('<p>User: ' + user_input + '</p>');
+                $('#user-input').val('');
+                console.log(user_input);
+
+                $.post('http://localhost:8000/api/gpt_calling/', { 'user_input': user_input }, function(data) {
+                    console.log(data.body.choices[0].message.content);
+                    var chat_reply = data.body.choices[0].message.content
+                    $('#response').replaceWith('<p>ChatGPT: ' + chat_reply + '</p>');
+                    //$('#chat-log').append('<p>ChatGPT: ' + chat_reply + '</p>');
+                });
+            });
+            $('#additional_explanation').click(function() {
+                var user_input = $('#user-input').val();
+                $('#chat-log').append('<p>User: ' + user_input + '</p>');
+                $('#user-input').val('');
+                console.log(user_input);
+
+                $.post('http://localhost:8000/api/gpt_calling/', { 'user_input': user_input }, function(data) {
+                    console.log(data);
+                    var chat_reply = data.body.choices[0].message.content
+                    $('#response').append('<p>ChatGPT: ' + chat_reply + '</p>');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
