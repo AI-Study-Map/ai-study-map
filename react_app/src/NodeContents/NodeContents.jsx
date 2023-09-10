@@ -1,83 +1,64 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
-function ChatLog({ messages }) {
-  return (
-    <div id="chat-log">
-      {messages.map((message, index) => (
-        <p key={index}>{message}</p>
-      ))}
-    </div>
-  );
-}
-
-function Response({ response }) {
-  return (
-    <div id="response">
-      {response && <p>ChatGPT: {response}</p>}
-    </div>
-  );
-}
+const API_HOST = 'http://localhost:8000/api/gpt_calling/';
 
 function NodeContents() {
-  const [userInput, setUserInput] = useState('');
-  const [chatLog, setChatLog] = useState([]);
-  const [chatReply, setChatReply] = useState('');
+    const [inputLog, setInputLog] = useState([]);
+    const [responseLog, setResponse] = useState([]);
+    
+    const handleSend = () => {
+        // ユーザーの入力を取得してログに追加、入力欄をクリア
+        const userInput = document.getElementById('user_input').value
+        setInputLog([...inputLog, `User: ${userInput}`]);
+        document.getElementById('user_input').value = '';
 
-  const handleSend = async () => {
-    if (userInput.trim() === '') return console.log('No input');
+        console.log(JSON.stringify({ user_input: userInput }))
 
-    const newChatLog = [...chatLog, `User: ${userInput}`];
-    setChatLog(newChatLog);
-    setUserInput('');
+        // ユーザーの入力をサーバーに送信してChatGPTからの応答を取得
+        fetch(`${API_HOST}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_input: userInput }),
+          })
+        .then((response) => response.json())
+        .then((data) => {
+        const chatReply = data.body.choices[0].message.content;
+        // ChatGPTからの応答をログに追加
+        setResponse([...responseLog, `ChatGPT: ${chatReply}`]);
+      });
 
-    console.log("userInput", userInput);
+    };
 
-    try {
-      const response = await axios.post('', { user_input: userInput });
-      console.log("response", response);
-      const newChatReply = response.data.chat_reply;
-      setChatReply(newChatReply);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    // 入力ログと応答ログの要素をリストにマッピング
+    const inputList = inputLog.map((input) => <li key={input}>{input}</li>)
+    const responseList = responseLog.map((response) => <li key={response}>{response}</li>)
 
-  const handleResend = async () => {
-    if (userInput.trim() === '') return;
+    return (
+        <div className='NodeContents'>
+            <h1>NodeContents</h1>
+            <div id='input_log'>
+                <p>inputlog</p>
+                <button onClick={add}>add</button>
+                <ul>
+                    {inputList}
+                </ul>
+            </div>
+            <div id='response_log'>
+                <p>responselog</p>
+                <ul>
+                    {responseList}        
+                </ul>
+            </div>
+            <div id='input'>
+                <p>input</p>
+                <input type='text' id='user_input'/>
+                <button id='send' onClick={handleSend}>送信</button>
+            </div>
+        </div>
 
-    const newChatLog = [...chatLog, `User: ${userInput}`];
-    setChatLog(newChatLog);
-    setUserInput('');
-
-    try {
-      const response = await axios.post('', { user_input: userInput });
-      const newChatReply = response.data.chat_reply;
-      setChatReply(newChatReply);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  return (
-    <div>
-      <h1>Chat with ChatGPT</h1>
-      <div id="chat-container">
-        <ChatLog messages={chatLog} />
-        <Response response={chatReply} />
-        <input
-          type="text"
-          id="user-input"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-        />
-        <button id="send-button" onClick={handleSend}>Send</button>
-        <button id="resend" onClick={handleResend}>再生成</button>
-      </div>
-    </div>
-  );
-}
+    );
+};
 
 export default NodeContents;
-
-  

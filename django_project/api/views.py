@@ -3,17 +3,22 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from .serializers import PostSerializer
-from .models import Gpt_call
+from django.middleware.csrf import get_token
 import openai
+import requests
 
 
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def gpt_calling(request):
-    print('POSTING')
+    
+    # csrf_token = get_token(request)
+    # print("CSRF_TOKEN: ", csrf_token)
 
-    user_input = request.POST.get('user_input')
+    print('POSTING')
+    
+    user_input = request.data['user_input']
     print("USER INPUT: ", user_input)
 
     response = openai.ChatCompletion.create(
