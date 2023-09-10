@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from .serializers import PostSerializer
 from django.middleware.csrf import get_token
 import openai
-import requests
 from django_project.settings_local import *
 
 openai.api_key = OPENAI_API_KEY
@@ -34,11 +33,8 @@ def gpt_calling(request):
 
     print("RESPONSE:", response)
     chat_reply = response['choices'][0]['message']['content']
+    serializer = PostSerializer(data={"body": chat_reply})
 
-    # queryset = {'body': response}
-    # print("QUERYSET: ", queryset)
-    # serializer = PostSerializer(queryset, many=True)
-    serializer = PostSerializer(data={"body": response})
     if serializer.is_valid():
         print("SERIALIZER IS VALID")
         serializer.save()
@@ -48,6 +44,7 @@ def gpt_calling(request):
 
     print("SERIALIZER: ", serializer.data)
     return Response(serializer.data) # returns a JSON response
+
 
 def test(request):
     print("test")

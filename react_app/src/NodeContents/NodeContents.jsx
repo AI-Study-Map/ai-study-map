@@ -24,7 +24,7 @@ function NodeContents() {
           })
         .then((response) => response.json())
         .then((data) => {
-        const chatReply = data.body.choices[0].message.content;
+        const chatReply = data.body;
         console.log(chatReply);
         // ChatGPTからの応答をログに追加
         setResponse([...responseLog, `ChatGPT: ${chatReply}`]);
