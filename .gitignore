@@ -11,6 +11,7 @@ __pycache__/
 *.pyc
 db.sqlite3
 media/
+settings_local.py
 
 # Virtual environment
 django_env/
