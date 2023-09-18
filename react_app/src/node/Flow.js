@@ -79,33 +79,6 @@ const Flow = () =>  {
     };
   };
 
-  const onConnectStart = useCallback((_, { nodeId }) => {
-    // we need to remember where the connection started so we can add the new node to the correct parent on connect end
-    connectingNodeId.current = nodeId;
-  }, []);
-
-  const onConnectEnd = useCallback(
-    (event) => {
-      const { nodeInternals } = store.getState();
-      const targetIsPane = (event.target).classList.contains(
-        'react-flow__pane'
-      );
-      const node = (event.target).closest('.react-flow__node');
-
-      if (node) {
-        node.querySelector('input')?.focus({ preventScroll: true });
-      } else if (targetIsPane && connectingNodeId.current) {
-        const parentNode = nodeInternals.get(connectingNodeId.current);
-        const childNodePosition = getChildNodePosition(event, parentNode);
-
-        if (parentNode && childNodePosition) {
-          addChildNode(parentNode, childNodePosition);
-        }
-      }
-    },
-    [getChildNodePosition]
-  );
-
   return (
     <div style={{height: 93 + "vh"}}>
       <Header />
@@ -114,8 +87,6 @@ const Flow = () =>  {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onConnectStart={onConnectStart}
-        onConnectEnd={onConnectEnd}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         nodeOrigin={nodeOrigin}
@@ -124,7 +95,8 @@ const Flow = () =>  {
         connectionLineType={ConnectionLineType.Straight}
         fitView
       >
-        <Background color="#FAFFF7" style={{"backgroundColor": "#FAFFF7"}}/>
+        {/* <Background color="#FAFFF7" style={{"backgroundColor": "#FAFFF7"}}/> */}
+        <Background color="#000"/>
         <Controls showInteractive={false} />
         
         <Panel position="top-left" className="header">

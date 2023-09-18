@@ -68,6 +68,22 @@ import {
 
     flipped: false,
     setFlipped: () => set({ flipped: !get().flipped}),
+
+    getNodeFlippedStatus: (nodeId) => {
+      const node = get().nodes.find(n => n.id === nodeId);
+      return node ? node.flipped : false;
+    },
+    
+    toggleNodeFlipped: (nodeId) => {
+      set({
+        nodes: get().nodes.map((node) => {
+          if (node.id === nodeId) {
+            return { ...node, flipped: !node.flipped };
+          }
+          return node;
+        }),
+      });
+    },
   }));
   
   export default useStore;
