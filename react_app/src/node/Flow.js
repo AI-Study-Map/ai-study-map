@@ -1,8 +1,5 @@
-import { useCallback, useRef } from 'react';
 import ReactFlow, {
   ConnectionLineType,
-  useReactFlow,
-  useStoreApi,
   Controls,
   Panel,
   Background,
@@ -41,43 +38,11 @@ const connectionLineStyle = { stroke: '#000', strokeWidth: 2 };
 const defaultEdgeOptions = { style: connectionLineStyle, type: 'mindmap' };
 
 const Flow = () =>  {
-  const store = useStoreApi();
-  const { nodes, edges, onNodesChange, onEdgesChange, addChildNode } = useStore(
+  const { nodes, edges, onNodesChange, onEdgesChange } = useStore(
     selector,
     shallow
   );
 
-  const { project } = useReactFlow();
-  const connectingNodeId = useRef(null);
-
-  const getChildNodePosition = (event, parentNode) => {
-    const { domNode } = store.getState();
-
-    if (
-      !domNode ||
-      // we need to check if these properites exist, because when a node is not initialized yet,
-      // it doesn't have a positionAbsolute nor a width or height
-      !parentNode?.positionAbsolute ||
-      !parentNode?.width ||
-      !parentNode?.height
-    ) {
-      return;
-    }
-
-    const { top, left } = domNode.getBoundingClientRect();
-
-    // we need to remove the wrapper bounds, in order to get the correct mouse position
-    const panePosition = project({
-      x: event.clientX - left,
-      y: event.clientY - top,
-    });
-
-    // we are calculating with positionAbsolute here because child nodes are positioned relative to their parent
-    return {
-      x: panePosition.x - parentNode.positionAbsolute.x + parentNode.width / 2,
-      y: panePosition.y - parentNode.positionAbsolute.y + parentNode.height / 2,
-    };
-  };
 
   return (
     <div style={{height: 93 + "vh"}}>
@@ -108,70 +73,3 @@ const Flow = () =>  {
 }
 
 export default Flow;
-
-
-
-
-// import { useEffect, useState } from "react";
-// import ReactFlow, { Controls, Background, MarkerType } from 'reactflow';
-// import 'reactflow/dist/style.css';
-
-// function Node() {
-//   const nodes = [
-//     {
-//       id: '1',
-//       data: { label: 'Start!' },
-//       position: { x: 100, y: 0 },
-//     },
-//     {
-//       id: '2',
-//       data: { label: 'Node1' },
-//       position: { x: 100, y: 100 },
-//     },
-//     {
-//       id: '3',
-//       data: { label: 'Node2' },
-//       position: { x: 0, y: 200 },
-//     },
-//     {
-//       id: '4',
-//       data: { label: 'Node3' },
-//       position: { x: 200, y: 200 },
-//     }
-//   ];
-  
-//   const edges = [
-//     {
-//       id: 'e1-2',
-//       source: '1',
-//       target: '2',
-//       type: 'smoothstep',
-//       markerEnd: { type: MarkerType.ArrowClosed },
-//     },
-//     {
-//       id: 'e2-3',
-//       source: '2',
-//       target: '3',
-//       type: 'smoothstep',
-//       markerEnd: { type: MarkerType.ArrowClosed },
-//     },
-//     {
-//       id: 'e2-4',
-//       source: '2',
-//       target: '4',
-//       type: 'smoothstep',
-//       markerEnd: { type: MarkerType.ArrowClosed },
-//     }
-//   ]
-
-//   return (
-//     <div style={{height: 100 + "vh"}}>
-//         <ReactFlow nodes={nodes} edges={edges}>
-//           <Background />
-//           <Controls />
-//         </ReactFlow>
-//     </div>
-//   );
-// }
-
-// export default Node;
