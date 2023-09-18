@@ -39,6 +39,10 @@ const DragHandleArea = styled.div`
 const P = styled.p`
   color: white;
   width: 600px;
+  border-radius: 10px;
+  font-weight: 700;
+  background: transparent;
+  height: 100%;
 `;
 
 function MindMapNode({ id, data }) {
@@ -71,8 +75,8 @@ function MindMapNode({ id, data }) {
   };
 
   return (
-    <NodeContainer onClick={() => onNodeClick()}>
-      <InputWrapper className="inputWrapper" id={id}>
+    <NodeContainer>
+      <InputWrapper className="inputWrapper" id={id} onClick={() => onNodeClick()}>
         <DragHandleArea className="dragHandle">
           <P
             value={data.label}
