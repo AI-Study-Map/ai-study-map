@@ -16,6 +16,7 @@ import MindMapEdge from '../components/Edge';
 // we need to import the React Flow styles to make it work
 import 'reactflow/dist/style.css';
 import Header from '../layout/Header';
+import QuestionMenu from './QuestionMenu';
 
 const selector = (state) => ({
   nodes: state.nodes,
@@ -44,7 +45,13 @@ const Flow = () =>  {
   const store = useStoreApi();
   const { nodes, edges, onNodesChange, onEdgesChange, addChildNode } = useStore(
     selector,
-    shallow
+    shallow,
+  );
+  const{ questionMenuIsOpen, setQuestionMenu } = useStore(
+    state => ({
+      questionMenuIsOpen: state.questionMenuIsOpen,
+      setQuestionMenu: state.setQuestionMenu,
+    })
   );
 
   const { project } = useReactFlow();
@@ -109,6 +116,7 @@ const Flow = () =>  {
   return (
     <div style={{height: 93 + "vh"}}>
       <Header />
+      <QuestionMenu />
       <ReactFlow
         nodes={nodes}
         edges={edges}

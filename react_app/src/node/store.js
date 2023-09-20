@@ -68,6 +68,15 @@ import {
 
     flipped: false,
     setFlipped: () => set({ flipped: !get().flipped}),
+
+    // QuestionMenuの開閉
+    questionMenuIsOpen: false,
+    setQuestionMenu: (boolean) => set({ questionMenuIsOpen: boolean }),
+    
+    // ノードのタイトルと内容を設定
+    nodeTitle: '',
+    nodeContent: '',
+    setQuestionDetail: (title, content) => set({ nodeTitle: title, nodeContent: content }),
   }));
   
   export default useStore;
