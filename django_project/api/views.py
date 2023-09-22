@@ -20,8 +20,8 @@ def gpt_calling(request):
 
     print('POSTING')
 
-    system_word = """You are an excellent bot that gives a clear and detailed explanation of a given word '''in Japanese'''.
-    Please return the following format in JSON format.
+    system_word = """あなたは、与えられた単語を日本語でわかりやすく丁寧に説明する優秀なbotです。
+    以下のフォーマットをJSON形式で返してください。
     '{
         "description",
         "example"
@@ -72,14 +72,18 @@ def question(request):
             true_answer = "D"
     print("TRUE ANSWER: ", true_answer, n)
 
-    system_word = """あなたは与えられた単語に対する4択問題を作り、json形式で返す優秀なbotです。
+    system_word = """あなたは与えられた単語に対する4択問題を作り、JSON形式で返す優秀なbotです。
     回答はなるべく短い単語とし、文脈に沿って、単純な日本語問題にならないようにしてください。
     正解が""" + true_answer + """になるようにしてください。
+    なお、ダブルクォーテーションとシングルクォーテーションの使い分けは以下の通りとしてください。
     '{
         "question",
         "choices"
         {
-        "a","b","c","d"
+            "a":"aの回答",
+            "b":"bの回答",
+            "c":"cの回答",
+            "d":"dの回答"
         }
         "answer"
     }'
