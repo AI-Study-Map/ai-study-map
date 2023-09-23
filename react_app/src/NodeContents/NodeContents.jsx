@@ -5,18 +5,12 @@ import useStore from '../node/store';
 
 const API_HOST = 'http://localhost:8000/api/gpt_calling/';
 
-function NodeContents() {
-    const [inputLog, setInputLog] = useState([]);
-    const [responseLog, setResponse] = useState([]);
-    const [userInput, setUserInput] = useState('');
-    const [inputed, setInput] = useState(''); 
+function NodeContents(props) {
+    const {title} = props;
+    const [inputed, setInput] = useState(title); 
     const [description, setDescription] = useState('');
     const [example, setExample] = useState('');
     
-    const handleUserInputChange = (e) => {
-        setUserInput(e.target.value);
-    };
-
     const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, setQuestionDetail } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -27,17 +21,33 @@ function NodeContents() {
         })
       );
 
+    useEffect(() => {
+      // titleが変更されると実行される
+      console.log("title: ", title);
+      fetch(`${API_HOST}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_input: title }),
+      })
+      .then((response) => response.json())
+      .then((data) => {
+      // ChatGPTからの応答をパースして、説明文と例文を取得、set
+      const parsedContent = JSON.parse(data.body);
+          setDescription(parsedContent.description);
+          setExample(parsedContent.example);
+      });
+    }, [title]);
+
     const handleSend = () => {
-        // ユーザーの入力を取得してログに追加、入力欄をクリア
-        setInput(userInput);
-        setUserInput(''); // 入力欄をクリア
-        // ユーザーの入力をサーバーに送信してChatGPTからの応答を取得
+        // ノード名をAPI送信してChatGPTからの応答を取得
         fetch(`${API_HOST}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user_input: userInput }),
+            body: JSON.stringify({ user_input: title }),
           })
         .then((response) => response.json())
         .then((data) => {
@@ -50,7 +60,7 @@ function NodeContents() {
 
     const handleAddExplain = () => {
         //inputlogの最後の要素を取得し、文章を追加
-        const lastInput = inputed;
+        const lastInput = title;
         const lastResponse = description;
         
         const gptInput = 'Userとのやり取りにおいて、あなたは説明を追加することを求められました\n'
@@ -80,16 +90,12 @@ function NodeContents() {
     
 
     const handleResend = () => {
-        //inputlogの最後の要素を取得
-        const lastInput = inputed;
-        console.log("lastInput: ", lastInput);
-        
         fetch(`${API_HOST}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user_input: lastInput }),
+            body: JSON.stringify({ user_input: title }),
           })
         .then((response) => response.json())
         .then((data) => {
@@ -101,33 +107,19 @@ function NodeContents() {
     };
 
     const handleAddQuestion = () => {
-        //setQuestionTitle と setQuestionContentsにinputListの末尾とresponseListの末尾を渡す
-        const lastInput = inputed;
+        //ノード名と説明文をセット
         const lastResponse = description;
-        console.log("lastInput: ", lastInput, "lastResponse: ", lastResponse);
-        setQuestionDetail(lastInput, lastResponse);
+        console.log("title: ", title, "lastResponse: ", lastResponse);
+        setQuestionDetail(title, lastResponse);
         setQuestionMenu(true);
         
     }
 
     return (
         <div className='NodeContents'>
-            <div id='input'>
-                <input type='text' id='user_input' value={userInput} onChange={handleUserInputChange} />
-
-                <button id='send' onClick={handleSend}>送信</button>
-            </div>
-            <div id='input_log'>
-                <p>inputlog</p>
-                <ul>
-                    {inputed}
-                </ul>
-            </div>
             <div id='response_log'>
-                <p>responselog</p>
                 <p>{description}</p>
-                <p>{example}</p>       
-                
+                <p>{example}</p>
             </div>
             <div id='buttons'>
                 <button id='addQuestion' onClick={handleAddQuestion}>問題に挑戦！</button>

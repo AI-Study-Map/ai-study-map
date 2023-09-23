@@ -77,7 +77,7 @@ def question(request):
     # descriptionを入れてないため、説明文の文脈に沿った問題を作ることができない
     question = request.data 
     print("QUESTION: ", question)
-    question['title'] += """に関する問題を作ってください。
+    question = """pythonにおける""" + question['title'] + """に関する問題を作ってください。
     回答はなるべく短い単語とし、文脈に沿って、単純な日本語問題にならないようにしてください。
     正解が""" + true_answer + """になるようにしてください。
     なお、ダブルクォーテーションとシングルクォーテーションの使い分けは以下の通りとしてください。

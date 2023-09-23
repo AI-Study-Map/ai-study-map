@@ -209,7 +209,7 @@ function QuestionMenu() {
   const handleHideEffect = () => {
     setShowEffect(false);
     setQuestionMenu(false);
-    newAddNode();
+    newAddNode("数値型", "文字列型");
   };
 
   function questionSetting(question, a, b, c, d, correctaAnswer) {

@@ -16,6 +16,9 @@ const NodeContentsWrapper = styled.div`
   left: 0;
   z-index: 1000000;
   pointer-events: auto;
+  width: 500px;
+  height: 200px;
+  overflow-x: auto; //はみ出したときスクロールバー
 `;
 
 const InputWrapper = styled.div`
@@ -65,9 +68,9 @@ function MindMapNode({ id, data }) {
   useLayoutEffect(() => {
     if (inputRef.current) {
       // inputRef.current.style.width = `${data.label.length * 8}px`;
-      inputRef.current.style.width = `${data.label.length >= 15 ? data.label.length: 120}px`;
+      inputRef.current.style.width = `120px`;
     }
-  }, [data.label.length]);
+  }, [data.label]);
 
   const onNodeClick = () => {
     setSelectedNodeId(id);
@@ -90,7 +93,7 @@ function MindMapNode({ id, data }) {
       </InputWrapper>
       {flipped && (
         <NodeContentsWrapper>
-          <NodeContents />
+          <NodeContents title={data.label}/>
         </NodeContentsWrapper>
       )}
 
