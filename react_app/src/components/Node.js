@@ -64,7 +64,8 @@ function MindMapNode({ id, data }) {
 
   useLayoutEffect(() => {
     if (inputRef.current) {
-      inputRef.current.style.width = `${data.label.length * 8}px`;
+      // inputRef.current.style.width = `${data.label.length * 8}px`;
+      inputRef.current.style.width = `${data.label.length >= 15 ? data.label.length: 120}px`;
     }
   }, [data.label.length]);
 
