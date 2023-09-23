@@ -73,6 +73,11 @@ def question(request):
     print("TRUE ANSWER: ", true_answer, n)
 
     system_word = """あなたは与えられた単語に対する4択問題を作り、JSON形式で返す優秀なbotです。
+    """
+    # descriptionを入れてないため、説明文の文脈に沿った問題を作ることができない
+    question = request.data 
+    print("QUESTION: ", question)
+    question['title'] += """に関する問題を作ってください。
     回答はなるべく短い単語とし、文脈に沿って、単純な日本語問題にならないようにしてください。
     正解が""" + true_answer + """になるようにしてください。
     なお、ダブルクォーテーションとシングルクォーテーションの使い分けは以下の通りとしてください。
@@ -80,17 +85,15 @@ def question(request):
         "question",
         "choices"
         {
-            "a":"aの回答",
-            "b":"bの回答",
-            "c":"cの回答",
-            "d":"dの回答"
+            "a":"aの選択肢",
+            "b":"bの選択肢",
+            "c":"cの選択肢",
+            "d":"dの選択肢"
         }
         "answer"
     }'
     """
-    
-    question = request.data
-    print("QUESTION: ", question)
+   
     response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             temperature = 0,

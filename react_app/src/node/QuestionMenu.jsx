@@ -196,8 +196,8 @@ function QuestionMenu() {
 
   // ユーザの回答が正解か判断し、エフェクトを表示
   const handleCheckAnswer = (user_answer) => {
-    if (user_answer === "a") {
-      //user_answer === correctAnswer
+    console.log(nodeTitle, nodeContent);
+    if (user_answer === correctAnswer) {
       setShowEffect(true);
       setError('');
     } else {
@@ -232,31 +232,30 @@ function QuestionMenu() {
     } else {
       // nodeContentが空でない場合、APIリクエスト
       try {
-        const parsedContent = JSON.parse(nodeContent);
-        const description = parsedContent.description;
-
+        const description = nodeContent;
+        console.log("description: ", description);
         //API
-    //     fetch(`${API_HOST_QUESTION}`, {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify({"title": nodeTitle, "description": description}),
-    //     })
-    //       .then((response) => response.json())
-    //       .then((data) => {
-    //         const qData = JSON.parse(data.body);
+        fetch(`${API_HOST_QUESTION}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({"title": nodeTitle, "description": description}),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const qData = JSON.parse(data.body);
 
-    //         //responseを各欄に反映
-    //         questionSetting(
-    //           qData.question, qData.choices.a,
-    //           qData.choices.b, qData.choices.c,
-    //           qData.choices.d, qData.answer
-    //         )
-    //       });
+            //responseを各欄に反映
+            questionSetting(
+              qData.question, qData.choices.a,
+              qData.choices.b, qData.choices.c,
+              qData.choices.d, qData.answer
+            )
+          });
 
        } catch (error) {
-    //     console.error('QuestionMakeError:', error);
+         console.error('QuestionMakeError:', error);
        }
     }
   }, [nodeContent]);
@@ -274,18 +273,16 @@ function QuestionMenu() {
             <p>{nodeTitle}</p>
           </StyledQuestionHeader>
           <StyledQuestionContent>
-            <p>{question}
-              {testPhrase}
-            </p>
-            
+            <p>{question}</p>
           </StyledQuestionContent>
           <StyledQuestionButtons>
             <p id='buttonMessage'>正しい選択肢を選んでください</p>
+            <ErrorMessage>{error}</ErrorMessage>
             <ButtonAAndC onClick={() => handleCheckAnswer("a")}>A: {answerA}</ButtonAAndC>
             <ButtonBAndD onClick={() => handleCheckAnswer("b")}>B: {answerB}</ButtonBAndD> <br></br>
             <ButtonAAndC onClick={() => handleCheckAnswer("c")}>C: {answerC}</ButtonAAndC>
             <ButtonBAndD onClick={() => handleCheckAnswer("d")}>D: {answerD}</ButtonBAndD>
-            <ErrorMessage>{error}</ErrorMessage>
+            
           </StyledQuestionButtons>
           {showEffect && (
             <>
