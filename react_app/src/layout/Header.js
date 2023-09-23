@@ -98,7 +98,7 @@ const Header = ({ title }) => {
       <SidebarMenu $isOpen={isOpen}>
         <SidebarMenuInner>
           <li><p>ホーム</p></li>
-          <li onClick={addNewNode}><p>ノードを追加</p></li>
+          <li onClick={() => addNewNode("数値型", "文字列型")}><p>ノードを追加</p></li>
         </SidebarMenuInner>
       </SidebarMenu>
     </>

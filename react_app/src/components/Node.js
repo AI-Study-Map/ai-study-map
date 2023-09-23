@@ -2,18 +2,21 @@ import { useLayoutEffect, useEffect, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 
 import useStore from '../node/store';
-import DragIcon from './DragIcon';
 import { styled } from 'styled-components';
 import SwitchBtn from './SwitchBtn';
 import NodeContents from '../NodeContents/NodeContents';
 
-const Test = styled.div`
-  /* width: 200px;
-  height: 30px; */
-  max-width: 300px;
-  /* background-color: #17594A; */
-  display: inline-block;
-`
+const NodeContainer = styled.div`
+  position: relative;
+`;
+
+const NodeContentsWrapper = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000000;
+  pointer-events: auto;
+`;
 
 const InputWrapper = styled.div`
   background-color: ${(props) => props.id === "root" ? "#17594A": "#7BC74D" };
@@ -36,17 +39,22 @@ const DragHandleArea = styled.div`
 const P = styled.p`
   color: white;
   width: 600px;
+  border-radius: 10px;
+  font-weight: 700;
+  background: transparent;
+  height: 100%;
 `;
 
 function MindMapNode({ id, data }) {
   const inputRef = useRef(null);
-  const updateNodeLabel = useStore((state) => state.updateNodeLabel);
   const { setSelectedNodeId } = useStore(state => ({ setSelectedNodeId: state.setSelectedNodeId }));
-  const { flipped, setFlipped } = useStore(
-    state => ({flipped: state.flipped, setFlipped: state.setFlipped})
-    );
 
-  const tmpData = { label: 'Python' }
+  const { getNodeFlippedStatus, toggleNodeFlipped } = useStore(state => ({
+    getNodeFlippedStatus: state.getNodeFlippedStatus,
+    toggleNodeFlipped: state.toggleNodeFlipped
+  }));
+
+  const flipped = getNodeFlippedStatus(id);
 
   useEffect(() => {
     setTimeout(() => {
@@ -56,36 +64,39 @@ function MindMapNode({ id, data }) {
 
   useLayoutEffect(() => {
     if (inputRef.current) {
-      inputRef.current.style.width = `${data.label.length * 8}px`;
+      // inputRef.current.style.width = `${data.label.length * 8}px`;
+      inputRef.current.style.width = `${data.label.length >= 15 ? data.label.length: 120}px`;
     }
   }, [data.label.length]);
 
-  const onNodeClick = (event, element) => {
+  const onNodeClick = () => {
     setSelectedNodeId(id);
+    toggleNodeFlipped(id);
     console.log("onNodeClick: ", flipped);
   };
 
   return (
-    <>
-    <Test onClick={() => onNodeClick()}>
-      <InputWrapper className="inputWrapper" id={id}>
+    <NodeContainer>
+      <InputWrapper className="inputWrapper" id={id} onClick={() => onNodeClick()}>
         <DragHandleArea className="dragHandle">
           <P
             value={data.label}
             className="input"
             ref={inputRef}
           >{data.label}</P>
-         <SwitchBtn />
+         <SwitchBtn flipped={flipped}/>
         </DragHandleArea>
         
-        {flipped ? <NodeContents /> : <></>}
       </InputWrapper>
+      {flipped && (
+        <NodeContentsWrapper>
+          <NodeContents />
+        </NodeContentsWrapper>
+      )}
 
       <Handle type="target" position={Position.Top} />
       <Handle type="source" position={Position.Top} />
-    </Test>
-    
-    </>
+    </NodeContainer>
   );
 }
 

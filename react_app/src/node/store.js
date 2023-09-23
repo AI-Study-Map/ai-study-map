@@ -10,12 +10,66 @@ import {
       {
         id: 'root',
         type: 'mindmap',
-        data: { label: 'React Flow' },
+        data: { label: 'Python' },
         position: { x: 0, y: 0 },
         dragHandle: '.dragHandle',
+        idd: 1,
+      },
+      {
+        id: '1',
+        type: 'mindmap',
+        data: { label: 'データ型' },
+        position: { x: 200, y: -70 },
+        dragHandle: '.dragHandle',
+        idd: 2,
+      },
+      {
+        id: '2',
+        type: 'mindmap',
+        data: { label: '演算子と制御フロー' },
+        position: { x: 200, y: 100 },
+        dragHandle: '.dragHandle',
+        idd: 2,
+      },
+      {
+        id: '3',
+        type: 'mindmap',
+        data: { label: '関数とモジュール' },
+        position: { x: -200, y: -70 },
+        dragHandle: '.dragHandle',
+        idd: 2,
+      },
+      {
+        id: '4',
+        type: 'mindmap',
+        data: { label: 'クラスとオブジェクト' },
+        position: { x: -200, y: 100 },
+        dragHandle: '.dragHandle',
+        idd: 2,
       },
     ],
-    edges: [],
+    edges: [
+      {
+        id: nanoid(),
+        source: "root",
+        target: "1",
+      },
+      {
+        id: nanoid(),
+        source: "root",
+        target: "2",
+      },
+      {
+        id: nanoid(),
+        source: "root",
+        target: "3",
+      },
+      {
+        id: nanoid(),
+        source: "root",
+        target: "4",
+      },
+    ],
     onNodesChange: (changes) => {
       set({
         nodes: applyNodeChanges(changes, get().nodes),
@@ -38,14 +92,15 @@ import {
         }),
       });
     },
-    addChildNode: (parentNode, position) => {
+    addChildNode: (parentNode, position, nodeName) => {
       const newNode = {
         id: nanoid(),
         type: 'mindmap',
-        data: { label: 'New Node' },
+        data: { label: nodeName },
         position,
         dragHandle: '.dragHandle',
         parentNode: parentNode.id,
+        idd: parentNode.idd + 1
       };
   
       const newEdge = {
@@ -68,6 +123,22 @@ import {
 
     flipped: false,
     setFlipped: () => set({ flipped: !get().flipped}),
+
+    getNodeFlippedStatus: (nodeId) => {
+      const node = get().nodes.find(n => n.id === nodeId);
+      return node ? node.flipped : false;
+    },
+    
+    toggleNodeFlipped: (nodeId) => {
+      set({
+        nodes: get().nodes.map((node) => {
+          if (node.id === nodeId) {
+            return { ...node, flipped: !node.flipped };
+          }
+          return node;
+        }),
+      });
+    },
   }));
   
   export default useStore;

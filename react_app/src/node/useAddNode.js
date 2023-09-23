@@ -7,12 +7,15 @@ const useAddNode = () => {
     selectedNodeId: state.selectedNodeId,
   }));
 
-  const addNewNode = () => {
+  const addNewNode = (nodeName1, nodeName2, num) => {
     const parentNode = nodes.find(node => node.id === selectedNodeId) || nodes.find(node => node.id === 'root');
+    console.log("parentNode:", parentNode)
     if (parentNode) {
-      const childNodePosition = { x: parentNode.position.x + 70, y: parentNode.position.y + 70 };
-      addChildNode(parentNode, childNodePosition);
-    }
+      const child1NodePosition = { x: parentNode.position.x + 200 / parentNode.idd, y: parentNode.position.y + 100 / parentNode.idd };
+      addChildNode(parentNode, child1NodePosition, nodeName1);
+      const child2NodePosition = { x: parentNode.position.x + 200 / parentNode.idd, y: parentNode.position.y + -70 / parentNode.idd };
+      addChildNode(parentNode, child2NodePosition, nodeName2);
+    } 
   };
 
   return addNewNode;
