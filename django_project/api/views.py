@@ -59,18 +59,9 @@ def gpt_calling(request):
 @renderer_classes([JSONRenderer])
 def question(request):
 
-    true_answer = ""
+    true_answer = ["A", "B", "C", "D"]
     n = random.randint(0, 3)
-    match n:
-        case 0:
-            true_answer = "A"
-        case 1:
-            true_answer = "B"
-        case 2:
-            true_answer = "C"
-        case 3:
-            true_answer = "D"
-    print("TRUE ANSWER: ", true_answer, n)
+    print("TRUE ANSWER: ", true_answer[n], n)
 
     system_word = """あなたは与えられた単語に対する4択問題を作り、JSON形式で返す優秀なbotです。
     """
