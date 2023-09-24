@@ -12,18 +12,24 @@ const NodeContainer = styled.div`
 
 const NodeContentsWrapper = styled.div`
   position: absolute;
-  top: 100%;
+  top: 80%;
   left: 0;
-  z-index: 1000000;
+  z-index: 1000;
   pointer-events: auto;
   width: 500px;
-  height: 200px;
+  height: auto;
   overflow-x: auto; //はみ出したときスクロールバー
+  background-color: #FAFFF7;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  padding: 10px;
 `;
 
 const InputWrapper = styled.div`
   background-color: ${(props) => props.id === "root" ? "#17594A": "#7BC74D" };
   border-radius: 10px;
+  z-index: 10000;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
 const DragHandleArea = styled.div`
