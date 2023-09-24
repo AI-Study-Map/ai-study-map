@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
+import ReactMarkdown from 'react-markdown';
 import useStore from '../node/store';
 
 const NodeContentsArea = styled.div`
@@ -45,10 +46,12 @@ const StyledButtonGreen = styled(StyledButton)`
   align-items: center; // 子要素を中央揃え
   justify-content: center; // 子要素を中央揃え
   color: #FAFFF7;
+  &:hover {
+    background-color: #5E9E3E; // ボタンにマウスカーソルが乗ったときの背景色
+  }
 `
 
 const RegenerateSvg = styled.svg`
-  // svg style
   margin-left: 8px; // テキストとSVGの間にマージンを追加
   vertical-align: middle; // テキストとSVGを中央揃え
 `
@@ -168,8 +171,8 @@ function NodeContents(props) {
     return (
         <NodeContentsArea className='NodeContents' >
             <ResponseLogArea id='response_log'>
-                <p>{description}</p>
-                <p>{example}</p>
+                <ReactMarkdown>{description}</ReactMarkdown>
+                <ReactMarkdown>{example}</ReactMarkdown>
             </ResponseLogArea>
             <ButtonContainer id='buttons'>
                 <StyledButton id='addQuestion' onClick={handleAddQuestion}>問題作成</StyledButton>
