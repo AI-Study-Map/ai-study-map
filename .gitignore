@@ -12,6 +12,7 @@ __pycache__/
 db.sqlite3
 media/
 settings_local.py
+prompt_test.py
 
 # Virtual environment
 django_env/

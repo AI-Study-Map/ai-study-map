@@ -5,15 +5,17 @@ from rest_framework.response import Response
 from .serializers import PostSerializer, QuestionSerializer
 from django.middleware.csrf import get_token
 import openai
+import guidance
 from django_project.settings_local import *
 import random
+
 
 openai.api_key = OPENAI_API_KEY
 openai.api_base = OPENAI_API_BASE
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-def gpt_calling(request):
+def gpt_calling2(request):
     
     # csrf_token = get_token(request)
     # print("CSRF_TOKEN: ", csrf_token)
@@ -57,7 +59,7 @@ def gpt_calling(request):
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-def question(request):
+def question2(request):
 
     true_answer = ["A", "B", "C", "D"]
     n = random.randint(0, 3)
@@ -111,3 +113,72 @@ def question(request):
 def test(request):
     print("test")
     return render(request, 'api/test.html')
+
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def gpt_calling(question_title):
+    guidance.llm= guidance.llms.OpenAI("gpt-3.5-turbo") 
+    create_prompt = guidance("""
+        {{#system~}}
+            あなたは、学ぶ人にとっての教科書として、わかりやすく丁寧な解説を日本語で提供する優秀なbotです。
+            以下のJSON形式で返してください。
+            '{
+                "description",
+                "example"
+            }'
+        {{~/system}}
+        {{#user~}}
+            pythonにおける{{question_title}}に関する解説文を作ってください。
+            このテーマにおける解説をdescriptionとして、それに対応する例をexampleとしてください。
+            解説はなるべく詳細かつ網羅的である必要がありますが、300文字程度に収めてください。
+            例は簡潔に、分かりやすさを重視してください。
+            なお、descriptionとexampleの両方でマークダウン記法をフル活用し、分かりやすく表現してください。
+        {{~/user}}
+        {{#assistant~}}
+            {{gen 'response' temperature=0.5 }}
+        {{/assistant~}}         
+    """)
+    out = create_prompt(question_title=question_title)
+    print("out", out)
+    return Response(out["response"])
+
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def question(question_title, true_answer, description, example):
+    guidance.llm= guidance.llms.OpenAI("gpt-3.5-turbo")
+    create_prompt = guidance("""
+        {{#system~}}
+            あなたは教科書の中の章のまとめとして4択問題を作り、JSON形式で返す優秀なbotです。
+            フォーマットは以下の通りです。
+            {
+                "question",
+                "choices": {
+                    "a",
+                    "b",
+                    "c",
+                    "d"
+                },
+                "answer"
+            }
+        {{~/system}}
+        {{#user~}}
+            pythonにおける{{question_title}}に関する問題を日本語で作ってください。
+            このトピックに使用した解説文と例は以下の通りです。
+            解説文: {{description}}
+            例: {{example}}        
+            正解が{{true_answer}}になるようにしてください。
+            トピックの難易度に合わせて問題の難易度を調整してください。
+            Example of a problem that is not good:
+            1. the choice is exactly the same as the topic
+            2. the choice is not related to the topic
+            3. the choice is related to the topic but the correct answer is obvious
+            4. the choice could be interpreted as having more than one correct answer
+            5. choices that use the same words that appear in the explanatory text or examples
+            6. choices that are too long
+        {{/user~}}
+        {{#assistant~}}
+            {{gen 'question' temperature=0 max_tokens=500}}
+        {{/assistant~}}                         
+    """)
+    out = create_prompt(question_title=question_title, true_answer=true_answer, description=description, example=example)
+    return Response(out["question"])
