@@ -184,19 +184,19 @@ function QuestionMenu() {
   const [answerD, setAnswerD] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [error, setError] = useState('');
-  const { questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, setQuestionDetail } = useStore(
+  const { questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, nodeExample, setQuestionDetail } = useStore(
     state => ({
       questionMenuIsOpen: state.questionMenuIsOpen,
       setQuestionMenu: state.setQuestionMenu,
       nodeTitle: state.nodeTitle,
       nodeContent: state.nodeContent,
+      nodeExample: state.nodeExample,
       setQuestionDetail: state.setQuestionDetail,
     })
   );
 
   // ユーザの回答が正解か判断し、エフェクトを表示
   const handleCheckAnswer = (user_answer) => {
-    console.log(nodeTitle, nodeContent);
     if (user_answer === correctAnswer) {
       setShowEffect(true);
       setError('');
@@ -233,19 +233,20 @@ function QuestionMenu() {
       // nodeContentが空でない場合、APIリクエスト
       try {
         const description = nodeContent;
-        console.log("description: ", description);
+        const example = nodeExample;
+        console.log("description: ", description, "example: ", example);
         //API
         fetch(`${API_HOST_QUESTION}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({"title": nodeTitle, "description": description}),
+          body: JSON.stringify({"title": nodeTitle, "description": description, "example": example}),
         })
           .then((response) => response.json())
           .then((data) => {
-            const qData = JSON.parse(data.body);
-
+            const qData = JSON.parse(data);
+            console.log("qData", qData);
             //responseを各欄に反映
             questionSetting(
               qData.question, qData.choices.a,

@@ -146,7 +146,8 @@ import {
     // ノードのタイトルと内容を設定
     nodeTitle: '',
     nodeContent: '',
-    setQuestionDetail: (title, content) => set({ nodeTitle: title, nodeContent: content }),
+    nodeExample: '',
+    setQuestionDetail: (title, content, example) => set({ nodeTitle: title, nodeContent: content, nodeExample: example }),
   }));
   
   export default useStore;

@@ -15,7 +15,7 @@ openai.api_base = OPENAI_API_BASE
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-def gpt_calling2(request):
+def gpt_calling_old(request):
     
     # csrf_token = get_token(request)
     # print("CSRF_TOKEN: ", csrf_token)
@@ -59,7 +59,7 @@ def gpt_calling2(request):
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-def question2(request):
+def question_old(request):
 
     true_answer = ["A", "B", "C", "D"]
     n = random.randint(0, 3)
@@ -116,7 +116,8 @@ def test(request):
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-def gpt_calling(question_title):
+def gpt_calling(request):
+    question_title = request.data['user_input']
     guidance.llm= guidance.llms.OpenAI("gpt-3.5-turbo") 
     create_prompt = guidance("""
         {{#system~}}
@@ -133,6 +134,7 @@ def gpt_calling(question_title):
             解説はなるべく詳細かつ網羅的である必要がありますが、300文字程度に収めてください。
             例は簡潔に、分かりやすさを重視してください。
             なお、descriptionとexampleの両方でマークダウン記法をフル活用し、分かりやすく表現してください。
+            Be sure to output up to } to ensure that the output is not interrupted in the middle of the JSON format.
         {{~/user}}
         {{#assistant~}}
             {{gen 'response' temperature=0.5 }}
@@ -140,26 +142,22 @@ def gpt_calling(question_title):
     """)
     out = create_prompt(question_title=question_title)
     print("out", out)
-    return Response(out["response"])
+    result = out["response"] + "\n"
+    return Response(result)
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-def question(question_title, true_answer, description, example):
+def question(request):
+    true_answer = ["A", "B", "C", "D"]
+    n = random.randint(0, 3)
+    print("TRUE ANSWER: ", true_answer[n], n)
+    question_title = request.data['title']
+    description = request.data['description']
+    example = request.data['example']
     guidance.llm= guidance.llms.OpenAI("gpt-3.5-turbo")
     create_prompt = guidance("""
         {{#system~}}
             あなたは教科書の中の章のまとめとして4択問題を作り、JSON形式で返す優秀なbotです。
-            フォーマットは以下の通りです。
-            {
-                "question",
-                "choices": {
-                    "a",
-                    "b",
-                    "c",
-                    "d"
-                },
-                "answer"
-            }
         {{~/system}}
         {{#user~}}
             pythonにおける{{question_title}}に関する問題を日本語で作ってください。
@@ -175,10 +173,25 @@ def question(question_title, true_answer, description, example):
             4. the choice could be interpreted as having more than one correct answer
             5. choices that use the same words that appear in the explanatory text or examples
             6. choices that are too long
+                             
+            JSON形式で返してください。フォーマットは以下の通りです。
+            フォーマットは以下の通りです。
+            {
+                "question",
+                "choices": {
+                    "a",
+                    "b",
+                    "c",
+                    "d"
+                },
+                "answer"
+            }
         {{/user~}}
         {{#assistant~}}
             {{gen 'question' temperature=0 max_tokens=500}}
         {{/assistant~}}                         
     """)
     out = create_prompt(question_title=question_title, true_answer=true_answer, description=description, example=example)
-    return Response(out["question"])
+    result = out["question"] + "\n"
+    print(result)
+    return Response(result)

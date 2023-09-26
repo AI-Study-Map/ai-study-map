@@ -64,12 +64,13 @@ function NodeContents(props) {
     const [description, setDescription] = useState('');
     const [example, setExample] = useState('');
     
-    const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, setQuestionDetail } = useStore(
+    const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, nodeExample, setQuestionDetail } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
           setQuestionMenu: state.setQuestionMenu,
           nodeTitle: state.nodeTitle,
           nodeContent: state.nodeContent,
+          nodeExample: state.nodeExample,
           setQuestionDetail: state.setQuestionDetail,
         })
       );
@@ -87,29 +88,13 @@ function NodeContents(props) {
       .then((response) => response.json())
       .then((data) => {
       // ChatGPTからの応答をパースして、説明文と例文を取得、set
-      const parsedContent = JSON.parse(data.body);
+      console.log("data", data);
+      const parsedContent = JSON.parse(data);
+          console.log("parsedContent", parsedContent);
           setDescription(parsedContent.description);
           setExample(parsedContent.example);
       });
     }, [title]);
-
-    const handleSend = () => {
-        // ノード名をAPI送信してChatGPTからの応答を取得
-        fetch(`${API_HOST}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ user_input: title }),
-          })
-        .then((response) => response.json())
-        .then((data) => {
-        // ChatGPTからの応答をパースして、説明文と例文を取得、set
-        const parsedContent = JSON.parse(data.body);
-            setDescription(parsedContent.description);
-            setExample(parsedContent.example);
-        });
-    };
 
     const handleAddExplain = () => {
         //inputlogの最後の要素を取得し、文章を追加
@@ -162,8 +147,9 @@ function NodeContents(props) {
     const handleAddQuestion = () => {
         //ノード名と説明文をセット
         const lastResponse = description;
-        console.log("title: ", title, "lastResponse: ", lastResponse);
-        setQuestionDetail(title, lastResponse);
+        const exampleForQuestion = example;
+        console.log("title: ", title, "lastResponse: ", lastResponse, "example", exampleForQuestion);
+        setQuestionDetail(title, lastResponse, exampleForQuestion);
         setQuestionMenu(true);
         
     }
@@ -172,6 +158,7 @@ function NodeContents(props) {
         <NodeContentsArea className='NodeContents' >
             <ResponseLogArea id='response_log'>
                 <ReactMarkdown>{description}</ReactMarkdown>
+                <hr></hr>
                 <ReactMarkdown>{example}</ReactMarkdown>
             </ResponseLogArea>
             <ButtonContainer id='buttons'>
