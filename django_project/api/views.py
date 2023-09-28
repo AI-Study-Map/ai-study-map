@@ -142,7 +142,12 @@ def gpt_calling(request):
     """)
     out = create_prompt(question_title=question_title)
     print("out", out)
-    result = out["response"] + "\n"
+    #JSON形式で返されなかった時の対策
+    if out["response"][-1] != "}":
+        result = out["response"] + "\"}\n"
+    else:
+        result = out["response"] + "\n"
+
     return Response(result)
 
 @api_view(['POST'])
@@ -172,7 +177,7 @@ def question(request):
             3. the choice is related to the topic but the correct answer is obvious
             4. the choice could be interpreted as having more than one correct answer
             5. choices that use the same words that appear in the explanatory text or examples
-            6. choices that are too long
+            6. choices that are too long.
                              
             JSON形式で返してください。フォーマットは以下の通りです。
             フォーマットは以下の通りです。
