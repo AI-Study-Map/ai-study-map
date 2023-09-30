@@ -153,13 +153,13 @@ def gpt_calling(request):
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def question(request):
-    true_answer = ["A", "B", "C", "D"]
+    true_answer = ["a", "b", "c", "d"]
     n = random.randint(0, 3)
     print("TRUE ANSWER: ", true_answer[n], n)
     question_title = request.data['title']
     description = request.data['description']
     example = request.data['example']
-    guidance.llm= guidance.llms.OpenAI("gpt-3.5-turbo")
+    guidance.llm= guidance.llms.OpenAI("gpt-4")
     create_prompt = guidance("""
         {{#system~}}
             あなたは教科書の中の章のまとめとして4択問題を作り、JSON形式で返す優秀なbotです。
@@ -171,6 +171,8 @@ def question(request):
             例: {{example}}        
             正解が{{true_answer}}になるようにしてください。
             トピックの難易度に合わせて問題の難易度を調整してください。
+            可能な限り選択肢は1単語で出力してください。
+            回答がただ一つに限られるようにしてください。
             Example of a problem that is not good:
             1. the choice is exactly the same as the topic
             2. the choice is not related to the topic
