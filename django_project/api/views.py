@@ -202,3 +202,37 @@ def question(request):
     result = out["question"] + "\n"
     print(result)
     return Response(result)
+
+#送られたdescriptionが不十分だった場合に、descriptionに後付けで追加する
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def add_description(request):
+    title = request.data['title']
+    description = request.data['description']
+    guidance.llm= guidance.llms.OpenAI("gpt-3.5-turbo")
+    create_prompt = guidance("""
+        {{#system~}}
+            あなたは、学ぶ人にとっての教科書として、わかりやすく丁寧な解説を日本語で提供する優秀なbotです。
+        {{~/system}}
+        {{#user~}}
+            あなたは説明を追加することを求められました
+            与えられた情報をもとに、descriptionに自然につながるように説明文を追加してください。
+            その際、もとの文章を返答を繰り返す必要はなく、続きのみを出力してください。
+            また、与えられた文章と内容が被らないようにしてください。
+            その際、マークダウン記法を用いて分かりやすく表現してください。
+            テーマ: {{title}}
+            description: {{description}}
+            以下のJSON形式で返してください。
+            '{
+                "add_description"
+            }'
+        {{/user~}}
+        {{#assistant~}}
+            {{gen 'add_description' temperature=0 max_tokens=500}}
+        {{/assistant~}}                         
+    """)
+    out = create_prompt(title=title, description=description)
+    print("OUT\n", out)
+    result = out["add_description"]
+    print(result)
+    return Response(result)

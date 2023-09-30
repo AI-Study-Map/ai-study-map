@@ -57,6 +57,7 @@ const RegenerateSvg = styled.svg`
 `
 
 const API_HOST = 'http://localhost:8000/api/gpt_calling/';
+const API_HOST_DESCRIPTION = 'http://localhost:8000/api/gpt_calling/add_description';
 
 function NodeContents(props) {
     const {title} = props;
@@ -98,31 +99,22 @@ function NodeContents(props) {
 
     const handleAddExplain = () => {
         //inputlogの最後の要素を取得し、文章を追加
-        const lastInput = title;
-        const lastResponse = description;
+        const thisTitle = title;
+        const thisDescription = description;
         
-        const gptInput = 'Userとのやり取りにおいて、あなたは説明を追加することを求められました\n'
-         + 'Userとの会話のログをもとに、自然につながるように説明文を追加してください。\n'
-         + 'その際、もとの会話文やbotの返答を繰り返す必要はなく、あくまで、続きを出力してください。\n'
-         + 'また、これまでのやり取りと内容が被らないようにしてください。\n'
-         + 'User:' + lastInput + '\n'
-         + 'Bot:' + lastResponse + '\n';
-        
-        console.log("lastInput: ", gptInput);
-        
-        fetch(`${API_HOST}`, {
+        fetch(`${API_HOST_DESCRIPTION}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user_input: gptInput }),
+            body: JSON.stringify({"title": thisTitle, "description": thisDescription }),
           })
         .then((response) => response.json())
         .then((data) => {
-        const chatReply = JSON.parse(data.body);
+        const chatReply = JSON.parse(data);
         console.log(chatReply);
         // responselogの最後の要素を取得、ChatGPTからの応答を繋げる
-        setDescription(description + chatReply.description);
+        setDescription(description + chatReply.add_description);
       });
     }
     
