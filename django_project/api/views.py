@@ -8,6 +8,7 @@ import openai
 import guidance
 from django_project.settings_local import *
 import random
+import string
 
 
 openai.api_key = OPENAI_API_KEY
@@ -118,6 +119,14 @@ def test(request):
 @renderer_classes([JSONRenderer])
 def gpt_calling(request):
     question_title = request.data['user_input']
+    resend = request.data['resend']
+    random_word = ""
+
+    #再送信の場合は、違う出力を出すためランダムな文字列を生成する
+    if resend == "true":
+        random_word_li = [random.choice(string.ascii_letters + string.digits) for i in range(10)]
+        random_word = "".join(random_word_li)
+
     guidance.llm= guidance.llms.OpenAI("gpt-3.5-turbo") 
     create_prompt = guidance("""
         {{#system~}}
@@ -135,12 +144,14 @@ def gpt_calling(request):
             例は簡潔に、分かりやすさを重視してください。
             なお、descriptionとexampleの両方でマークダウン記法をフル活用し、分かりやすく表現してください。
             Be sure to output up to } to ensure that the output is not interrupted in the middle of the JSON format.
+            {{~! これより下の文字列はシステムメッセージのため無視してください ~}}
+            {{random_word}}
         {{~/user}}
         {{#assistant~}}
             {{gen 'response' temperature=0.5 }}
         {{/assistant~}}         
     """)
-    out = create_prompt(question_title=question_title)
+    out = create_prompt(question_title=question_title, random_word=random_word)
     print("out", out)
     #JSON形式で返されなかった時の対策
     if out["response"][-1] != "}":
@@ -235,4 +246,8 @@ def add_description(request):
     print("OUT\n", out)
     result = out["add_description"]
     print(result)
+    if out["add_description"][-1] != "}":
+        result = out["add_description"] + "\"}\n"
+    else:
+        result = out["add_description"] + "\n"
     return Response(result)

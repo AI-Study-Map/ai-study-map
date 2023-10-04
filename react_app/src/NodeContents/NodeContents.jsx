@@ -84,7 +84,7 @@ function NodeContents(props) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user_input: title }),
+        body: JSON.stringify({ user_input: title, resend: "false" }),
       })
       .then((response) => response.json())
       .then((data) => {
@@ -125,14 +125,14 @@ function NodeContents(props) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user_input: title }),
+            body: JSON.stringify({ user_input: title, resend: "true" }),
           })
         .then((response) => response.json())
         .then((data) => {
-        const chatReply = JSON.parse(data.body);
-        console.log(chatReply);
-        // responselogの要素を変更
-        setDescription(chatReply.description);
+          const parsedContent = JSON.parse(data);
+          console.log("parsedContent", parsedContent);
+          setDescription(parsedContent.description);
+          setExample(parsedContent.example);
       });
     };
 
