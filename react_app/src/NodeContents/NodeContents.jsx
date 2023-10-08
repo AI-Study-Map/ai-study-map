@@ -58,33 +58,36 @@ const RegenerateSvg = styled.svg`
 
 const API_HOST = 'http://localhost:8000/api/gpt_calling/';
 const API_HOST_DESCRIPTION = 'http://localhost:8000/api/gpt_calling/add_description';
+const API_HOST_QUESTION = 'http://localhost:8000/api/gpt_calling/question';
 
 function NodeContents(props) {
-    const {title} = props;
+    const {title, id} = props;
     const [inputed, setInput] = useState(title); 
     const [description, setDescription] = useState('');
     const [example, setExample] = useState('');
-    
-    const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, nodeExample, setQuestionDetail } = useStore(
+    const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, 
+      setQuestionTitle, selectedNodeId, setQuestion
+    } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
           setQuestionMenu: state.setQuestionMenu,
           nodeTitle: state.nodeTitle,
-          nodeContent: state.nodeContent,
-          nodeExample: state.nodeExample,
-          setQuestionDetail: state.setQuestionDetail,
+          setQuestionTitle: state.setQuestionTitle,
+          selectedNodeId: state.selectedNodeId,
+          setQuestion: state.setQuestion,
         })
       );
 
     useEffect(() => {
       // titleが変更されると実行される
       console.log("title: ", title);
+      console.log("selectedNodeId:", selectedNodeId);
       fetch(`${API_HOST}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user_input: title, resend: "false" }),
+        body: JSON.stringify({ nodeId: selectedNodeId, user_input: title, resend: "false" }),
       })
       .then((response) => response.json())
       .then((data) => {
@@ -138,12 +141,38 @@ function NodeContents(props) {
 
     const handleAddQuestion = () => {
         //ノード名と説明文をセット
-        const lastResponse = description;
-        const exampleForQuestion = example;
-        console.log("title: ", title, "lastResponse: ", lastResponse, "example", exampleForQuestion);
-        setQuestionDetail(title, lastResponse, exampleForQuestion);
-        setQuestionMenu(true);
+        const thisId = id;
+        const thisTitle = title;
+        const desc = description;
+        const exa = example;
+        console.log("nodeId: ", thisId , "description: ", desc, "example: ", exa);
         
+        try{//API
+          fetch(`${API_HOST_QUESTION}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({"nodeId": thisId, "title": thisTitle, "description": desc, "example": exa}),
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            const qData = JSON.parse(data);
+            console.log("qData", qData);
+            //responseを各欄に反映
+            setQuestion(
+              qData.question, qData.question_a,
+              qData.question_b, qData.question_c,
+              qData.question_d, qData.true_answer
+            )
+          });
+
+          } catch (error) {
+            console.error('QuestionMakeError:', error);
+          }
+          console.log("nodeTitle: ", title);
+          setQuestionTitle(title);
+          setQuestionMenu(true);
     }
 
     return (

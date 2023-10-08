@@ -20,7 +20,7 @@ class User(models.Model):
     exp = models.PositiveIntegerField(default=0)
 
 class Map(models.Model):
-    map_id = models.CharField(max_length=255, primary_key=True)
+    map_id = models.CharField(max_length=255, primary_key=True,default="")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     theme_name = models.CharField(max_length=255)
     graph_structure = models.TextField(null=True)
@@ -30,10 +30,10 @@ class Map(models.Model):
 
 class Node(models.Model):
     node_id = models.CharField(max_length=255, primary_key=True)
-    map = models.ForeignKey(Map, on_delete=models.CASCADE)
-    x_coordinate = models.FloatField()
-    y_coordinate = models.FloatField()
-    title = models.CharField(max_length=255)
+    map = models.ForeignKey(Map, on_delete=models.CASCADE, null=True)
+    x_coordinate = models.FloatField(default=0.0)
+    y_coordinate = models.FloatField(default=0.0)
+    title = models.CharField(max_length=255, default="")
     description = models.TextField(null=True)
     example = models.TextField(null=True)
     question = models.TextField(null=True)
