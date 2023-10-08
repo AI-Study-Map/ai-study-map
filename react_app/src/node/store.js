@@ -145,9 +145,16 @@ import {
     
     // ノードのタイトルと内容を設定
     nodeTitle: '',
-    nodeContent: '',
-    nodeExample: '',
-    setQuestionDetail: (title, content, example) => set({ nodeTitle: title, nodeContent: content, nodeExample: example }),
+    setQuestionTitle: (title) => set({ nodeTitle: title }),
+  
+    // 問題の内容を設定
+    question_phrase: '',
+    question_a: '',
+    question_b: '',
+    question_c: '',
+    question_d: '',
+    correctAnswer: '',
+    setQuestion: (question_phrase, question_a, question_b, question_c, question_d, correctAnswer) => set({ question_phrase: question_phrase, question_a: question_a, question_b: question_b, question_c: question_c, question_d: question_d, correctAnswer: correctAnswer }),
   }));
   
   export default useStore;

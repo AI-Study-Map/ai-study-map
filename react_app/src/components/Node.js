@@ -99,7 +99,7 @@ function MindMapNode({ id, data }) {
       </InputWrapper>
       {flipped && (
         <NodeContentsWrapper>
-          <NodeContents title={data.label}/>
+          <NodeContents title={data.label} id={id}/>
         </NodeContentsWrapper>
       )}
 

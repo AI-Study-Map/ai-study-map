@@ -184,14 +184,25 @@ function QuestionMenu() {
   const [answerD, setAnswerD] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [error, setError] = useState('');
-  const { questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, nodeExample, setQuestionDetail } = useStore(
+  const { questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
+    nodeExample, setQuestionTitle, selectedNodeId, getQUestion,
+    question_phrase, question_a, question_b, question_c, question_d, correctAns,
+  } = useStore(
     state => ({
       questionMenuIsOpen: state.questionMenuIsOpen,
       setQuestionMenu: state.setQuestionMenu,
       nodeTitle: state.nodeTitle,
       nodeContent: state.nodeContent,
       nodeExample: state.nodeExample,
-      setQuestionDetail: state.setQuestionDetail,
+      setQuestionTitle: state.setQuestionTitle,
+      selectedNodeId: state.selectedNodeId,
+      getQUestion: state.getQUestion,
+      question_phrase: state.question_phrase,
+      question_a: state.question_a,
+      question_b: state.question_b,
+      question_c: state.question_c,
+      question_d: state.question_d,
+      correctAns: state.correctAnswer,
     })
   );
 
@@ -212,8 +223,8 @@ function QuestionMenu() {
     newAddNode("数値型", "文字列型");
   };
 
-  function questionSetting(question, a, b, c, d, correctaAnswer) {
-    setQuestion(question);
+  function questionSetting(quest, a, b, c, d, correctaAnswer) {
+    setQuestion(quest);
     setAnswerA(a);
     setAnswerB(b);
     setAnswerC(c);
@@ -221,45 +232,13 @@ function QuestionMenu() {
     setCorrectAnswer(correctaAnswer);
   }
 
-  const testPhrase = '###########################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################';
-
-  // nodeContentが変更されたときに実行される
-  // APIを通して問題を作成し、各欄に反映（先に作っておくことで遅延を軽減）
   useEffect(() => {
-    // 初期状態ではnodeContentが空なので、何もしない
-    if (nodeContent === "") {
-      console.log("nodeContent is empty")
-    } else {
-      // nodeContentが空でない場合、APIリクエスト
-      try {
-        const description = nodeContent;
-        const example = nodeExample;
-        console.log("description: ", description, "example: ", example);
-        //API
-        fetch(`${API_HOST_QUESTION}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({"title": nodeTitle, "description": description, "example": example}),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            const qData = JSON.parse(data);
-            console.log("qData", qData);
-            //responseを各欄に反映
-            questionSetting(
-              qData.question, qData.choices.a,
-              qData.choices.b, qData.choices.c,
-              qData.choices.d, qData.answer
-            )
-          });
-
-       } catch (error) {
-         console.error('QuestionMakeError:', error);
-       }
-    }
-  }, [nodeContent]);
+    // 問題文が変更されると実行される
+    questionSetting(
+      question_phrase, question_a, question_b, question_c, question_d, correctAns
+    );
+  }, [question_phrase]);
+    
 
   return (
     <>
