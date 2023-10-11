@@ -9,7 +9,7 @@ class PostSerializer(serializers.ModelSerializer):
 class DescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Node
-        fields = ['node_id' ,'description', 'example']
+        fields = ['node_id' , 'title', 'description', 'example']
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
