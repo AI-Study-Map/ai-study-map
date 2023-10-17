@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import useAddNode from '../node/useAddNode';
+import MapDataSave from '../save/MapDataSave';
 
 const StyledHeader = styled.header`
   background-color: #FFE867;
@@ -99,6 +100,7 @@ const Header = ({ title }) => {
         <SidebarMenuInner>
           <li><p>ホーム</p></li>
           <li onClick={() => addNewNode("数値型", "文字列型")}><p>ノードを追加</p></li>
+          <li><p><MapDataSave /></p></li>
         </SidebarMenuInner>
       </SidebarMenu>
     </>
