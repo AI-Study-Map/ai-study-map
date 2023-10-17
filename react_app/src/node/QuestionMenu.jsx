@@ -186,7 +186,7 @@ function QuestionMenu() {
   const [error, setError] = useState('');
   const { questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion,
-    question_phrase, question_a, question_b, question_c, question_d, correctAns,
+    question_phrase, question_a, question_b, question_c, question_d, correctAns, test
   } = useStore(
     state => ({
       questionMenuIsOpen: state.questionMenuIsOpen,
@@ -203,6 +203,7 @@ function QuestionMenu() {
       question_c: state.question_c,
       question_d: state.question_d,
       correctAns: state.correctAnswer,
+      test: state.test,
     })
   );
 
@@ -216,11 +217,30 @@ function QuestionMenu() {
     }
   };
 
+const findChildrenByName = (node, name) => {
+    if (node.name === name) {
+      return node.children.map(child => child.name);
+    }
+    for (let child of node.children) {
+      const result = findChildrenByName(child, name);
+      if (result) {
+        return result;
+      }
+    }
+    return null;
+  }
+
   // CLEARエフェクトを非表示、問題メニューを非表示、ノードを追加
   const handleHideEffect = () => {
     setShowEffect(false);
     setQuestionMenu(false);
-    newAddNode("数値型", "文字列型");
+    const childrenNames = findChildrenByName(test, nodeTitle);
+    if (childrenNames === null) {
+      console.log("子ノードがありません")
+      return 
+    } else {
+      newAddNode(childrenNames[0], childrenNames[1]);
+    }
   };
 
   function questionSetting(quest, a, b, c, d, correctaAnswer) {
