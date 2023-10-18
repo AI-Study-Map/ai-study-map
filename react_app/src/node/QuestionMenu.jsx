@@ -22,7 +22,7 @@ const StyledQuestionHeader = styled.div`
   width: 450px;
   align-items: center;
   background-color:#FFE867;
-  height: 60px;
+  height: 8vh;
     p {
       font-size: 25px;
       font-weight: bold;
@@ -32,14 +32,14 @@ const StyledQuestionHeader = styled.div`
 `;
 
 const StyledQuestionContent = styled.div`
-  height: 366px;
+  height: 60vh;
   overflow-wrap: break-word; /* 単語の途中で改行させる */
   overflow-x: auto; /* コンテンツがはみ出す場合にスクロールバーを表示 */
   padding: 10px;
 `;
 
 const StyledQuestionButtons = styled.div`
-  height: 250px;
+  height: 32vh;
   overflow-y: auto; /* ボタンがはみ出す場合にスクロールバーを表示 */
   padding: 10px;
   background-color:#FFE867;
