@@ -14,6 +14,7 @@ import {
         position: { x: 0, y: 0 },
         dragHandle: '.dragHandle',
         idd: 1,
+        isCorrect: false,
       },
       {
         id: '1',
@@ -22,6 +23,7 @@ import {
         position: { x: 200, y: -70 },
         dragHandle: '.dragHandle',
         idd: 2,
+        isCorrect: false,
       },
       {
         id: '2',
@@ -30,6 +32,7 @@ import {
         position: { x: 200, y: 100 },
         dragHandle: '.dragHandle',
         idd: 2,
+        isCorrect: false,
       },
       {
         id: '3',
@@ -38,6 +41,7 @@ import {
         position: { x: -200, y: -70 },
         dragHandle: '.dragHandle',
         idd: 2,
+        isCorrect: false,
       },
       // {
       //   id: '4',
@@ -92,6 +96,19 @@ import {
         }),
       });
     },
+    updateNodeIsCorrect: (title) => {
+      set({
+        nodes: get().nodes.map((node) => {
+          if (node.data.label === title) {
+            // it's important to create a new object here, to inform React Flow about the changes
+            console.log("kita-----------")
+            node.isCorrect = true;
+          }
+  
+          return node;
+        }),
+      });
+    },
     addChildNode: (parentNode, position, nodeName) => {
       const newNode = {
         id: nanoid(),
@@ -100,7 +117,8 @@ import {
         position,
         dragHandle: '.dragHandle',
         parentNode: parentNode.id,
-        idd: parentNode.idd + 1
+        idd: parentNode.idd + 1,
+        isCorrect: false,
       };
   
       const newEdge = {

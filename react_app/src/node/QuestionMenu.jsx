@@ -22,7 +22,7 @@ const StyledQuestionHeader = styled.div`
   width: 450px;
   align-items: center;
   background-color:#FFE867;
-  height: 60px;
+  height: 8vh;
     p {
       font-size: 25px;
       font-weight: bold;
@@ -32,14 +32,14 @@ const StyledQuestionHeader = styled.div`
 `;
 
 const StyledQuestionContent = styled.div`
-  height: 366px;
+  height: 60vh;
   overflow-wrap: break-word; /* 単語の途中で改行させる */
   overflow-x: auto; /* コンテンツがはみ出す場合にスクロールバーを表示 */
   padding: 10px;
 `;
 
 const StyledQuestionButtons = styled.div`
-  height: 250px;
+  height: 32vh;
   overflow-y: auto; /* ボタンがはみ出す場合にスクロールバーを表示 */
   padding: 10px;
   background-color:#FFE867;
@@ -184,8 +184,9 @@ function QuestionMenu() {
   const [answerD, setAnswerD] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [error, setError] = useState('');
-  const { questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, nodeExample, setQuestionDetail, test } = useStore(
+  const { updateNodeIsCorrect, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, nodeExample, setQuestionDetail, test } = useStore(
     state => ({
+      updateNodeIsCorrect: state.updateNodeIsCorrect,
       questionMenuIsOpen: state.questionMenuIsOpen,
       setQuestionMenu: state.setQuestionMenu,
       nodeTitle: state.nodeTitle,
@@ -219,10 +220,23 @@ const findChildrenByName = (node, name) => {
     return null;
   }
 
+  // 問題に正解済みかどうかの真偽値を更新
+  // const setTitleMatchedAsCorrect = (nodes, title) => {
+  //   nodes.forEach(node => {
+  //     if (node.data && node.data.label === title) {
+  //       console.log("きたーーーーーーー", node.data.label, title)
+  //       node.isCorrect = true;
+  //     }
+  //   });
+  // };
+
   // CLEARエフェクトを非表示、問題メニューを非表示、ノードを追加
   const handleHideEffect = () => {
     setShowEffect(false);
     setQuestionMenu(false);
+
+    updateNodeIsCorrect(nodeTitle);
+
     const childrenNames = findChildrenByName(test, nodeTitle);
     if (childrenNames === null) {
       console.log("子ノードがありません")
