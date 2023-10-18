@@ -184,8 +184,9 @@ function QuestionMenu() {
   const [answerD, setAnswerD] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [error, setError] = useState('');
-  const { questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, nodeExample, setQuestionDetail, test } = useStore(
+  const { updateNodeIsCorrect, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, nodeExample, setQuestionDetail, test } = useStore(
     state => ({
+      updateNodeIsCorrect: state.updateNodeIsCorrect,
       questionMenuIsOpen: state.questionMenuIsOpen,
       setQuestionMenu: state.setQuestionMenu,
       nodeTitle: state.nodeTitle,
@@ -219,10 +220,23 @@ const findChildrenByName = (node, name) => {
     return null;
   }
 
+  // 問題に正解済みかどうかの真偽値を更新
+  // const setTitleMatchedAsCorrect = (nodes, title) => {
+  //   nodes.forEach(node => {
+  //     if (node.data && node.data.label === title) {
+  //       console.log("きたーーーーーーー", node.data.label, title)
+  //       node.isCorrect = true;
+  //     }
+  //   });
+  // };
+
   // CLEARエフェクトを非表示、問題メニューを非表示、ノードを追加
   const handleHideEffect = () => {
     setShowEffect(false);
     setQuestionMenu(false);
+
+    updateNodeIsCorrect(nodeTitle);
+
     const childrenNames = findChildrenByName(test, nodeTitle);
     if (childrenNames === null) {
       console.log("子ノードがありません")

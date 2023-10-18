@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useRef } from 'react';
+import { useLayoutEffect, useEffect, useRef, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 
 import useStore from '../node/store';
@@ -26,7 +26,7 @@ const NodeContentsWrapper = styled.div`
 `;
 
 const InputWrapper = styled.div`
-  background-color: ${(props) => props.id === "root" ? "#17594A": "#7BC74D" };
+  background-color: ${(props) => props.id === "root" ? "#17594A": (props.isCorrect ? "#FFE867" : "#7BC74D") };
   border-radius: 10px;
   z-index: 10000;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -46,7 +46,7 @@ const DragHandleArea = styled.div`
 `
 
 const P = styled.p`
-  color: white;
+  color: ${(props) => props.isCorrect ? "#7BC74D" : "white"};
   width: 600px;
   border-radius: 10px;
   font-weight: 700;
@@ -54,16 +54,28 @@ const P = styled.p`
   height: 100%;
 `;
 
-function MindMapNode({ id, data }) {
+function MindMapNode({ id, data, isCorrect }) {
   const inputRef = useRef(null);
+  const [isCorrectLocal, setIsCorrectLocal] = useState(isCorrect)
   const { setSelectedNodeId } = useStore(state => ({ setSelectedNodeId: state.setSelectedNodeId }));
 
-  const { getNodeFlippedStatus, toggleNodeFlipped } = useStore(state => ({
+  const { nodes, getNodeFlippedStatus, toggleNodeFlipped } = useStore(state => ({
+    nodes: state.nodes,
     getNodeFlippedStatus: state.getNodeFlippedStatus,
     toggleNodeFlipped: state.toggleNodeFlipped
   }));
 
   const flipped = getNodeFlippedStatus(id);
+
+  const getIsCorrectById = (nodes, targetId) => {
+    const node = nodes.find(node => node.id === targetId);
+    return node ? node.isCorrect : null;
+  };
+
+  useEffect(() => {
+    const gotIsCorrect = getIsCorrectById(nodes, id);
+    setIsCorrectLocal(gotIsCorrect);
+  }, [nodes, id])
 
   useEffect(() => {
     setTimeout(() => {
@@ -86,12 +98,13 @@ function MindMapNode({ id, data }) {
 
   return (
     <NodeContainer>
-      <InputWrapper className="inputWrapper" id={id} onClick={() => onNodeClick()}>
+      <InputWrapper className="inputWrapper" id={id} isCorrect={isCorrectLocal} onClick={() => onNodeClick()}>
         <DragHandleArea className="dragHandle">
           <P
             value={data.label}
             className="input"
             ref={inputRef}
+            isCorrect={isCorrectLocal}
           >{data.label}</P>
          <SwitchBtn flipped={flipped}/>
         </DragHandleArea>
