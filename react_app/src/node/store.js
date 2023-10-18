@@ -6,6 +6,9 @@ import {
   import { createWithEqualityFn } from 'zustand/traditional'
   
   const useStore = createWithEqualityFn((set, get) => ({
+
+    themeName: 'Python',
+    mapId: 1,
     nodes: [
       {
         id: 'root',
@@ -64,11 +67,11 @@ import {
         source: "root",
         target: "3",
       },
-      {
-        id: nanoid(),
-        source: "root",
-        target: "4",
-      },
+      // {
+      //   id: nanoid(),
+      //   source: "root",
+      //   target: "4",
+      // },
     ],
     onNodesChange: (changes) => {
       set({
@@ -155,7 +158,10 @@ import {
     question_d: '',
     correctAnswer: '',
     setQuestion: (question_phrase, question_a, question_b, question_c, question_d, correctAnswer) => set({ question_phrase: question_phrase, question_a: question_a, question_b: question_b, question_c: question_c, question_d: question_d, correctAnswer: correctAnswer }),
-    test: {
+    
+
+
+    tree: {
       "name": "Python",
       "children": [
         {

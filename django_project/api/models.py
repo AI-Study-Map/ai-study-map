@@ -1,11 +1,11 @@
 from django.db import models
 
 class Gpt_call(models.Model):
-
+    #no use
     body = models.TextField(blank=False, null=False)
 
 class Question(models.Model):
-
+    #no use
     body = models.TextField(blank=False, null=False)
 
 
@@ -21,8 +21,8 @@ class User(models.Model):
 
 class Map(models.Model):
     map_id = models.CharField(max_length=255, primary_key=True,default="")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    theme_name = models.CharField(max_length=255)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    theme_name = models.CharField(max_length=255, null=True)
     graph_structure = models.TextField(null=True)
     achieve_percentage = models.PositiveIntegerField(default=0)
     total_nodes = models.PositiveIntegerField(default=0)
@@ -30,7 +30,8 @@ class Map(models.Model):
 
 class Node(models.Model):
     node_id = models.CharField(max_length=255, primary_key=True)
-    map = models.ForeignKey(Map, on_delete=models.CASCADE, null=True)
+    map_id = models.ForeignKey(Map, on_delete=models.CASCADE, null=True)
+    idd = models.PositiveIntegerField(null=True) 
     x_coordinate = models.FloatField(default=0.0)
     y_coordinate = models.FloatField(default=0.0)
     title = models.CharField(max_length=255, default="")
@@ -47,6 +48,6 @@ class Node(models.Model):
 
 class Edge(models.Model):
     edge_id = models.CharField(max_length=255, primary_key=True)
-    map = models.ForeignKey(Map, on_delete=models.CASCADE)
-    parent_node = models.ForeignKey(Node, related_name='parent_node', on_delete=models.CASCADE)
-    child_node = models.ForeignKey(Node, related_name='child_node', on_delete=models.CASCADE)
+    map_id = models.ForeignKey(Map, on_delete=models.CASCADE, null=True)
+    parent_node = models.ForeignKey(Node, related_name="parent_node", on_delete=models.CASCADE, null=True)
+    child_node = models.ForeignKey(Node, related_name="child_node", on_delete=models.CASCADE, null=True)

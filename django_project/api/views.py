@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from .serializers import PostSerializer, QuestionSerializer, DescriptionSerializer
-from .models import Node
+from .serializers import PostSerializer, QuestionSerializer, DescriptionSerializer, SaveMapSerializer, SaveNodeSerializer, SaveEdgeSerializer
+from .models import Node, Map, Edge
 from django.middleware.csrf import get_token
 import openai
 import guidance
@@ -120,11 +120,12 @@ def test(request):
 @renderer_classes([JSONRenderer])
 def gpt_calling(request):
     node_id = request.data['nodeId']
+    map_id = request.data['mapId']
     question_title = request.data['user_input']
     resend = request.data['resend']
     random_word = ""
     #Nodeテーブルにnode_idのレコードが存在し、かつ、descriptionが存在する場合はそれを返す
-    if Node.objects.filter(node_id=node_id).exists() and Node.objects.get(node_id=node_id).description != "":
+    if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists() and Node.objects.filter(map_id=map_id).get(node_id=node_id).description != None:
         print("NODE ID AND DESCRIPTION EXISTS")
         node = Node.objects.get(node_id=node_id)
         description_t = node.description
@@ -174,22 +175,35 @@ def gpt_calling(request):
         description = parsed_result["description"]
         example = parsed_result["example"]
         # DBに保存
-        serializer = DescriptionSerializer(data={"node_id": node_id, "title": question_title, "description": description, "example": example})
-        if serializer.is_valid():
-            print("SERIALIZER IS VALID")
-            serializer.save()
-        else:
-            print("SERIALIZE ERROR")
-            print(serializer.errors)
-
-        return Response(json.dumps(serializer.validated_data))
+        if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists():
+            node = Node.objects.filter(map_id=map_id).get(node_id=node_id)
+            serializer = DescriptionSerializer(instance=node, data={"node_id": node_id, 'map_id': map_id, "title": question_title, "description": description, "example": example})
+            if serializer.is_valid():
+                print("SERIALIZER IS VALID")
+                serializer.save()
+            else:
+                print("SERIALIZE ERROR")
+                print(serializer.errors)
+        else:        
+            serializer = DescriptionSerializer(data={"node_id": node_id, 'map_id': map_id, "title": question_title, "description": description, "example": example})
+            if serializer.is_valid():
+                print("SERIALIZER IS VALID")
+                serializer.save()
+            else:
+                print("SERIALIZE ERROR")
+                print(serializer.errors)
+        result = dict(serializer.validated_data)
+        del result["map_id"]
+        print("RESULT: ", result)
+        return Response(json.dumps(result))
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def question(request):
     node_id = request.data['nodeId']
+    map_id = request.data['mapId']
     #Nodeテーブルにnode_idのレコードが存在し、かつ、questionが存在する場合はそれを返す
-    if Node.objects.filter(node_id=node_id).exists() and Node.objects.get(node_id=node_id).question != None:
+    if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists() and Node.objects.filter(map_id=map_id).get(node_id=node_id).question != None:
         print("NODE ID AND QUESTION EXISTS")
         node = Node.objects.get(node_id=node_id)
         question_t = node.question
@@ -310,3 +324,85 @@ def add_description(request):
     else:
         result = out["add_description"] + "\n"
     return Response(result)
+
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def save_map(request): 
+    map_id = request.data['map_id']
+    graph_structure = request.data['graph_structure']
+    graph_structure = json.dumps(graph_structure)
+    theme_name = request.data['theme_name']
+
+    #map_idが存在する場合は更新、存在しない場合は新規作成
+    if Map.objects.filter(map_id=map_id).exists():
+        print("MAP ID EXISTS")
+        map = Map.objects.get(map_id=map_id)
+        serializer = SaveMapSerializer(instance=map, data={"map_id": map_id, "graph_structure": graph_structure, "theme_name": theme_name})
+        return Response("success")
+    
+    else:
+        serializer = SaveMapSerializer(data={"map_id": map_id, "graph_structure": graph_structure, "theme_name": theme_name})
+        if serializer.is_valid():
+            print("SERIALIZER IS VALID")
+            serializer.save()
+            return Response("success")
+        else:
+            print("SERIALIZE ERROR")
+            print(serializer.errors)
+            return Response("error")
+        
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def save_node(request):
+    map_id = request.data['map_id']
+    node_id = request.data['node_id']
+    idd = request.data['idd']
+    x_coordinate = request.data['x_coordinate']
+    y_coordinate = request.data['y_coordinate']
+    
+    #指定された外部キーmap_idを持つnodeのうちnode_idと一致するものを検索    
+    if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists():
+        node = Node.objects.filter(map_id=map_id).get(node_id=node_id)
+        serializer = SaveNodeSerializer(instance=node, data={"node_id": node_id, "map_id": map_id, "idd": idd, "x_coordinate": x_coordinate, "y_coordinate": y_coordinate})
+        if serializer.is_valid():
+            print("SERIALIZER IS VALID")
+            serializer.save()
+            return Response("success")
+        else:
+            print("SERIALIZE ERROR")
+            print(serializer.errors)
+            return Response("error")
+    else:
+        print("NODE ID NOT EXISTS")
+        serializer = SaveNodeSerializer(data={"node_id": node_id, "map_id": map_id, "idd": idd, "x_coordinate": x_coordinate, "y_coordinate": y_coordinate})
+        if serializer.is_valid():
+            print("SERIALIZER IS VALID")
+            serializer.save()
+            return Response("success")
+        else:
+            print("SERIALIZE ERROR")
+            print(serializer.errors)
+            return Response("error")
+    
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def save_edge(request):
+    map_id = request.data['map_id']
+    edge_id = request.data['edge_id']
+    parent_node = request.data['parent_node']
+    child_node = request.data['child_node']
+    #指定された外部キーmap_idを持つedgeのうちedge_idが一致するものがあれば、早期リターン
+    if Edge.objects.filter(map_id=map_id).filter(edge_id=edge_id).exists():
+        print("EDGE ID EXISTS")
+        return Response("success")
+    else:
+        serializer = SaveEdgeSerializer(data={"edge_id": edge_id, "map_id": map_id, "parent_node": parent_node, "child_node": child_node})
+        if serializer.is_valid():
+            print("SERIALIZER IS VALID")
+            serializer.save()
+            return Response("success")
+        else:
+            print("SERIALIZE ERROR")
+            print(serializer.errors)
+            return Response("error")
+        

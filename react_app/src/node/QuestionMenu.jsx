@@ -186,7 +186,7 @@ function QuestionMenu() {
   const [error, setError] = useState('');
   const { questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion,
-    question_phrase, question_a, question_b, question_c, question_d, correctAns, test
+    question_phrase, question_a, question_b, question_c, question_d, correctAns, tree
   } = useStore(
     state => ({
       questionMenuIsOpen: state.questionMenuIsOpen,
@@ -203,7 +203,7 @@ function QuestionMenu() {
       question_c: state.question_c,
       question_d: state.question_d,
       correctAns: state.correctAnswer,
-      test: state.test,
+      tree: state.tree,
     })
   );
 
@@ -234,7 +234,7 @@ const findChildrenByName = (node, name) => {
   const handleHideEffect = () => {
     setShowEffect(false);
     setQuestionMenu(false);
-    const childrenNames = findChildrenByName(test, nodeTitle);
+    const childrenNames = findChildrenByName(tree, nodeTitle);
     if (childrenNames === null) {
       console.log("子ノードがありません")
       return 

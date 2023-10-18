@@ -66,7 +66,7 @@ function NodeContents(props) {
     const [description, setDescription] = useState('');
     const [example, setExample] = useState('');
     const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, 
-      setQuestionTitle, selectedNodeId, setQuestion
+      setQuestionTitle, selectedNodeId, setQuestion, mapId
     } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -75,6 +75,7 @@ function NodeContents(props) {
           setQuestionTitle: state.setQuestionTitle,
           selectedNodeId: state.selectedNodeId,
           setQuestion: state.setQuestion,
+          mapId: state.mapId,
         })
       );
 
@@ -87,7 +88,7 @@ function NodeContents(props) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nodeId: selectedNodeId, user_input: title, resend: "false" }),
+        body: JSON.stringify({ nodeId: selectedNodeId, mapId: mapId, user_input: title, resend: "false" }),
       })
       .then((response) => response.json())
       .then((data) => {
@@ -110,7 +111,7 @@ function NodeContents(props) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"title": thisTitle, "description": thisDescription }),
+            body: JSON.stringify({"title": thisTitle, "mapId": mapId, "description": thisDescription }),
           })
         .then((response) => response.json())
         .then((data) => {
@@ -128,7 +129,7 @@ function NodeContents(props) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user_input: title, resend: "true" }),
+            body: JSON.stringify({ user_input: title, mapId: mapId, resend: "true" }),
           })
         .then((response) => response.json())
         .then((data) => {
@@ -153,7 +154,7 @@ function NodeContents(props) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"nodeId": thisId, "title": thisTitle, "description": desc, "example": exa}),
+            body: JSON.stringify({"nodeId": thisId, "mapId": mapId, "title": thisTitle, "description": desc, "example": exa}),
           })
           .then((response) => response.json())
           .then((data) => {
