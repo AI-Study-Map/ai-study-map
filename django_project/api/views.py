@@ -11,6 +11,8 @@ from django_project.settings_local import *
 import random
 import string
 import json
+import asyncio
+from asgiref.sync import sync_to_async
 
 openai.api_key = OPENAI_API_KEY
 openai.api_base = OPENAI_API_BASE
@@ -116,6 +118,7 @@ def test(request):
     print("test")
     return render(request, 'api/test.html')
 
+@sync_to_async
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def gpt_calling(request):
@@ -197,6 +200,7 @@ def gpt_calling(request):
         print("RESULT: ", result)
         return Response(json.dumps(result))
 
+@sync_to_async
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def question(request):
@@ -288,6 +292,7 @@ def question(request):
         return Response(json.dumps(serializer.validated_data))
 
 #送られたdescriptionが不十分だった場合に、descriptionに後付けで追加する
+@sync_to_async
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def add_description(request):
@@ -325,6 +330,7 @@ def add_description(request):
         result = out["add_description"] + "\n"
     return Response(result)
 
+@sync_to_async
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def save_map(request): 
@@ -351,6 +357,7 @@ def save_map(request):
             print(serializer.errors)
             return Response("error")
         
+@sync_to_async
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def save_node(request):
@@ -383,7 +390,8 @@ def save_node(request):
             print("SERIALIZE ERROR")
             print(serializer.errors)
             return Response("error")
-    
+
+@sync_to_async
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def save_edge(request):
@@ -405,4 +413,43 @@ def save_edge(request):
             print("SERIALIZE ERROR")
             print(serializer.errors)
             return Response("error")
-        
+
+@sync_to_async
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def load_map(request):
+    map_id = request.data["map_id"]
+    print("MAP ID: ", map_id)
+    # ユーザID実装後、ユーザIDを取得して、そのユーザIDに紐づくmap_idを取得する
+    map_data = Map.objects.get(map_id=map_id)
+    thema_name = map_data.theme_name
+    graph_structure = map_data.graph_structure
+
+    node_data = Node.objects.filter(map_id=map_id)
+    node_list = []
+    for node in node_data:
+        node_dict = {}
+        node_dict["id"] = node.node_id
+        node_dict["type"] = "mindmap"
+        node_dict["data"] = {"label": node.title}
+        node_dict["position"] = {"x": node.x_coordinate, "y": node.y_coordinate}
+        node_dict["dragHandle"] = ".dragHandle"
+        node_dict["idd"] = node.idd
+        node_list.append(node_dict)
+
+    edge_data = Edge.objects.filter(map_id=map_id)
+    edge_list = []
+    for edge in edge_data:
+        edge_dict = {}
+        edge_dict["id"] = edge.edge_id
+        edge_dict["source"] = edge.parent_node
+        edge_dict["target"] = edge.child_node
+        edge_list.append(edge_dict)
+    
+    
+    print("THEMA NAME: ", thema_name)
+    print("GRAPH STRUCTURE: ", graph_structure)
+    print("NODE LIST: ", node_list)
+    print("EDGE LIST: ", edge_list)
+
+    return Response("ZANTEI")
