@@ -442,14 +442,15 @@ def load_map(request):
     for edge in edge_data:
         edge_dict = {}
         edge_dict["id"] = edge.edge_id
-        edge_dict["source"] = edge.parent_node
-        edge_dict["target"] = edge.child_node
+        edge_dict["source"] = edge.parent_node.node_id
+        edge_dict["target"] = edge.child_node.node_id
         edge_list.append(edge_dict)
     
-    
+    print("MAP ID: ", map_id)
     print("THEMA NAME: ", thema_name)
     print("GRAPH STRUCTURE: ", graph_structure)
     print("NODE LIST: ", node_list)
     print("EDGE LIST: ", edge_list)
-
-    return Response("ZANTEI")
+    data = {"mapId": map_id, "theme_name": thema_name, "tree": graph_structure, "node_list": node_list, "edge_list": edge_list}
+    result = json.dumps(data)
+    return Response(result)

@@ -234,7 +234,8 @@ const findChildrenByName = (node, name) => {
   const handleHideEffect = () => {
     setShowEffect(false);
     setQuestionMenu(false);
-    const childrenNames = findChildrenByName(tree, nodeTitle);
+    const dictTree = JSON.parse(tree);
+    const childrenNames = findChildrenByName(dictTree, nodeTitle);
     if (childrenNames === null) {
       console.log("子ノードがありません")
       return 
