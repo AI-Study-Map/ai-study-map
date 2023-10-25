@@ -242,7 +242,7 @@ const findChildrenByName = (node, name) => {
       console.log("子ノードがありません")
       return 
     } else {
-      newAddNode(childrenNames[0], childrenNames[1]);
+      newAddNode(childrenNames, childrenNames.length);
     }
   };
 
