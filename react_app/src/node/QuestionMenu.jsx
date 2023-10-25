@@ -319,6 +319,7 @@ const findChildrenByName = (node, name) => {
       c: false,
       d: false
     });
+    setError('');
   }, [nodeTitle])
 
   return (
