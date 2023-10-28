@@ -26,7 +26,7 @@ const NodeContentsWrapper = styled.div`
 `;
 
 const InputWrapper = styled.div`
-  background-color: ${(props) => props.id === "root" ? "#17594A": "#7BC74D" };
+  background-color: ${(props) => (props.id === "root" || props.id === "root2") ? "#17594A": "#7BC74D" };
   border-radius: 10px;
   z-index: 10000;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);

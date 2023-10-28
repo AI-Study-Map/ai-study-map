@@ -493,7 +493,6 @@ def load_map(request):
         edge_dict["target"] = edge.child_node.node_id
         edge_list.append(edge_dict)
     
-    print("MAP ID: ", map_id)
     print("THEMA NAME: ", thema_name)
     print("GRAPH STRUCTURE: ", graph_structure)
     print("NODE LIST: ", node_list)

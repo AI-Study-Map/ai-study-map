@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react';
 import useStore from '../node/store';
+import Select from 'react-select';
 
 const API_MAP_LOAD = "http://localhost:8000/api/load/map";
+const options = [
+    { value: 'default', label: 'テーマを選択してください' },
+    { value: 1, label: 'Python' },
+    { value: 2, label: '食べ物' },
+];
+
 
 function MapDataLoad() {
     const [thisMapId, setThisMapId] = useState(1); //mapIdを取得するための変数
+    const [selectedValue, setSelectedValue] = useState(options[0]);
+    const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
     const {
         setNodes, setEdges, setTree, setThemeName, setMapId, 
         mapId, firstSetMapId, setLoadedMapData
@@ -19,19 +28,27 @@ function MapDataLoad() {
         setLoadedMapData: state.setLoadedMapData,
     }));
 
+    // useEffect(() => {
+    //     setThisMapId(firstSetMapId);
+    //     console.log("thisMapId: ", thisMapId);
+    // }, [firstSetMapId]);
+
     useEffect(() => {
-        setThisMapId(firstSetMapId);
-        console.log("thisMapId: ", thisMapId);
-    }, [firstSetMapId]);
+        if(selectedValue.value === "default") {
+            setButtonIsDisabled(true);
+        } else {
+            setButtonIsDisabled(false);
+        }
+    }, [selectedValue]);
 
     const handleLoad = async () => {
-        console.log("Load start---", thisMapId);
+        console.log("Load start---", selectedValue.value);
         await fetch(`${API_MAP_LOAD}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },//thisMapIdは暫定で1
-            body: JSON.stringify({"map_id": thisMapId}),
+            body: JSON.stringify({"map_id": selectedValue.value}),
           })
         .then((response) => response.json())
         .then((data) => {
@@ -51,8 +68,14 @@ function MapDataLoad() {
 
     return (
         <>
+            <Select
+                options={options}
+                defaultValue={selectedValue}
+                onChange={(value) => { setSelectedValue(value); }}
+            />
             <button onClick={() =>handleLoad()}>Load</button>
         </>
+        
     );
 }
 

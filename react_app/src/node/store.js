@@ -8,13 +8,13 @@ import {
   const API_HOST_CREATENEWNODE = 'http://localhost:8000/api/save/create_newnode';
   
   const useStore = createWithEqualityFn((set, get) => ({
-  // 初回はfirstSetMapIdを通してマップを読み込む。
-  // setLoadedMapDataによってmapIdが設定される (各コンポーネントはmapIdを読み込む)
-    firstSetMapId: 1, //本来は初期値null 
-    setFirstSetMapId: (firstSetMapId) => set({ firstSetMapId: firstSetMapId }),
+  // // 初回はfirstSetMapIdを通してマップを読み込む。(必要性を考慮中)
+  // // setLoadedMapDataによってmapIdが設定される (各コンポーネントはmapIdを読み込む)
+  //   firstSetMapId: 1, //本来は初期値null 
+  //   setFirstSetMapId: (firstSetMapId) => set({ firstSetMapId: firstSetMapId }),
 
-    themeName: "Python", // setLoadedMapDataで設定
-    mapId: 1, // setLoadedMapDataで設定
+    themeName: "", // setLoadedMapDataで設定
+    mapId: null, // setLoadedMapDataで設定
     nodes: [], //setLoadedMapDataで設定
     //[
     //   {

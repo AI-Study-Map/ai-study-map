@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import useAddNode from '../node/useAddNode';
 import MapDataSave from '../save/MapDataSave';
 import MapDataLoad from '../save/MapDataLoad';
+import { useNavigate } from 'react-router-dom';
 
 const StyledHeader = styled.header`
   background-color: #FFE867;
@@ -86,6 +87,13 @@ const Header = ({ title }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const addNewNode = useAddNode();
+  const navigate = useNavigate();
+
+  const handleGoTop = () => {
+    navigate("/top");
+  }
+
+
 
   return (
     <>
@@ -99,8 +107,8 @@ const Header = ({ title }) => {
       </StyledHeader>
       <SidebarMenu $isOpen={isOpen}>
         <SidebarMenuInner>
-          <li><p>ホーム</p></li>
-          <li onClick={() => addNewNode("数値型", "文字列型")}><p>ノードを追加</p></li>
+          <li onClick={()=>handleGoTop()}><p>ホーム</p></li>
+          {/*<li onClick={() => addNewNode("数値型", "文字列型")}><p>ノードを追加</p></li>*/}
           <li><p><MapDataSave /></p></li>
           <li><p><MapDataLoad /></p></li>
         </SidebarMenuInner>
