@@ -36,12 +36,16 @@ function MapDataLoad() {
         .then((response) => response.json())
         .then((data) => {
            const parseData = JSON.parse(data) 
+           console.log("loaded data: ", parseData);
+
            const tree = parseData.tree;
            const mapId = parseData.mapId;
            const themeName = parseData.theme_name;  
-           const nodes = parseData.node_list;
-           const edges = parseData.edge_list;
-           setLoadedMapData(tree, mapId, themeName, nodes, edges);
+           const nodes = JSON.stringify(parseData.node_list);
+           const edges = JSON.stringify(parseData.edge_list);
+           const nodesJSON = JSON.parse(nodes);
+           const edgesJSON = JSON.parse(edges);
+           setLoadedMapData(tree, mapId, themeName, nodesJSON, edgesJSON);
         });
     };
 

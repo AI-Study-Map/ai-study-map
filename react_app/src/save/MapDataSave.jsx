@@ -4,6 +4,7 @@ import useStore from '../node/store';
 const API_MAP_SAVE = "http://localhost:8000/api/save/map";
 const API_NODE_SAVE = "http://localhost:8000/api/save/node";
 const API_EDGE_SAVE = "http://localhost:8000/api/save/edge";
+const API_HOST_CREATENEWNODE = 'http://localhost:8000/api/save/create_newnode';
 
 //メモ：map作るときにrootnodeを作成してそれをnode登録する
 function MapDataSave() {
@@ -22,7 +23,7 @@ function MapDataSave() {
         console.log("themeName: ", themeName);
         const nodesLength = nodes.length;
         const edgesLength = edges.length;
-        const totalStep = 1 + nodesLength + edgesLength;
+        const totalStep = 1 + 1 + nodesLength + edgesLength;
         let step = 0;
 
         await fetch(`${API_MAP_SAVE}`, {
@@ -44,28 +45,53 @@ function MapDataSave() {
         });
 
         for (let i = 0; i < nodesLength; i++) {
-            const nodeId = nodes[i].id;
-            const idd = nodes[i].idd;
-            const x_coordinate = nodes[i].position.x;
-            const y_coordinate = nodes[i].position.y;
-            console.log("step: ", step);
-            await fetch(`${API_NODE_SAVE}`, {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({"map_id": mapId, "node_id": nodeId, "idd": idd, "x_coordinate": x_coordinate, "y_coordinate": y_coordinate }),
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log("node data: ", data);
-                if (data === "success") {
-                    console.log("SAVE SUCCESS");
-                    step++;
-                } else {
-                    console.log("SAVE FAILED");
-                }
-            });
+            if (nodes[i].id === "root") {
+                const nodeId = nodes[i].id;
+                const idd = nodes[i].idd;
+                const x_coordinate = nodes[i].position.x;
+                const y_coordinate = nodes[i].position.y;
+                await fetch(`${API_HOST_CREATENEWNODE}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({"map_id": mapId, "title": themeName, "node_id": nodeId, "idd": idd, "x_coordinate": x_coordinate, "y_coordinate": y_coordinate }),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log("node data: ", data);
+                    if (data === "success") {
+                        console.log("SAVE SUCCESS");
+                        step++;
+                    } else {
+                        console.log("SAVE FAILED");
+                    }
+                });
+            }
+            else {    
+                const nodeId = nodes[i].id;
+                const idd = nodes[i].idd;
+                const x_coordinate = nodes[i].position.x;
+                const y_coordinate = nodes[i].position.y;
+                console.log("step: ", step);
+                await fetch(`${API_NODE_SAVE}`, {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({"map_id": mapId, "node_id": nodeId, "idd": idd, "x_coordinate": x_coordinate, "y_coordinate": y_coordinate }),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log("node data: ", data);
+                    if (data === "success") {
+                        console.log("SAVE SUCCESS");
+                        step++;
+                    } else {
+                        console.log("SAVE FAILED");
+                    }
+                });
+            }   
         }
 
         for (let i = 0; i < edgesLength; i++) {

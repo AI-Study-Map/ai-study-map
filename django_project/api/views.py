@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from .serializers import PostSerializer, QuestionSerializer, DescriptionSerializer, SaveMapSerializer, SaveNodeSerializer, SaveEdgeSerializer
+from .serializers import PostSerializer, QuestionSerializer, DescriptionSerializer, SaveMapSerializer, SaveNodeSerializer, SaveEdgeSerializer, CreateNewNodeSerializer
 from .models import Node, Map, Edge
 from django.middleware.csrf import get_token
 import openai
@@ -127,8 +127,8 @@ def gpt_calling(request):
     question_title = request.data['user_input']
     resend = request.data['resend']
     random_word = ""
-    #Nodeテーブルにnode_idのレコードが存在し、かつ、descriptionが存在する場合はそれを返す
-    if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists() and Node.objects.filter(map_id=map_id).get(node_id=node_id).description != None:
+    #Nodeテーブルにnode_idのレコードが存在し、かつ、descriptionが存在し、かつ、再生成でない場合はそれを返す
+    if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists() and Node.objects.filter(map_id=map_id).get(node_id=node_id).description != None and resend != "true": 
         print("NODE ID AND DESCRIPTION EXISTS")
         node = Node.objects.get(node_id=node_id)
         description_t = node.description
@@ -413,6 +413,53 @@ def save_edge(request):
             print("SERIALIZE ERROR")
             print(serializer.errors)
             return Response("error")
+        
+@sync_to_async
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def create_newnode(request):
+    map_id = request.data['map_id']
+    node_id = request.data['node_id']
+    idd = request.data['idd']
+    x_coordinate = request.data['x_coordinate']
+    y_coordinate = request.data['y_coordinate']
+    title = request.data['title']
+    #システム上rootノードのみ別途titleのセーブが必要な為
+    if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists():
+        node = Node.objects.filter(map_id=map_id).get(node_id=node_id)
+        serializer_node = CreateNewNodeSerializer(instance=node, data={"node_id": node_id, "map_id": map_id, "idd": idd, "x_coordinate": x_coordinate, "y_coordinate": y_coordinate, "title": title})
+        if serializer_node.is_valid():
+            print("SERIALIZER IS VALID")
+            serializer_node.save()
+            return Response("success")
+        else:
+            print("SERIALIZE ERROR")
+            print(serializer_node.errors)
+            return Response("error")
+    else:
+        edge_id = request.data['edge_id']
+        parent_node = request.data['parent_node']
+        child_node = request.data['child_node']
+        #node_idを主キーとするクラスNodeにnode_id, map_id, idd, x_coordinate, y_coordinate, titleを保存、Edgeにedge_id, map_id, parent_node, child_nodeを保存
+        serializer_node = CreateNewNodeSerializer(data={"node_id": node_id, "map_id": map_id, "idd": idd, "x_coordinate": x_coordinate, "y_coordinate": y_coordinate, "title": title})
+        if serializer_node.is_valid():
+            print("SERIALIZER IS VALID")
+            serializer_node.save()
+            serializer_edge = SaveEdgeSerializer(data={"edge_id": edge_id, "map_id": map_id, "parent_node": parent_node, "child_node": child_node})
+            
+            if serializer_edge.is_valid():
+                print("SERIALIZER IS VALID")
+                serializer_edge.save()
+                return Response("success")
+            else:
+                print("SERIALIZE ERROR")
+                print(serializer_edge.errors)
+                return Response("error")
+        else:
+            print("SERIALIZE ERROR")
+            print(serializer_node.errors)
+            return Response("error")
+    
 
 @sync_to_async
 @api_view(['POST'])

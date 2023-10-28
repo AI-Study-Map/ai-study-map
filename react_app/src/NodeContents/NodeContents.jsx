@@ -124,12 +124,13 @@ function NodeContents(props) {
     
 
     const handleResend = () => {
+      const thisId = id;
         fetch(`${API_HOST}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user_input: title, mapId: mapId, resend: "true" }),
+            body: JSON.stringify({nodeId: thisId, user_input: title, mapId: mapId, resend: "true" }),
           })
         .then((response) => response.json())
         .then((data) => {

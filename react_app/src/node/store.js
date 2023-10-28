@@ -4,6 +4,8 @@ import {
   } from 'reactflow';
   import { nanoid } from 'nanoid/non-secure';
   import { createWithEqualityFn } from 'zustand/traditional'
+
+  const API_HOST_CREATENEWNODE = 'http://localhost:8000/api/save/create_newnode';
   
   const useStore = createWithEqualityFn((set, get) => ({
   // 初回はfirstSetMapIdを通してマップを読み込む。
@@ -11,8 +13,8 @@ import {
     firstSetMapId: 1, //本来は初期値null 
     setFirstSetMapId: (firstSetMapId) => set({ firstSetMapId: firstSetMapId }),
 
-    themeName: "", // setLoadedMapDataで設定
-    mapId: null, // setLoadedMapDataで設定
+    themeName: "Python", // setLoadedMapDataで設定
+    mapId: 1, // setLoadedMapDataで設定
     nodes: [], //setLoadedMapDataで設定
     //[
     //   {
@@ -122,9 +124,28 @@ import {
         nodes: [...get().nodes, newNode],
         edges: [...get().edges, newEdge],
       });
+      
+      // DBに新しいノードを追加
+      fetch(API_HOST_CREATENEWNODE, {
+        method: 'POST',
+        body: JSON.stringify({
+          "map_id": get().mapId,
+          "node_id": newNode.id,
+          "title": nodeName,
+          "x_coordinate": position.x,
+          "y_coordinate": position.y,
+          "idd": newNode.idd,
+          "edge_id": newEdge.id,
+          "parent_node": newEdge.source,
+          "child_node": newEdge.target,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }}).then((response) => console.log('NEW NODE DATA SENDED'))
+      
     },
     
-    // 現在選択されているノードのID
+    // 現在選択されているノードのID 
     selectedNodeId: null,
 
     // 選択されたノードのIDを設定

@@ -30,3 +30,8 @@ class SaveEdgeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Edge
         fields = ['edge_id', 'map_id', 'parent_node', 'child_node']
+
+class CreateNewNodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Node
+        fields = ['node_id', 'map_id', 'idd', 'x_coordinate', 'y_coordinate', 'title']
