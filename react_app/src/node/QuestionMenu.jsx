@@ -140,37 +140,37 @@ const ErrorMessage = styled.p`
 `;
 
 const ButtonAAndC = styled.button`
-  background-color: #7BC74D;
+  background-color: ${props => props.disabled ? '#ccc' : '#7BC74D'};
   color: white;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
   font-size: 16px;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   margin-bottom: 10px;
   margin-right: 20px;
   position: relative;
   width: 200px;
   white-space: normal;
   &:hover {
-    background-color: #5E9E3E;
+    background-color: ${props => props.disabled ? '#ccc' : '#5E9E3E'};
   }
 `;
 
 const ButtonBAndD = styled.button`
-  background-color: #7BC74D; /* ボタンの背景色 */
+  background-color: ${props => props.disabled ? '#ccc' : '#7BC74D'}; /* ボタンの背景色 */
   color: white; /* ボタンのテキスト色 */
   border: none;
   border-radius: 5px; /* 角の取れたデザイン */
   padding: 10px 20px;
   font-size: 16px;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   margin-bottom: 10px;
   width: 200px;
   white-space: normal;
 
   &:hover {
-    background-color: #5E9E3E; /* ホバー時の背景色 */
+    background-color: ${props => props.disabled ? '#ccc' : '#5E9E3E'}; /* ホバー時の背景色 */
   }
 `;
 
@@ -184,6 +184,13 @@ function QuestionMenu() {
   const [answerD, setAnswerD] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [error, setError] = useState('');
+  const [disabledOptions, setDisabledOptions] = useState({
+    a: false,
+    b: false,
+    c: false,
+    d: false
+  });
+
   const { updateNodeIsCorrect, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, nodeExample, setQuestionDetail, test } = useStore(
     state => ({
       updateNodeIsCorrect: state.updateNodeIsCorrect,
@@ -202,8 +209,18 @@ function QuestionMenu() {
     if (user_answer === correctAnswer) {
       setShowEffect(true);
       setError('');
+      setDisabledOptions({
+        a: false,
+        b: false,
+        c: false,
+        d: false
+      });
     } else {
       setError('不正解です。もう一度選択してください。');
+      setDisabledOptions({
+        ...disabledOptions,
+        [user_answer]: true
+      });
     }
   };
 
@@ -242,7 +259,7 @@ const findChildrenByName = (node, name) => {
       console.log("子ノードがありません")
       return 
     } else {
-      newAddNode(childrenNames[0], childrenNames[1]);
+      newAddNode(childrenNames, childrenNames.length);
     }
   };
 
@@ -295,6 +312,16 @@ const findChildrenByName = (node, name) => {
     }
   }, [nodeContent]);
 
+  useEffect(() => {
+    setDisabledOptions({
+      a: false,
+      b: false,
+      c: false,
+      d: false
+    });
+    setError('');
+  }, [nodeTitle])
+
   return (
     <>
       <MenuWrapper open={questionMenuIsOpen}>
@@ -313,10 +340,10 @@ const findChildrenByName = (node, name) => {
           <StyledQuestionButtons>
             <p id='buttonMessage'>正しい選択肢を選んでください</p>
             <ErrorMessage>{error}</ErrorMessage>
-            <ButtonAAndC onClick={() => handleCheckAnswer("a")}>A: {answerA}</ButtonAAndC>
-            <ButtonBAndD onClick={() => handleCheckAnswer("b")}>B: {answerB}</ButtonBAndD> <br></br>
-            <ButtonAAndC onClick={() => handleCheckAnswer("c")}>C: {answerC}</ButtonAAndC>
-            <ButtonBAndD onClick={() => handleCheckAnswer("d")}>D: {answerD}</ButtonBAndD>
+            <ButtonAAndC onClick={() => handleCheckAnswer("a")} disabled={disabledOptions["a"]}>A: {answerA}</ButtonAAndC>
+            <ButtonBAndD onClick={() => handleCheckAnswer("b")} disabled={disabledOptions["b"]}>B: {answerB}</ButtonBAndD> <br></br>
+            <ButtonAAndC onClick={() => handleCheckAnswer("c")} disabled={disabledOptions["c"]}>C: {answerC}</ButtonAAndC>
+            <ButtonBAndD onClick={() => handleCheckAnswer("d")} disabled={disabledOptions["d"]}>D: {answerD}</ButtonBAndD>
             
           </StyledQuestionButtons>
           {showEffect && (

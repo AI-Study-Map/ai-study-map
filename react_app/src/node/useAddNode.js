@@ -7,14 +7,46 @@ const useAddNode = () => {
     selectedNodeId: state.selectedNodeId,
   }));
 
-  const addNewNode = (nodeName1, nodeName2, num) => {
+  const nodeTemplate = (node, name, xnum, ynum) => {
+    const child1NodePosition = { x: node.position.x + xnum / node.idd, y: node.position.y + ynum / node.idd };
+    addChildNode(node, child1NodePosition, name);
+  }
+
+  const addNewNode = (nodeNameList, num) => {
     const parentNode = nodes.find(node => node.id === selectedNodeId) || nodes.find(node => node.id === 'root');
     console.log("parentNode:", parentNode)
     if (parentNode) {
-      const child1NodePosition = { x: parentNode.position.x + 200 / parentNode.idd, y: parentNode.position.y + 100 / parentNode.idd };
-      addChildNode(parentNode, child1NodePosition, nodeName1);
-      const child2NodePosition = { x: parentNode.position.x + 200 / parentNode.idd, y: parentNode.position.y + -70 / parentNode.idd };
-      addChildNode(parentNode, child2NodePosition, nodeName2);
+      switch (num) {
+        case 1:
+          nodeTemplate(parentNode, nodeNameList[0], 200, 100)
+          break
+        case 2:
+          nodeTemplate(parentNode, nodeNameList[0], 200, 100)
+          nodeTemplate(parentNode, nodeNameList[1], 200, -70)
+          break
+        case 3:
+          nodeTemplate(parentNode, nodeNameList[0], 200, 100)
+          nodeTemplate(parentNode, nodeNameList[1], 200, -70)
+          nodeTemplate(parentNode, nodeNameList[2], -150, 100)
+          break
+        case 4:
+          nodeTemplate(parentNode, nodeNameList[0], 200, 100)
+          nodeTemplate(parentNode, nodeNameList[1], 200, -70)
+          nodeTemplate(parentNode, nodeNameList[2], -150, 100)
+          nodeTemplate(parentNode, nodeNameList[3], -150, -70)
+          break
+        default:
+          nodeTemplate(parentNode, nodeNameList[0], 200, 100)
+          nodeTemplate(parentNode, nodeNameList[1], 200, -70)
+      }
+      // const child1NodePosition = { x: parentNode.position.x + 200 / parentNode.idd, y: parentNode.position.y + 100 / parentNode.idd };
+      // addChildNode(parentNode, child1NodePosition, nodeName1);
+      // const child2NodePosition = { x: parentNode.position.x + 200 / parentNode.idd, y: parentNode.position.y + -70 / parentNode.idd };
+      // addChildNode(parentNode, child2NodePosition, nodeName2);
+      // const child3NodePosition = { x: parentNode.position.x + -150 / parentNode.idd, y: parentNode.position.y + 100 / parentNode.idd };
+      // addChildNode(parentNode, child3NodePosition, nodeName2);
+      // const child4NodePosition = { x: parentNode.position.x + -150 / parentNode.idd, y: parentNode.position.y + -70 / parentNode.idd };
+      // addChildNode(parentNode, child4NodePosition, nodeName2);
     } 
   };
 

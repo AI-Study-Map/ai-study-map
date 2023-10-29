@@ -46,12 +46,13 @@ const DragHandleArea = styled.div`
 `
 
 const P = styled.p`
-  color: ${(props) => props.isCorrect ? "#7BC74D" : "white"};
+  color: ${(props) => props.isCorrect && props.id !== "root" ? "#7BC74D" : "white"};
   width: 600px;
   border-radius: 10px;
   font-weight: 700;
   background: transparent;
   height: 100%;
+  margin: 0;
 `;
 
 function MindMapNode({ id, data, isCorrect }) {
@@ -104,6 +105,7 @@ function MindMapNode({ id, data, isCorrect }) {
             value={data.label}
             className="input"
             ref={inputRef}
+            id={id}
             isCorrect={isCorrectLocal}
           >{data.label}</P>
          <SwitchBtn flipped={flipped}/>

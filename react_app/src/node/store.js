@@ -16,33 +16,33 @@ import {
         idd: 1,
         isCorrect: false,
       },
-      {
-        id: '1',
-        type: 'mindmap',
-        data: { label: '基本概念' },
-        position: { x: 200, y: -70 },
-        dragHandle: '.dragHandle',
-        idd: 2,
-        isCorrect: false,
-      },
-      {
-        id: '2',
-        type: 'mindmap',
-        data: { label: '関数とモジュール' },
-        position: { x: 200, y: 100 },
-        dragHandle: '.dragHandle',
-        idd: 2,
-        isCorrect: false,
-      },
-      {
-        id: '3',
-        type: 'mindmap',
-        data: { label: 'クラスとオブジェクト指向プログラミング (OOP)' },
-        position: { x: -200, y: -70 },
-        dragHandle: '.dragHandle',
-        idd: 2,
-        isCorrect: false,
-      },
+      // {
+      //   id: '1',
+      //   type: 'mindmap',
+      //   data: { label: '基本概念' },
+      //   position: { x: 200, y: -70 },
+      //   dragHandle: '.dragHandle',
+      //   idd: 2,
+      //   isCorrect: false,
+      // },
+      // {
+      //   id: '2',
+      //   type: 'mindmap',
+      //   data: { label: '関数とモジュール' },
+      //   position: { x: 200, y: 100 },
+      //   dragHandle: '.dragHandle',
+      //   idd: 2,
+      //   isCorrect: false,
+      // },
+      // {
+      //   id: '3',
+      //   type: 'mindmap',
+      //   data: { label: 'クラスとオブジェクト指向プログラミング (OOP)' },
+      //   position: { x: -200, y: -70 },
+      //   dragHandle: '.dragHandle',
+      //   idd: 2,
+      //   isCorrect: false,
+      // },
       // {
       //   id: '4',
       //   type: 'mindmap',
@@ -53,26 +53,26 @@ import {
       // },
     ],
     edges: [
-      {
-        id: nanoid(),
-        source: "root",
-        target: "1",
-      },
-      {
-        id: nanoid(),
-        source: "root",
-        target: "2",
-      },
-      {
-        id: nanoid(),
-        source: "root",
-        target: "3",
-      },
-      {
-        id: nanoid(),
-        source: "root",
-        target: "4",
-      },
+      // {
+      //   id: nanoid(),
+      //   source: "root",
+      //   target: "1",
+      // },
+      // {
+      //   id: nanoid(),
+      //   source: "root",
+      //   target: "2",
+      // },
+      // {
+      //   id: nanoid(),
+      //   source: "root",
+      //   target: "3",
+      // },
+      // {
+      //   id: nanoid(),
+      //   source: "root",
+      //   target: "4",
+      // },
     ],
     onNodesChange: (changes) => {
       set({
@@ -101,7 +101,6 @@ import {
         nodes: get().nodes.map((node) => {
           if (node.data.label === title) {
             // it's important to create a new object here, to inform React Flow about the changes
-            console.log("kita-----------")
             node.isCorrect = true;
           }
   
