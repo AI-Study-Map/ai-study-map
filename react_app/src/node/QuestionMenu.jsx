@@ -24,6 +24,7 @@ const StyledQuestionHeader = styled.div`
   background-color:#FFE867;
   height: 8vh;
     p {
+      color: #17594A;
       font-size: 25px;
       font-weight: bold;
       margin-left: 20px;
@@ -36,6 +37,12 @@ const StyledQuestionContent = styled.div`
   overflow-wrap: break-word; /* 単語の途中で改行させる */
   overflow-x: auto; /* コンテンツがはみ出す場合にスクロールバーを表示 */
   padding: 10px;
+  p {
+      color: #213363;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+
 `;
 
 const StyledQuestionButtons = styled.div`
@@ -49,15 +56,16 @@ const StyledQuestionButtons = styled.div`
   #buttonMessage{
     font-size: 18px;
     font-weight: bold;
-    margin-top: 7px;
-    margin-bottom: 15px;
+    margin: 7px 0px 15px 10px;
+    color: #17594A;
+
   }
 `;
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 19px;
-  right: 10px;
+  top: 22px;
+  right: 15px;
   font-size: 20px;
   background: none;
   border: none;
@@ -88,9 +96,9 @@ const Overlay = styled.div`
 `;
 
 const RedCircle = styled.div`
-  width: 150px;
-  height: 150px;
-  border: 20px solid #FF7A53; 
+  width: 200px;
+  height: 200px;
+  border: 30px solid #FF7A53;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
@@ -108,42 +116,49 @@ const RedCircle = styled.div`
 
 const ClearText = styled.p`
   color: #FF7A53;
-  font-size: 40px;
+  font-size: 60px;
+  font-weight: bold;
   position: absolute;
-  top: 60%; /* 上下中央より下側に配置 */
+  top: 55%; /* 上下中央より下側に配置 */
   left: 50%; /* 左右中央に配置 */
   transform: translateX(-50%); /* 中央揃え */
   animation: ${fadeIn} 0.3s ease-in-out;
 `;
 
 const NextButton = styled.button`
+  width: 45%;
+  height: 2.5em;
   background-color: #2BA287;
-  color: white;
-  font-size: 20px;
+  color: #FAFFF7;
+  font-size: 25px;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   margin-top: 20px;
   position: absolute;
-  top: 80%; /* 上下中央より下側に配置 */
+  top: 75%; /* 上下中央より下側に配置 */
   left: 50%; /* 左右中央に配置 */
   transform: translateX(-50%); /* 中央揃え */
   animation: ${fadeIn} 0.3s ease-in-out;
+  &:hover {
+ background-color: #229379; /* ホバー時の背景色 */
+  }
 `;
 
 const ErrorMessage = styled.p`
-  color: red;
-  font-size: 15px;
+  color: #ff3636;
+  font-size: 16px;
+  margin-left: 10px;
   margin-top: 5px;
   height: 20px;
 `;
 
 const ButtonAAndC = styled.button`
   background-color: ${props => props.disabled ? '#ccc' : '#7BC74D'};
-  color: white;
+  color: #FAFFF7;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   padding: 10px 20px;
   font-size: 16px;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
@@ -159,9 +174,9 @@ const ButtonAAndC = styled.button`
 
 const ButtonBAndD = styled.button`
   background-color: ${props => props.disabled ? '#ccc' : '#7BC74D'}; /* ボタンの背景色 */
-  color: white; /* ボタンのテキスト色 */
+  color: #FAFFF7; /* ボタンのテキスト色 */
   border: none;
-  border-radius: 5px; /* 角の取れたデザイン */
+  border-radius: 10px; /* 角の取れたデザイン */
   padding: 10px 20px;
   font-size: 16px;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};

@@ -11,6 +11,7 @@ const NodeContainer = styled.div`
 `;
 
 const NodeContentsWrapper = styled.div`
+  color: #213363;
   position: absolute;
   top: 80%;
   left: 0;
@@ -23,6 +24,9 @@ const NodeContentsWrapper = styled.div`
   border-radius: 10px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   padding: 10px;
+    p {
+      line-height: 1.3em;
+    }
 `;
 
 const InputWrapper = styled.div`
@@ -46,10 +50,11 @@ const DragHandleArea = styled.div`
 `
 
 const P = styled.p`
-  color: ${(props) => props.isCorrect && props.id !== "root" ? "#7BC74D" : "white"};
+  color: ${(props) => props.isCorrect && props.id !== "root" ? "#7BC74D" : "#FAFFF7"};
   width: 600px;
   border-radius: 10px;
   font-weight: 700;
+	letter-spacing: 0.05em;
   background: transparent;
   height: 100%;
   margin: 0;

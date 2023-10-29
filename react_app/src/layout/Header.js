@@ -58,8 +58,9 @@ const SidebarIconToggle = styled.label`
   z-index: 99;
   height: 22px;
   width: 22px;
-  top: 22px;
-  right: 15px;
+  top: 24px;
+  right: 27px;
+
 `;
 
 const Spinner = styled.div`
