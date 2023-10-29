@@ -103,6 +103,18 @@ import {
         }),
       });
     },
+    updateNodeIsCorrect: (title) => {
+      set({
+        nodes: get().nodes.map((node) => {
+          if (node.data.label === title) {
+            // it's important to create a new object here, to inform React Flow about the changes
+            node.isCorrect = true;
+          }
+  
+          return node;
+        }),
+      });
+    },
     addChildNode: (parentNode, position, nodeName) => {
       const newNode = {
         id: nanoid(),
@@ -111,7 +123,8 @@ import {
         position,
         dragHandle: '.dragHandle',
         parentNode: parentNode.id,
-        idd: parentNode.idd + 1
+        idd: parentNode.idd + 1,
+        isCorrect: false,
       };
   
       const newEdge = {

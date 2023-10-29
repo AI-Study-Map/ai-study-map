@@ -52,7 +52,7 @@ const Flow = () =>  {
 
 
   return (
-    <div style={{height: 93 + "vh"}}>
+    <div style={{height: 92 + "vh"}}>
       <Header />
       <QuestionMenu />
       <ReactFlow
