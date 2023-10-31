@@ -350,6 +350,7 @@ function QuestionMenu() {
             <p>{nodeTitle}</p>
           </StyledQuestionHeader>
           <StyledQuestionContent>
+            <p>問題</p>
             <p>{question}</p>
           </StyledQuestionContent>
           <StyledQuestionButtons>
