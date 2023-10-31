@@ -50,6 +50,7 @@ const Flow = () =>  {
     })
   );
 
+  // const defaultViewport = { x: 500, y: 500, zoom: 1.0 };
 
   return (
     <div style={{height: 92 + "vh"}}>
@@ -66,6 +67,7 @@ const Flow = () =>  {
         defaultEdgeOptions={defaultEdgeOptions}
         connectionLineStyle={connectionLineStyle}
         connectionLineType={ConnectionLineType.Straight}
+        // defaultViewport={defaultViewport}
         fitView
       >
         {/* <Background color="#FAFFF7" style={{"backgroundColor": "#FAFFF7"}}/> */}

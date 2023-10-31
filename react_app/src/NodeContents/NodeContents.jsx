@@ -10,6 +10,9 @@ const NodeContentsArea = styled.div`
 
 const ResponseLogArea = styled.div`
   overflow-x: auto;
+  max-height: 300px;
+  cursor: default;
+  z-index: 10000000;
 `
 
 const ButtonContainer = styled.div`
