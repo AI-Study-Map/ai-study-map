@@ -111,7 +111,7 @@ function MindMapNode({ id, data, isCorrect }) {
             id={id}
             isCorrect={isCorrectLocal}
           >{data.label}</P>
-         <SwitchBtn flipped={flipped}/>
+         <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/>
         </DragHandleArea>
         
       </InputWrapper>

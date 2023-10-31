@@ -8,11 +8,11 @@ const SwitchBtnContainer = styled.div`
 const Svg = styled.svg`
   width: 18px;
   cursor: pointer;
-  fill: white;
+  fill: ${(props) => props.isCorrect ? "#7BC74D" : "#FAFFF7"};
 `;
 
 const SwitchBtn = (props) => {
-  const { flipped } = props
+  const { flipped, isCorrect } = props
   const { setFlipped } = useStore(
     state => ({ setFlipped: state.setFlipped})
     );
@@ -23,6 +23,7 @@ const SwitchBtn = (props) => {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 1024 1024"
         onClick={() => setFlipped()}
+        isCorrect={isCorrect}
       >
         {(flipped) ? (
           <g transform="translate(0, 1024) scale(1, -1)">
