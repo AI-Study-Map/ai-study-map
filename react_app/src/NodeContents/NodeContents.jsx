@@ -66,7 +66,7 @@ function NodeContents(props) {
     const [description, setDescription] = useState('');
     const [example, setExample] = useState('');
     const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, 
-      setQuestionTitle, selectedNodeId, setQuestion, mapId
+      setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId
     } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -76,6 +76,7 @@ function NodeContents(props) {
           selectedNodeId: state.selectedNodeId,
           setQuestion: state.setQuestion,
           mapId: state.mapId,
+          setSelectedNodeId: state.setSelectedNodeId,
         })
       );
 
@@ -88,7 +89,7 @@ function NodeContents(props) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nodeId: selectedNodeId, mapId: mapId, user_input: title, resend: "false" }),
+        body: JSON.stringify({ nodeId: id, mapId: mapId, user_input: title, resend: "false" }),
       })
       .then((response) => response.json())
       .then((data) => {
@@ -148,6 +149,9 @@ function NodeContents(props) {
         const desc = description;
         const exa = example;
         console.log("nodeId: ", thisId , "description: ", desc, "example: ", exa);
+
+        // selectedNodeIdを更新
+        setSelectedNodeId(id);
         
         try{//API
           fetch(`${API_HOST_QUESTION}`, {

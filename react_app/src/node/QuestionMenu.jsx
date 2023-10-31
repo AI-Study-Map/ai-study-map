@@ -305,6 +305,7 @@ const findChildrenByName = (node, name) => {
   }, [question_phrase]);
     
 
+  // ノードタイトルが変わるごとにリセット
   useEffect(() => {
     setDisabledOptions({
       a: false,

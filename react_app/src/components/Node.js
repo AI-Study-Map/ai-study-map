@@ -63,7 +63,6 @@ const P = styled.p`
 function MindMapNode({ id, data, isCorrect }) {
   const inputRef = useRef(null);
   const [isCorrectLocal, setIsCorrectLocal] = useState(isCorrect)
-  const { setSelectedNodeId } = useStore(state => ({ setSelectedNodeId: state.setSelectedNodeId }));
 
   const { nodes, getNodeFlippedStatus, toggleNodeFlipped } = useStore(state => ({
     nodes: state.nodes,
@@ -97,7 +96,6 @@ function MindMapNode({ id, data, isCorrect }) {
   }, [data.label]);
 
   const onNodeClick = () => {
-    setSelectedNodeId(id);
     toggleNodeFlipped(id);
     console.log("onNodeClick: ", flipped);
   };
