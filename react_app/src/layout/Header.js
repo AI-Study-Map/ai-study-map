@@ -4,9 +4,14 @@ import useAddNode from '../node/useAddNode';
 import MapDataSave from '../save/MapDataSave';
 import MapDataLoad from '../save/MapDataLoad';
 import { useNavigate } from 'react-router-dom';
+import AiStudyMap_logo from './ai-study-map-logo.png';
 
 const StyledHeader = styled.header`
   background-color: #FFE867;
+  background-image: url(${AiStudyMap_logo});
+  background-repeat: no-repeat;
+  background-position: 30px;
+  background-size: contain;
   display: flex;
   justify-content: center;
   align-items: center;
