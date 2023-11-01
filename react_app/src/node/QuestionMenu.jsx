@@ -199,17 +199,19 @@ function QuestionMenu() {
   const [answerD, setAnswerD] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [error, setError] = useState('');
+  const [isCorrect, setIsCorrect] = useState(false)
   const [disabledOptions, setDisabledOptions] = useState({
     a: false,
     b: false,
     c: false,
     d: false
   });
-  const { questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
+  const { nodes, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion,
     question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect,
   } = useStore(
     state => ({
+      nodes: state.nodes,
       updateNodeIsCorrect: state.updateNodeIsCorrect,
       questionMenuIsOpen: state.questionMenuIsOpen,
       setQuestionMenu: state.setQuestionMenu,
@@ -250,18 +252,30 @@ function QuestionMenu() {
     }
   };
 
-const findChildrenByName = (node, name) => {
-    if (node.name === name) {
-      return node.children.map(child => child.name);
-    }
-    for (let child of node.children) {
-      const result = findChildrenByName(child, name);
-      if (result) {
-        return result;
+  const findChildrenByName = (node, name) => {
+      if (node.name === name) {
+        return node.children.map(child => child.name);
+      }
+      for (let child of node.children) {
+        const result = findChildrenByName(child, name);
+        if (result) {
+          return result;
+        }
+      }
+      return null;
+  }
+
+  // idを指定して正解済みかの真偽値を返す関数
+  const findNodeIsCorrect = (nodes, id) => {
+    for (let node of nodes) {
+      if (node.id === id) {
+        // 指定されたIDを持つアイテムを見つけた場合、isCorrectの値を返す
+        return node.isCorrect;
       }
     }
+    // 指定されたIDを持つアイテムが見つからなかった場合、nullを返す
     return null;
-  }
+  };
 
   // 問題に正解済みかどうかの真偽値を更新
   // const setTitleMatchedAsCorrect = (nodes, title) => {
@@ -288,6 +302,12 @@ const findChildrenByName = (node, name) => {
     }
   };
 
+  // CLEARエフェクトを非表示、問題メニューを非表示のみ
+  const handleClose = () => {
+    setShowEffect(false);
+    setQuestionMenu(false);
+  }
+
   function questionSetting(quest, a, b, c, d, correctaAnswer) {
     setQuestion(quest);
     setAnswerA(a);
@@ -302,9 +322,11 @@ const findChildrenByName = (node, name) => {
     questionSetting(
       question_phrase, question_a, question_b, question_c, question_d, correctAns
     );
-  }, [question_phrase]);
+    setIsCorrect(findNodeIsCorrect(nodes, selectedNodeId))
+  }, [question_phrase, nodes, selectedNodeId]);
     
 
+  // ノードタイトルが変わるごとにリセット
   useEffect(() => {
     setDisabledOptions({
       a: false,
@@ -328,6 +350,7 @@ const findChildrenByName = (node, name) => {
             <p>{nodeTitle}</p>
           </StyledQuestionHeader>
           <StyledQuestionContent>
+            <p>問題</p>
             <p>{question}</p>
           </StyledQuestionContent>
           <StyledQuestionButtons>
@@ -344,7 +367,9 @@ const findChildrenByName = (node, name) => {
               <Overlay />
               <RedCircle />
               <ClearText>CLEAR!!</ClearText>
-              <NextButton onClick={handleHideEffect} className="next-button">次のノードへ</NextButton>
+              {isCorrect ? 
+              <NextButton onClick={handleClose} className="next-button">閉じる</NextButton>
+              : <NextButton onClick={handleHideEffect} className="next-button">次のノードへ</NextButton>}
             </>
           )}
         </div>
