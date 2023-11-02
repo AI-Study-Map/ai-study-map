@@ -17,7 +17,7 @@ const NodeContentsWrapper = styled.div`
   left: 0;
   z-index: 1000;
   pointer-events: auto;
-  width: 500px;
+  width: 600px;
   height: auto;
   overflow-x: auto; //はみ出したときスクロールバー
   background-color: #FAFFF7;
@@ -94,7 +94,7 @@ function MindMapNode({ id, data, isCorrect }) {
   useLayoutEffect(() => {
     if (inputRef.current) {
       // inputRef.current.style.width = `${data.label.length * 8}px`;
-      inputRef.current.style.width = `120px`;
+        inputRef.current.style.width = `170px`;
     }
   }, [data.label]);
 
