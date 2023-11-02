@@ -13,74 +13,74 @@ import {
   //   firstSetMapId: 1, //本来は初期値null 
   //   setFirstSetMapId: (firstSetMapId) => set({ firstSetMapId: firstSetMapId }),
 
-    themeName: "", // setLoadedMapDataで設定
-    mapId: null, // setLoadedMapDataで設定
-    nodes: [], //setLoadedMapDataで設定
-    //[
-    //   {
-    //     id: 'root',
-    //     type: 'mindmap',
-    //     data: { label: 'Python' },
-    //     position: { x: 0, y: 0 },
-    //     dragHandle: '.dragHandle',
-    //     idd: 1,
-    //   },
-    //   {
-    //     id: '1',
-    //     type: 'mindmap',
-    //     data: { label: '基本概念' },
-    //     position: { x: 200, y: -70 },
-    //     dragHandle: '.dragHandle',
-    //     idd: 2,
-    //   },
-    //   {
-    //     id: '2',
-    //     type: 'mindmap',
-    //     data: { label: '関数とモジュール' },
-    //     position: { x: 200, y: 100 },
-    //     dragHandle: '.dragHandle',
-    //     idd: 2,
-    //   },
-    //   {
-    //     id: '3',
-    //     type: 'mindmap',
-    //     data: { label: 'クラスとオブジェクト指向プログラミング (OOP)' },
-    //     position: { x: -200, y: -70 },
-    //     dragHandle: '.dragHandle',
-    //     idd: 2,
-    //   },
-    //   // {
-    //   //   id: '4',
-    //   //   type: 'mindmap',
-    //   //   data: { label: 'クラスとオブジェクト' },
-    //   //   position: { x: -200, y: 100 },
-    //   //   dragHandle: '.dragHandle',
-    //   //   idd: 2,
-    //   // },
-    // ],
-    edges: [], //setLoadedMapDataで設定
-    //[
-    //   {
-    //     id: nanoid(),
-    //     source: "root",
-    //     target: "1",
-    //   },
-    //   {
-    //     id: nanoid(),
-    //     source: "root",
-    //     target: "2",
-    //   },
-    //   {
-    //     id: nanoid(),
-    //     source: "root",
-    //     target: "3",
-    //   },
-    //   // {
-    //   //   id: nanoid(),
-    //   //   source: "root",
-    //   //   target: "4",
-    //   // },
-    // ],
+    themeName: "アジアの郷土料理", // setLoadedMapDataで設定
+    mapId: 2, // setLoadedMapDataで設定
+    nodes:  //setLoadedMapDataで設定
+    [
+      {
+        id: 'root',
+        type: 'mindmap',
+        data: { label: 'アジアの郷土料理' },
+        position: { x: 0, y: 0 },
+        dragHandle: '.dragHandle',
+        idd: 1,
+      },
+      {
+        id: '1',
+        type: 'mindmap',
+        data: { label: '東アジア' },
+        position: { x: 200, y: -70 },
+        dragHandle: '.dragHandle',
+        idd: 2,
+      },
+      {
+        id: '2',
+        type: 'mindmap',
+        data: { label: '東南アジア' },
+        position: { x: 200, y: 100 },
+        dragHandle: '.dragHandle',
+        idd: 2,
+      },
+      {
+        id: '3',
+        type: 'mindmap',
+        data: { label: '南アジア' },
+        position: { x: -200, y: -70 },
+        dragHandle: '.dragHandle',
+        idd: 2,
+      },
+      {
+        id: '4',
+        type: 'mindmap',
+        data: { label: '中央アジア' },
+        position: { x: -200, y: 100 },
+        dragHandle: '.dragHandle',
+        idd: 2,
+      },
+    ],
+    edges:  //setLoadedMapDataで設定
+    [
+      {
+        id: nanoid(),
+        source: "root",
+        target: "1",
+      },
+      {
+        id: nanoid(),
+        source: "root",
+        target: "2",
+      },
+      {
+        id: nanoid(),
+        source: "root",
+        target: "3",
+      },
+      {
+        id: nanoid(),
+        source: "root",
+        target: "4",
+      },
+    ],
     onNodesChange: (changes) => {
       set({
         nodes: applyNodeChanges(changes, get().nodes),
@@ -139,22 +139,22 @@ import {
       });
       
       // DBに新しいノードを追加
-      fetch(API_HOST_CREATENEWNODE, {
-        method: 'POST',
-        body: JSON.stringify({
-          "map_id": get().mapId,
-          "node_id": newNode.id,
-          "title": nodeName,
-          "x_coordinate": position.x,
-          "y_coordinate": position.y,
-          "idd": newNode.idd,
-          "edge_id": newEdge.id,
-          "parent_node": newEdge.source,
-          "child_node": newEdge.target,
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }}).then((response) => console.log('NEW NODE DATA SENDED'))
+      // fetch(API_HOST_CREATENEWNODE, {
+      //   method: 'POST',
+      //   body: JSON.stringify({
+      //     "map_id": get().mapId,
+      //     "node_id": newNode.id,
+      //     "title": nodeName,
+      //     "x_coordinate": position.x,
+      //     "y_coordinate": position.y,
+      //     "idd": newNode.idd,
+      //     "edge_id": newEdge.id,
+      //     "parent_node": newEdge.source,
+      //     "child_node": newEdge.target,
+      //   }),
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   }}).then((response) => console.log('NEW NODE DATA SENDED'))
       
     },
     
@@ -201,267 +201,207 @@ import {
     
 
 
-    tree: null, // setLoadedMapDataで設定 
-    //{
-    //   "name": "Python",
-    //   "children": [
-    //     {
-    //       "name": "基本概念",
-    //       "children": [
-    //         {
-    //           "name": "データ型と変数",
-    //           "children": [
-    //             {
-    //               "name": "数値型",
-    //               "children": [
-    //                 {
-    //                   "name": "整数",
-    //                   "children": [
-    //                     {
-    //                       "name": "算術演算",
-    //                       "children": []
-    //                     },
-    //                     {
-    //                       "name": "整数の範囲",
-    //                       "children": []
-    //                     }
-    //                   ]
-    //                 },
-    //                 {
-    //                   "name": "浮動小数点数",
-    //                   "children": [
-    //                     {
-    //                       "name": "精度",
-    //                       "children": []
-    //                     },
-    //                     {
-    //                       "name": "四則演算",
-    //                       "children": []
-    //                     }
-    //                   ]
-    //                 }
-    //               ]
-    //             },
-    //             {
-    //               "name": "文字列",
-    //               "children": [
-    //                 {
-    //                   "name": "エスケープシーケンス",
-    //                   "children": []
-    //                 },
-    //                 {
-    //                   "name": "文字列メソッド",
-    //                   "children": []
-    //                 }
-    //               ]
-    //             }
-    //           ]
-    //         },
-    //         {
-    //           "name": "制御構造",
-    //           "children": [
-    //             {
-    //               "name": "条件分岐",
-    //               "children": [
-    //                 {
-    //                   "name": "if文",
-    //                   "children": [
-    //                     {
-    //                       "name": "比較演算子",
-    //                       "children": []
-    //                     },
-    //                     {
-    //                       "name": "論理演算子",
-    //                       "children": []
-    //                     }
-    //                   ]
-    //                 },
-    //                 {
-    //                   "name": "switch-case代替",
-    //                   "children": [
-    //                     {
-    //                       "name": "辞書による代替",
-    //                       "children": []
-    //                     },
-    //                     {
-    //                       "name": "if-elif-elseによる代替",
-    //                       "children": []
-    //                     }
-    //                   ]
-    //                 }
-    //               ]
-    //             },
-    //             {
-    //               "name": "ループ",
-    //               "children": [
-    //                 {
-    //                   "name": "forループ",
-    //                   "children": [
-    //                     {
-    //                       "name": "range関数",
-    //                       "children": []
-    //                     },
-    //                     {
-    //                       "name": "enumerate関数",
-    //                       "children": []
-    //                     }
-    //                   ]
-    //                 },
-    //                 {
-    //                   "name": "whileループ",
-    //                   "children": [
-    //                     {
-    //                       "name": "条件式",
-    //                       "children": []
-    //                     },
-    //                     {
-    //                       "name": "breakとcontinue",
-    //                       "children": []
-    //                     }
-    //                   ]
-    //                 }
-    //               ]
-    //             }
-    //           ]
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       "name": "関数とモジュール",
-    //       "children": [
-    //         {
-    //           "name": "関数定義",
-    //           "children": [
-    //             {
-    //               "name": "引数と戻り値",
-    //               "children": [
-    //                 {
-    //                   "name": "デフォルト引数",
-    //                   "children": []
-    //                 },
-    //                 {
-    //                   "name": "可変長引数",
-    //                   "children": []
-    //                 }
-    //               ]
-    //             },
-    //             {
-    //               "name": "スコープと名前空間",
-    //               "children": [
-    //                 {
-    //                   "name": "ローカルスコープ",
-    //                   "children": []
-    //                 },
-    //                 {
-    //                   "name": "グローバルスコープ",
-    //                   "children": []
-    //                 }
-    //               ]
-    //             }
-    //           ]
-    //         },
-    //         {
-    //           "name": "モジュールとパッケージ",
-    //           "children": [
-    //             {
-    //               "name": "モジュールのインポート",
-    //               "children": [
-    //                 {
-    //                   "name": "import文",
-    //                   "children": []
-    //                 },
-    //                 {
-    //                   "name": "from-import文",
-    //                   "children": []
-    //                 }
-    //               ]
-    //             },
-    //             {
-    //               "name": "パッケージ作成",
-    //               "children": [
-    //                 {
-    //                   "name": "__init__.py",
-    //                   "children": []
-    //                 },
-    //                 {
-    //                   "name": "パッケージの構造",
-    //                   "children": []
-    //                 }
-    //               ]
-    //             }
-    //           ]
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       "name": "クラスとオブジェクト指向プログラミング (OOP)",
-    //       "children": [
-    //         {
-    //           "name": "クラス定義",
-    //           "children": [
-    //             {
-    //               "name": "インスタンスメソッドと属性",
-    //               "children": [
-    //                 {
-    //                   "name": "コンストラクタ",
-    //                   "children": []
-    //                 },
-    //                 {
-    //                   "name": "デストラクタ",
-    //                   "children": []
-    //                 }
-    //               ]
-    //             },
-    //             {
-    //               "name": "クラス変数とインスタンス変数",
-    //               "children": [
-    //                 {
-    //                   "name": "クラス変数",
-    //                   "children": []
-    //                 },
-    //                 {
-    //                   "name": "インスタンス変数",
-    //                   "children": []
-    //                 }
-    //               ]
-    //             }
-    //           ]
-    //         },
-    //         {
-    //           "name": "継承とポリモーフィズム",
-    //           "children": [
-    //             {
-    //               "name": "基底クラスと派生クラス",
-    //               "children": [
-    //                 {
-    //                   "name": "継承",
-    //                   "children": []
-    //                 },
-    //                 {
-    //                   "name": "オーバーライド",
-    //                   "children": []
-    //                 }
-    //               ]
-    //             },
-    //             {
-    //               "name": "抽象クラスとインターフェース",
-    //               "children": [
-    //                 {
-    //                   "name": "抽象クラス",
-    //                   "children": []
-    //                 },
-    //                 {
-    //                   "name": "インターフェース",
-    //                   "children": []
-    //                 }
-    //               ]
-    //             }
-    //           ]
-    //         }
-    //       ]
-    //     }
-    //   ]
-    // },
+    tree: {
+      "name": "アジアの郷土料理",
+      "children": [
+        {
+          "name": "東アジア",
+          "children": [
+            {
+              "name": "日本",
+              "children": [
+                {
+                  "name": "魚料理",
+                  "children": [
+                    {
+                      "name": "すし",
+                      "children": [
+                        { "name": "にぎり", "children": [{ "name": "コンプリート！", "children": [] }] },
+                        { "name": "巻きずし", "children": [{ "name": "コンプリート！", "children": [] }] }
+                      ]
+                    },
+                    {
+                      "name": "刺身",
+                      "children": [
+                        { "name": "マグロ", "children": [{ "name": "コンプリート！", "children": [] }] },
+                        { "name": "サーモン", "children": [{ "name": "コンプリート！", "children": [] }] }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "日本の肉料理",
+                  "children": [
+                    {
+                      "name": "焼肉",
+                      "children": [
+                        { "name": "牛肉", "children": [{ "name": "コンプリート！", "children": [] }] },
+                        { "name": "豚肉", "children": [{ "name": "コンプリート！", "children": [] }] }
+                      ]
+                    },
+                    {
+                      "name": "しゃぶしゃぶ",
+                      "children": [
+                        { "name": "牛しゃぶ", "children": [{ "name": "コンプリート！", "children": [] }] },
+                        { "name": "豚しゃぶ", "children": [{ "name": "コンプリート！", "children": [] }] }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "中国",
+              "children": [
+                {
+                  "name": "中国の炒め物",
+                  "children": [
+                    { "name": "麻婆豆腐", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "回鍋肉", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                },
+                {
+                  "name": "鍋物",
+                  "children": [
+                    { "name": "火鍋", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "蒸し物", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "南アジア",
+          "children": [
+            {
+              "name": "インド",
+              "children": [
+                {
+                  "name": "カレー",
+                  "children": [
+                    { "name": "チキンカレー", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "野菜カレー", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                },
+                {
+                  "name": "パン",
+                  "children": [
+                    { "name": "ナン", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "ロティ", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "タイ",
+              "children": [
+                {
+                  "name": "スープ",
+                  "children": [
+                    { "name": "トムヤムクン", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "トムカーガイ", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                },
+                {
+                  "name": "タイの炒め物",
+                  "children": [
+                    { "name": "パッタイ", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "ガパオライス", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "東南アジア",
+          "children": [
+            {
+              "name": "ベトナム",
+              "children": [
+                {
+                  "name": "ベトナムの麺料理",
+                  "children": [
+                    { "name": "フォー", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "ブンチャー", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                },
+                {
+                  "name": "ベトナムのライス",
+                  "children": [
+                    { "name": "ゴイクン", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "コムタム", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "インドネシア",
+              "children": [
+                {
+                  "name": "インドネシアのライス",
+                  "children": [
+                    { "name": "ナシゴレン", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "ナシパダン", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                },
+                {
+                  "name": "サテ",
+                  "children": [
+                    { "name": "サテアヤム", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "サテクダン", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "中央アジア",
+          "children": [
+            {
+              "name": "ウズベキスタン",
+              "children": [
+                {
+                  "name": "ウズベキスタンのライス",
+                  "children": [
+                    { "name": "プロフ", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "サムサ", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                },
+                {
+                  "name": "ケバブ",
+                  "children": [
+                    { "name": "ラムケバブ", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "鶏ケバブ", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "カザフスタン",
+              "children": [
+                {
+                  "name": "カザフスタンの肉料理",
+                  "children": [
+                    { "name": "バシュ", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "シャシリク", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                },
+                {
+                  "name": "カザフスタンの鍋料理",
+                  "children": [
+                    { "name": "ビシュバルマク", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "クイマク", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
     setLoadedMapData(tree, mapId, themeName, nodes, edges) {
       set({ tree: tree, mapId: mapId, themeName: themeName, nodes: nodes, edges: edges })
     },

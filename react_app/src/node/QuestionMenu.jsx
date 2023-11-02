@@ -292,8 +292,8 @@ function QuestionMenu() {
     setShowEffect(false);
     setQuestionMenu(false);
     updateNodeIsCorrect(nodeTitle);
-    const dictTree = JSON.parse(tree);
-    const childrenNames = findChildrenByName(dictTree, nodeTitle);
+    // const dictTree = JSON.parse(tree);
+    const childrenNames = findChildrenByName(tree, nodeTitle);
     if (childrenNames === null) {
       console.log("子ノードがありません")
       return 

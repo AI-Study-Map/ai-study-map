@@ -68,8 +68,9 @@ function NodeContents(props) {
     const [inputed, setInput] = useState(title); 
     const [description, setDescription] = useState('');
     const [example, setExample] = useState('');
+    const [parentNodeList, setParentNodeList] = useState([]);
     const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, 
-      setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId
+      setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId, tree
     } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -80,19 +81,27 @@ function NodeContents(props) {
           setQuestion: state.setQuestion,
           mapId: state.mapId,
           setSelectedNodeId: state.setSelectedNodeId,
+          tree: state.tree,
         })
       );
 
     useEffect(() => {
       // titleが変更されると実行される
       console.log("title: ", title);
-      console.log("selectedNodeId:", selectedNodeId);
+      console.log("selectedNodeId:", id);
+      // 親ノードのリストを取得
+      // const dictTree = JSON.parse(tree);
+      console.log(title)
+      const parentsList = findParentNodes(tree, title)
+      setParentNodeList(parentsList);
+      console.log("parentNodeList: ", parentsList);
+      // ChatGPTに説明文をリクエスト
       fetch(`${API_HOST}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nodeId: id, mapId: mapId, user_input: title, resend: "false" }),
+        body: JSON.stringify({ nodeId: id, mapId: mapId, user_input: title, parentNodeList: parentsList, resend: "false" }),
       })
       .then((response) => response.json())
       .then((data) => {
@@ -109,13 +118,12 @@ function NodeContents(props) {
         //inputlogの最後の要素を取得し、文章を追加
         const thisTitle = title;
         const thisDescription = description;
-        
         fetch(`${API_HOST_DESCRIPTION}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"title": thisTitle, "mapId": mapId, "description": thisDescription }),
+            body: JSON.stringify({"title": thisTitle, "mapId": mapId, "description": thisDescription, "parentNodeList": parentNodeList }),
           })
         .then((response) => response.json())
         .then((data) => {
@@ -134,7 +142,7 @@ function NodeContents(props) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({nodeId: thisId, user_input: title, mapId: mapId, resend: "true" }),
+            body: JSON.stringify({nodeId: thisId, user_input: title, mapId: mapId, resend: "true", parentNodeList: parentNodeList }),
           })
         .then((response) => response.json())
         .then((data) => {
@@ -182,6 +190,25 @@ function NodeContents(props) {
           console.log("nodeTitle: ", title);
           setQuestionTitle(title);
           setQuestionMenu(true);
+    }
+
+    function findParentNodes(data, targetName, parents = []) {
+      
+      if (data.name === targetName) {
+        console.log("parents: ", parents);
+        return parents;
+      }
+    
+      if (data.children) {
+        for (const child of data.children) {
+          const result = findParentNodes(child, targetName, [...parents, data.name]);
+          if (result) {
+            return result;
+          }
+        }
+      }
+    
+      return null;
     }
 
     return (

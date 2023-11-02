@@ -127,10 +127,21 @@ def gpt_calling(request):
     question_title = request.data['user_input']
     resend = request.data['resend']
     random_word = ""
+
+    parents_list = request.data['parentNodeList']
+    parents_list = "の".join(parents_list)
+    print("PARENTSLIST:", parents_list)
+    if (question_title == "コンプリート！"):
+        node = Node.objects.get(node_id="gxxijO8htqicnQHsSQO8t")
+        description_t = node.description
+        example_t = node.example
+        result_t = json.dumps({"node_id": node_id, "title": question_title, "description": description_t, "example": example_t})
+        return Response(result_t)
+
     #Nodeテーブルにnode_idのレコードが存在し、かつ、descriptionが存在し、かつ、再生成でない場合はそれを返す
-    if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists() and Node.objects.filter(map_id=map_id).get(node_id=node_id).description != None and resend != "true": 
+    if Node.objects.filter(map_id=map_id).filter(title=question_title).exists() and resend != "true": 
         print("NODE ID AND DESCRIPTION EXISTS")
-        node = Node.objects.get(node_id=node_id)
+        node = Node.objects.get(title = question_title)
         description_t = node.description
         example_t = node.example
         result_t = json.dumps({"node_id": node_id, "title": question_title, "description": description_t, "example": example_t})
@@ -152,7 +163,7 @@ def gpt_calling(request):
                 }'
             {{~/system}}
             {{#user~}}
-                アジアの郷土料理のの{{question_title}}に関する解説文を作ってください。
+                {{parents_list}}の{{question_title}}に関する解説文を作ってください。
                 このテーマにおける解説をdescriptionとして、それに対応する例をexampleとしてください。
                 解説はなるべく詳細かつ網羅的である必要があります。
                 例は簡潔に、分かりやすさを重視してください。
@@ -168,7 +179,7 @@ def gpt_calling(request):
                 {{gen 'response' temperature=0 }}
             {{/assistant~}}         
         """)
-        out = create_prompt(question_title=question_title, random_word=random_word)
+        out = create_prompt(question_title=question_title, random_word=random_word, parents_list=parents_list)
         print("out", out)
         #JSON形式で返されなかった時の対策
         if out["response"][-1] != "}":
@@ -181,27 +192,27 @@ def gpt_calling(request):
         description = parsed_result["description"]
         example = parsed_result["example"]
         # DBに保存
-        if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists():
-            node = Node.objects.filter(map_id=map_id).get(node_id=node_id)
-            serializer = DescriptionSerializer(instance=node, data={"node_id": node_id, 'map_id': map_id, "title": question_title, "description": description, "example": example})
-            if serializer.is_valid():
-                print("SERIALIZER IS VALID")
-                serializer.save()
-            else:
-                print("SERIALIZE ERROR")
-                print(serializer.errors)
-        else:        
-            serializer = DescriptionSerializer(data={"node_id": node_id, 'map_id': map_id, "title": question_title, "description": description, "example": example})
-            if serializer.is_valid():
-                print("SERIALIZER IS VALID")
-                serializer.save()
-            else:
-                print("SERIALIZE ERROR")
-                print(serializer.errors)
-        result = dict(serializer.validated_data)
-        del result["map_id"]
-        print("RESULT: ", result)
-        return Response(json.dumps(result))
+        # if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists():
+        #     node = Node.objects.filter(map_id=map_id).get(node_id=node_id)
+        #     serializer = DescriptionSerializer(instance=node, data={"node_id": node_id, 'map_id': map_id, "title": question_title, "description": description, "example": example})
+        #     if serializer.is_valid():
+        #         print("SERIALIZER IS VALID")
+        #         serializer.save()
+        #     else:
+        #         print("SERIALIZE ERROR")
+        #         print(serializer.errors)
+        # else:        
+        #     serializer = DescriptionSerializer(data={"node_id": node_id, 'map_id': map_id, "title": question_title, "description": description, "example": example})
+        #     if serializer.is_valid():
+        #         print("SERIALIZER IS VALID")
+        #         serializer.save()
+        #     else:
+        #         print("SERIALIZE ERROR")
+        #         print(serializer.errors)
+        # result = dict(serializer.validated_data)
+        # del result["map_id"]
+        # print("RESULT: ", result)
+        return Response(json.dumps({"node_id": node_id, "title": question_title, "description": description, "example": example}))
 
 @sync_to_async
 @api_view(['POST'])
@@ -209,10 +220,21 @@ def gpt_calling(request):
 def question(request):
     node_id = request.data['nodeId']
     map_id = request.data['mapId']
+    question_title = request.data['title']
+    if (question_title == "コンプリート！"):
+        node = Node.objects.get(node_id="gxxijO8htqicnQHsSQO8t")
+        question_t = node.question
+        question_a_t = node.question_a
+        question_b_t = node.question_b
+        question_c_t = node.question_c
+        question_d_t = node.question_d
+        true_answer_t = node.true_answer
+        result_t = json.dumps({"node_id": node_id, "question": question_t, "question_a": question_a_t, "question_b": question_b_t, "question_c": question_c_t, "question_d": question_d_t, "true_answer": true_answer_t})
+        return Response(result_t)
     #Nodeテーブルにnode_idのレコードが存在し、かつ、questionが存在する場合はそれを返す
-    if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists() and Node.objects.filter(map_id=map_id).get(node_id=node_id).question != None:
+    if Node.objects.filter(map_id=map_id).filter(title=question_title).exists():
         print("NODE ID AND QUESTION EXISTS")
-        node = Node.objects.get(node_id=node_id)
+        node = Node.objects.get(title = question_title)
         question_t = node.question
         question_a_t = node.question_a
         question_b_t = node.question_b
@@ -274,7 +296,7 @@ def question(request):
         out = create_prompt(question_title=question_title, true_answer=true_answer, description=description, example=example)
         result = out["question"] + "\n"
         print(result)
-        # DBに保存するために各種変数を取得
+        # # DBに保存するために各種変数を取得
         parsed_result = json.loads(result)
         question = parsed_result["question"]
         question_a = parsed_result["choices"]["a"]
@@ -282,17 +304,17 @@ def question(request):
         question_c = parsed_result["choices"]["c"]
         question_d = parsed_result["choices"]["d"]
         answer = parsed_result["answer"]
-        # nodeIdでレコードを特定してDBに保存
-        node = Node.objects.get(node_id=node_id)
-        serializer = QuestionSerializer(instance=node, data={"node_id": node_id, "question": question, "question_a": question_a, "question_b": question_b, "question_c": question_c, "question_d": question_d, "true_answer": answer})
-        if serializer.is_valid():
-            print("SERIALIZER IS VALID")
-            serializer.save()
-        else:
-            print("SERIALIZE ERROR")
-            print(serializer.errors)
+        # # nodeIdでレコードを特定してDBに保存
+        # node = Node.objects.get(title=question_title)
+        # serializer = QuestionSerializer(instance=node, data={"node_id": node_id, "question": question, "question_a": question_a, "question_b": question_b, "question_c": question_c, "question_d": question_d, "true_answer": answer})
+        # if serializer.is_valid():
+        #     print("SERIALIZER IS VALID")
+        #     serializer.save()
+        # else:
+        #     print("SERIALIZE ERROR")
+        #     print(serializer.errors)
         
-        return Response(json.dumps(serializer.validated_data))
+        return Response(json.dumps({"node_id": node_id, "question": question, "question_a": question_a, "question_b": question_b, "question_c": question_c, "question_d": question_d, "true_answer": answer}))
 
 #送られたdescriptionが不十分だった場合に、descriptionに後付けで追加する
 @sync_to_async
