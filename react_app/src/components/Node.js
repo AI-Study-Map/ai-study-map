@@ -96,7 +96,7 @@ function MindMapNode({ id, data, isCorrect }) {
   useLayoutEffect(() => {
     if (inputRef.current) {
       // inputRef.current.style.width = `${data.label.length * 8}px`;
-      inputRef.current.style.width = `120px`;
+        inputRef.current.style.width = `170px`;
     }
   }, [data.label]);
 
