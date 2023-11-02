@@ -34,13 +34,16 @@ const InputWrapper = styled.div`
   border-radius: 10px;
   z-index: 10000;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 const DragHandleArea = styled.div`
   width: 100%;
   flex: 1;  // 余ったスペースを埋める
   padding: 6px 10px;
-  font-size: 12px;
+  font-size: 20px;
   background: transparent;
   height: 90%;
   display: flex;
@@ -63,7 +66,6 @@ const P = styled.p`
 function MindMapNode({ id, data, isCorrect }) {
   const inputRef = useRef(null);
   const [isCorrectLocal, setIsCorrectLocal] = useState(isCorrect)
-  const { setSelectedNodeId } = useStore(state => ({ setSelectedNodeId: state.setSelectedNodeId }));
 
   const { nodes, getNodeFlippedStatus, toggleNodeFlipped } = useStore(state => ({
     nodes: state.nodes,
@@ -97,7 +99,6 @@ function MindMapNode({ id, data, isCorrect }) {
   }, [data.label]);
 
   const onNodeClick = () => {
-    setSelectedNodeId(id);
     toggleNodeFlipped(id);
     console.log("onNodeClick: ", flipped);
   };
@@ -113,7 +114,7 @@ function MindMapNode({ id, data, isCorrect }) {
             id={id}
             isCorrect={isCorrectLocal}
           >{data.label}</P>
-         <SwitchBtn flipped={flipped}/>
+         <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/>
         </DragHandleArea>
         
       </InputWrapper>

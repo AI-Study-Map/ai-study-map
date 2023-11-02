@@ -2,7 +2,25 @@ import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import useStore from './store';
+import styled from 'styled-components';
 
+const Starter = styled.div`
+    border-bottom: 5px dotted #FFE867;
+    p {
+        color:#213363;
+        font-size: 15px;
+        font-weight: bold;
+    }
+`
+
+const Button = styled.div`
+    text-align: right;
+`
+const Selecter = styled.div`
+    padding: 0.5rem 1rem;
+    margin: 3em 1em;
+    
+`
 
 const API_MAP_LOAD = "http://localhost:8000/api/load/map";
 const options = [
@@ -61,13 +79,20 @@ function NodeTreeMake() {
 
     return (
     <>
-        <p>NodeTreeMake</p>
+        <Starter>
+        <h1>はじめる</h1>
+        <p>下記のメニューからテーマを選択して宝探しを始めましょう</p>
+        </Starter>
+        <Selecter>
         <Select
             options={options}
             defaultValue={selectedValue}
             onChange={(value) => { setSelectedValue(value); }}
         />
-        <button disabled={buttonIsDisabled} onClick={()=>handleButton()}>マインドマップ作成</button>
+        </Selecter>
+        <Button>
+        <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>マインドマップ作成</button>
+        </Button>
     </>
     );
 }
