@@ -61,6 +61,8 @@ const P = styled.p`
   background: transparent;
   height: 100%;
   margin: 0;
+  font-size: 14px;
+  overflow-wrap: break-word;
 `;
 
 function MindMapNode({ id, data, isCorrect }) {
