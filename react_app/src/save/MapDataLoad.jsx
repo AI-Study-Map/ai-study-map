@@ -6,7 +6,7 @@ const API_MAP_LOAD = "http://localhost:8000/api/load/map";
 const options = [
     { value: 'default', label: 'テーマを選択してください' },
     { value: 1, label: 'Python' },
-    { value: 2, label: '食べ物' },
+    { value: 2, label: 'アジアの郷土料理' },
 ];
 
 
