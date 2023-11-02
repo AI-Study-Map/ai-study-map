@@ -141,7 +141,7 @@ def gpt_calling(request):
             random_word_li = [random.choice(string.ascii_letters + string.digits) for i in range(10)]
             random_word = "".join(random_word_li)
 
-        guidance.llm= guidance.llms.OpenAI("gpt-3.5-turbo") 
+        guidance.llm= guidance.llms.OpenAI("gpt-4") 
         create_prompt = guidance("""
             {{#system~}}
                 あなたは、学ぶ人にとっての教科書として、わかりやすく丁寧な解説を日本語で提供する優秀なbotです。
@@ -152,17 +152,20 @@ def gpt_calling(request):
                 }'
             {{~/system}}
             {{#user~}}
-                pythonにおける{{question_title}}に関する解説文を作ってください。
+                アジアの郷土料理のの{{question_title}}に関する解説文を作ってください。
                 このテーマにおける解説をdescriptionとして、それに対応する例をexampleとしてください。
-                解説はなるべく詳細かつ網羅的である必要がありますが、300文字程度に収めてください。
+                解説はなるべく詳細かつ網羅的である必要があります。
                 例は簡潔に、分かりやすさを重視してください。
-                なお、descriptionとexampleの両方でマークダウン記法をフル活用し、分かりやすく表現してください。
+                #絶対条件
+                ・解説と例はそれぞれ、90字程度で自然に文章が終了するようにしてください。
+                ・****文章を途中で切って出力としないでください****
+                ・descriptionとexampleの両方でマークダウン記法をフル活用し、分かりやすく表現してください。
                 Be sure to output up to } to ensure that the output is not interrupted in the middle of the JSON format.
                 {{~! これより下の文字列はシステムメッセージのため無視してください ~}}
                 {{random_word}}
             {{~/user}}
             {{#assistant~}}
-                {{gen 'response' temperature=0.5 }}
+                {{gen 'response' temperature=0 }}
             {{/assistant~}}         
         """)
         out = create_prompt(question_title=question_title, random_word=random_word)
@@ -235,7 +238,7 @@ def question(request):
                 あなたは教科書の中の章のまとめとして4択問題を作り、JSON形式で返す優秀なbotです。
             {{~/system}}
             {{#user~}}
-                pythonにおける{{question_title}}に関する問題を日本語で作ってください。
+                アジアの郷土料理における{{question_title}}に関する問題を日本語で作ってください。
                 このトピックに使用した解説文と例は以下の通りです。
                 解説文: {{description}}
                 例: {{example}}        
