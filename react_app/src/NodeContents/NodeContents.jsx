@@ -119,6 +119,7 @@ function NodeContents(props) {
     }, [title]);
 
     const handleAddExplain = () => {
+        setIsAddExplain(true);
         //inputlogの最後の要素を取得し、文章を追加
         const thisTitle = title;
         const thisDescription = description;
@@ -136,12 +137,12 @@ function NodeContents(props) {
         console.log(chatReply);
         // responselogの最後の要素を取得、ChatGPTからの応答を繋げる
         setDescription(description + chatReply.add_description);
-        setIsAddExplain(true);
       });
     }
     
 
     const handleResend = () => {
+      setIsRegenerate(true);
       const thisId = id;
         fetch(`${API_HOST}`, {
             method: 'POST',
@@ -156,7 +157,6 @@ function NodeContents(props) {
           console.log("parsedContent", parsedContent);
           setDescription(parsedContent.description);
           setExample(parsedContent.example);
-          setIsRegenerate(true);
       });
     };
 

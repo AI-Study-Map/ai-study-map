@@ -17,7 +17,7 @@ const NodeContentsWrapper = styled.div`
   left: 0;
   z-index: 1000;
   pointer-events: auto;
-  width: 600px;
+  width: 500px;
   height: auto;
   overflow-x: auto; //はみ出したときスクロールバー
   background-color: #FAFFF7;
