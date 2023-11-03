@@ -19,13 +19,14 @@ const Button = styled.div`
 const Selecter = styled.div`
     padding: 0.5rem 1rem;
     margin: 3em 1em;
+    margin-bottom: 0em;
     
 `
 
 const API_MAP_LOAD = "http://localhost:8000/api/load/map";
 const options = [
     { value: 'default', label: 'テーマを選択してください' },
-    { value: 1, label: 'Python' },
+    // { value: 1, label: 'Python' },
     { value: 2, label: 'アジアの郷土料理' },
 ];
 
@@ -53,28 +54,28 @@ function NodeTreeMake() {
 
     // ボタンが押されたら、テーマに応じたマインドマップを作成
     const handleButton = () => {
-        console.log("LOAD START--- Map ID: ", selectedValue.value)
-        fetch(`${API_MAP_LOAD}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({"map_id": selectedValue.value}),
-          }).then((response) => response.json())
-          .then((data) => {
-                const parseData = JSON.parse(data) 
-                console.log("loaded data: ", parseData);
+        // console.log("LOAD START--- Map ID: ", selectedValue.value)
+        // fetch(`${API_MAP_LOAD}`, {
+        //     method: 'POST',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({"map_id": selectedValue.value}),
+        //   }).then((response) => response.json())
+        //   .then((data) => {
+        //         const parseData = JSON.parse(data) 
+        //         console.log("loaded data: ", parseData);
         
-                const tree = parseData.tree;
-                const mapId = parseData.mapId;
-                const themeName = parseData.theme_name;  
-                const nodes = JSON.stringify(parseData.node_list);
-                const edges = JSON.stringify(parseData.edge_list);
-                const nodesJSON = JSON.parse(nodes);
-                const edgesJSON = JSON.parse(edges);
-                setLoadedMapData(tree, mapId, themeName, nodesJSON, edgesJSON);
+        //         const tree = parseData.tree;
+        //         const mapId = parseData.mapId;
+        //         const themeName = parseData.theme_name;  
+        //         const nodes = JSON.stringify(parseData.node_list);
+        //         const edges = JSON.stringify(parseData.edge_list);
+        //         const nodesJSON = JSON.parse(nodes);
+        //         const edgesJSON = JSON.parse(edges);
+        //         setLoadedMapData(tree, mapId, themeName, nodesJSON, edgesJSON);
                 navigate("/map");
-            });
+            // });
     }
 
     return (
