@@ -72,6 +72,27 @@ const Flow = () =>  {
       >
         {/* <Background color="#FAFFF7" style={{"backgroundColor": "#FAFFF7"}}/> */}
         <Background color="#000"/>
+        <div
+            style={{
+              fontSize: "35px",
+              position: 'absolute',
+              top: '6.6%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 1000,
+              pointerEvents: 'none',
+            }}
+        >
+          <div
+              style={{
+                border: '2px solid #999',
+                padding: '30px 105px',
+                borderRadius: '10px',
+              }}
+          >
+            ナンを探し出せ！
+          </div>
+        </div>
         <Controls showInteractive={false} />
         
         <Panel position="top-left" className="header">
