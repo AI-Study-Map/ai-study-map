@@ -61,7 +61,7 @@ const P = styled.p`
   background: transparent;
   height: 100%;
   margin: 0;
-  font-size: 14px;
+  font-size: 18px;
   overflow-wrap: break-word;
 `;
 
