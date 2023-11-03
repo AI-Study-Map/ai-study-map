@@ -4,8 +4,8 @@ import useAddNode from '../node/useAddNode';
 import MapDataSave from '../save/MapDataSave';
 import MapDataLoad from '../save/MapDataLoad';
 import { useNavigate } from 'react-router-dom';
-import AiStudyMap_logo from './ai-study-map-logo.png';
-import AiStudyMap_logo2 from './AI-study-map_logo2.png';
+import AiStudyMap_logo from '../images/ai-study-map-logo.png';
+import AiStudyMap_logo2 from '../images/ai-study-map-logo2.png';
 
 const StyledHeader = styled.header`
   background-color: #FFE867;
