@@ -292,26 +292,8 @@ import {
                   ]
                 }
               ]
-            },
-            {
-              "name": "タイ",
-              "children": [
-                {
-                  "name": "スープ",
-                  "children": [
-                    { "name": "トムヤムクン", "children": [{ "name": "コンプリート！", "children": [] }] },
-                    { "name": "トムカーガイ", "children": [{ "name": "コンプリート！", "children": [] }] }
-                  ]
-                },
-                {
-                  "name": "タイの炒め物",
-                  "children": [
-                    { "name": "パッタイ", "children": [{ "name": "コンプリート！", "children": [] }] },
-                    { "name": "ガパオライス", "children": [{ "name": "コンプリート！", "children": [] }] }
-                  ]
-                }
-              ]
             }
+           
           ]
         },
         {
@@ -354,6 +336,25 @@ import {
                   ]
                 }
               ]
+            },
+            {
+              "name": "タイ",
+              "children": [
+                {
+                  "name": "スープ",
+                  "children": [
+                    { "name": "トムヤムクン", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "トムカーガイ", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                },
+                {
+                  "name": "タイの炒め物",
+                  "children": [
+                    { "name": "パッタイ", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "ガパオライス", "children": [{ "name": "コンプリート！", "children": [] }] }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -366,7 +367,7 @@ import {
                 {
                   "name": "ウズベキスタンのライス",
                   "children": [
-                    { "name": "プロフ", "children": [{ "name": "コンプリート！", "children": [] }] },
+                    { "name": "パロフ", "children": [{ "name": "コンプリート！", "children": [] }] },
                     { "name": "サムサ", "children": [{ "name": "コンプリート！", "children": [] }] }
                   ]
                 },
