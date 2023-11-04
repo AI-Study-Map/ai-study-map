@@ -15,11 +15,6 @@ import 'reactflow/dist/style.css';
 import Header from '../layout/Header';
 import QuestionMenu from './QuestionMenu';
 
-import { useState } from 'react';
-import Select from 'react-select';
-import styled from 'styled-components';
-import {Selecter} from './NodeTreeMake.jsx';
-
 const selector = (state) => ({
   nodes: state.nodes,
   edges: state.edges,
@@ -42,13 +37,6 @@ const nodeOrigin = [0.5, 0.5];
 
 const connectionLineStyle = { stroke: '#000', strokeWidth: 2 };
 const defaultEdgeOptions = { style: connectionLineStyle, type: 'mindmap' };
-const options = [
-  { value: 'default', label: 'テーマを選択してください' },
-  // { value: 1, label: 'Python' },
-  { value: 2, label: '難易度：低' },
-  { value: 3, label: '難易度：中' },
-  { value: 4, label: '難易度：高' },
-];
 
 const Flow = () =>  {
   const { nodes, edges, onNodesChange, onEdgesChange } = useStore(
@@ -61,7 +49,6 @@ const Flow = () =>  {
       setQuestionMenu: state.setQuestionMenu,
     })
   );
-  const [selectedValue, setSelectedValue] = useState(options[0]);
 
   // const defaultViewport = { x: 500, y: 500, zoom: 1.0 };
 
@@ -103,14 +90,7 @@ const Flow = () =>  {
                 borderRadius: '10px',
               }}
           >
-            {}を探し出せ！
-          <Selecter>
-          <Select
-          options={options}
-          defaultValue={selectedValue}
-          onChange={(value) => { setSelectedValue(value); }}
-          />
-          </Selecter>
+            ナンを探し出せ！
           </div>
         </div>
         <Controls showInteractive={false} />
