@@ -62,19 +62,19 @@ const LeftSection = styled.div` // コンテナ左
   padding: 1rem 2rem;
   flex: 0.5;
   margin: 2rem 0 2rem 8rem;
-  min-width: 670px;
   .logo {
     display: flex; // ロゴとアプリ説明を横並び
   }
 
   .logo img{
-    width: 300px;
-    height: 300px;
+    width: 280px;
+    height: 280px;
   }
 
   .logo h1 {
     color: #17594A;
     max-height: 300px;
+    font-size: 25px;
     text-align: center;
     line-height: 1.5em;
     padding-left: 1em;
@@ -82,7 +82,7 @@ const LeftSection = styled.div` // コンテナ左
   }
   p {
     color: #213363;
-    font-size: 30px;
+    font-size: 25px;
     line-height: 1.5em;
     margin-top: 2rem;
     background-color: #FAFFF7;
@@ -204,7 +204,7 @@ function Top() {
         <LeftSection>
           <div className="logo">
             <img src={TopLogo} alt="toplogo" />
-            <h1>AI Study Mapは<br />誰でも手軽に素早く<br />体系的に学習できる<br />Webアプリです</h1>
+            <h1>AI Study Mapは<br />誰でも手軽に素早く体系的に学習できるWebアプリです</h1>
           </div>
             <p>
               マインドマップを活用しゲーム感覚で楽しく学ぶことができます。<br/>
@@ -215,7 +215,7 @@ function Top() {
         <>
         <Starter>
         <h1>はじめる</h1>
-        <p>下記のメニューからテーマを選択して宝探しを始めましょう</p>
+        <p>下記のメニューから難易度を選択して宝探しを始めましょう</p>
         </Starter>
         <Selecter>
         <Select
