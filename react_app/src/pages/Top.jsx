@@ -33,8 +33,9 @@ const API_MAP_LOAD = "http://localhost:8000/api/load/map";
 const options = [
     { value: 'default', label: '難易度を選択してください' },
     // { value: 1, label: 'Python' },
+    { value: "すし", label: '超簡単' },
     { value: "ナン", label: '簡単' },
-    { value: "ロティ", label: '普通' },
+    { value: "トムヤムクン", label: '普通' },
     { value: "コムタム", label: '難しい'} ,
 ];
 
