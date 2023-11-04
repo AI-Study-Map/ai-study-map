@@ -16,7 +16,7 @@ const Starter = styled.div`
 const Button = styled.div`
     text-align: right;
 `
-const Selecter = styled.div`
+export const Selecter = styled.div`
     padding: 0.5rem 1rem;
     margin: 3em 1em;
     margin-bottom: 0em;
