@@ -12,7 +12,7 @@ import Page404 from './pages/Page404';
 function Index () {
   return (
     <ReactFlowProvider>
-      <Flow/>
+      <Flow />
     </ReactFlowProvider>
   )
 };

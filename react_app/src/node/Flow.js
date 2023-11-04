@@ -43,12 +43,14 @@ const Flow = () =>  {
     selector,
     shallow,
   );
-  const{ questionMenuIsOpen, setQuestionMenu } = useStore(
+  const{ questionMenuIsOpen, setQuestionMenu, valuea } = useStore(
     state => ({
       questionMenuIsOpen: state.questionMenuIsOpen,
       setQuestionMenu: state.setQuestionMenu,
+      valuea: state.valuea,
     })
   );
+  console.log(valuea);
 
   // const defaultViewport = { x: 500, y: 500, zoom: 1.0 };
 
@@ -90,7 +92,7 @@ const Flow = () =>  {
                 borderRadius: '10px',
               }}
           >
-            ナンを探し出せ！
+            {valuea}を探し出せ！
           </div>
         </div>
         <Controls showInteractive={false} />

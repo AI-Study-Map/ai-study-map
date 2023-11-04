@@ -405,6 +405,9 @@ import {
     setLoadedMapData(tree, mapId, themeName, nodes, edges) {
       set({ tree: tree, mapId: mapId, themeName: themeName, nodes: nodes, edges: edges })
     },
+
+    valuea: null,
+    setValuea: (value) => set({ valuea: value }),
   }));
   
   export default useStore;
