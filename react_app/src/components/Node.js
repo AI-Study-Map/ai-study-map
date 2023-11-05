@@ -1,5 +1,5 @@
 import { useLayoutEffect, useEffect, useRef, useState } from 'react';
-import { Handle, Position } from 'reactflow';
+import { Handle, Position, useReactFlow, useStoreApi } from 'reactflow';
 
 import useStore from '../node/store';
 import { styled } from 'styled-components';
@@ -65,7 +65,7 @@ const P = styled.p`
   overflow-wrap: break-word;
 `;
 
-function MindMapNode({ id, data, isCorrect }) {
+function MindMapNode({ id, data, isCorrect,}) {
   const inputRef = useRef(null);
   const [isCorrectLocal, setIsCorrectLocal] = useState(isCorrect)
 
@@ -75,12 +75,32 @@ function MindMapNode({ id, data, isCorrect }) {
     toggleNodeFlipped: state.toggleNodeFlipped
   }));
 
+  // const { setCenter } = useReactFlow();
+
   const flipped = getNodeFlippedStatus(id);
 
   const getIsCorrectById = (nodes, targetId) => {
     const node = nodes.find(node => node.id === targetId);
     return node ? node.isCorrect : null;
   };
+
+  // const getPositionById = (nodes, targetId) => {
+  //   const node = nodes.find(node => node.id === targetId);
+  //   return node ? node.position : null;
+  // };
+
+  // const focusNode = () => {
+  //   if (!flipped && nodes.length > 0) {
+  //     const posi = getPositionById(nodes, id);
+  //     const node = nodes[1];
+
+  //     const x = posi.x + node.width / 2;
+  //     const y = posi.y + node.height / 2 + (posi.y * 1.1);
+  //     const zoom = 1.30;
+
+  //     setCenter(x, y, { zoom, duration: 1000 });
+  //   }
+  // };
 
   useEffect(() => {
     const gotIsCorrect = getIsCorrectById(nodes, id);
@@ -102,6 +122,7 @@ function MindMapNode({ id, data, isCorrect }) {
 
   const onNodeClick = () => {
     toggleNodeFlipped(id);
+    // focusNode()
     console.log("onNodeClick: ", flipped);
   };
 
