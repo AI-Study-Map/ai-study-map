@@ -1,6 +1,7 @@
 import { useLayoutEffect, useEffect, useRef, useState } from 'react';
 import { Handle, Position, useReactFlow, useStoreApi } from 'reactflow';
 
+
 import useStore from '../node/store';
 import { styled } from 'styled-components';
 import SwitchBtn from './SwitchBtn';
@@ -120,7 +121,8 @@ function MindMapNode({ id, data, isCorrect,}) {
     }
   }, [data.label]);
 
-  const onNodeClick = () => {
+  const onNodeClick = (e) => {
+    e.preventDefault();
     toggleNodeFlipped(id);
     // focusNode()
     console.log("onNodeClick: ", flipped);
@@ -128,7 +130,7 @@ function MindMapNode({ id, data, isCorrect,}) {
 
   return (
     <NodeContainer>
-      <InputWrapper className="inputWrapper" id={id} isCorrect={isCorrectLocal} onClick={() => onNodeClick()}>
+      <InputWrapper className="inputWrapper" id={id} isCorrect={isCorrectLocal} onContextMenu={(e) => onNodeClick(e)}>
         <DragHandleArea className="dragHandle">
           <P
             value={data.label}
