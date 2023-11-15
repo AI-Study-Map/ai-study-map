@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useEffect, useRef, useState, MouseEvent } from 'react';
 import { Handle, Position } from 'reactflow';
 
 import useStore from '../node/store';
@@ -100,14 +100,15 @@ function MindMapNode({ id, data, isCorrect }) {
     }
   }, [data.label]);
 
-  const onNodeClick = () => {
+  const onNodeClick = (e) => {
+    e.preventDefault();
     toggleNodeFlipped(id);
     console.log("onNodeClick: ", flipped);
   };
 
   return (
     <NodeContainer>
-      <InputWrapper className="inputWrapper" id={id} isCorrect={isCorrectLocal} onClick={() => onNodeClick()}>
+      <InputWrapper className="inputWrapper" id={id} isCorrect={isCorrectLocal} onContextMenu={(e) => onNodeClick(e)}>
         <DragHandleArea className="dragHandle">
           <P
             value={data.label}
