@@ -1,11 +1,20 @@
 import { useLayoutEffect, useEffect, useRef, useState } from 'react';
 import { Handle, Position, useReactFlow, useStoreApi } from 'reactflow';
-
-
 import useStore from '../node/store';
 import { styled } from 'styled-components';
 import SwitchBtn from './SwitchBtn';
 import NodeContents from '../NodeContents/NodeContents';
+
+const TestDiv = styled.div`
+  background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(wood.png)": (props.isCorrect ? "url(leaf_yellow.png)" : "url(leaf_green.png)") };
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: ${(props) => (props.id === "root" || props.id === "root2") ? "730px": "80px" };
+  width: 400px;
+  position: absolute;
+  top: ${(props) => (props.id === "root" || props.id === "root2") ? "-220px": "-20px" };
+  left: ${(props) => (props.id === "root" || props.id === "root2") ? "-115px": "-20px" };
+`
 
 const NodeContainer = styled.div`
   position: relative;
@@ -29,12 +38,13 @@ const NodeContentsWrapper = styled.div`
       line-height: 1.3em;
     }
 `;
-
 const InputWrapper = styled.div`
-  background-color: ${(props) => (props.id === "root" || props.id === "root2") ? "#17594A": (props.isCorrect ? "#FFE867" : "#7BC74D") };
+  /* background-color: ${(props) => (props.id === "root" || props.id === "root2") ? "#9C8468": (props.isCorrect ? "#FFE867" : "#7BC74D") }; */
+  background-color: transparent;
   border-radius: 10px;
   z-index: 10000;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: ${(props) => (props.id === "root" || props.id === "root2") ? "none": "none" };
+  /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
   &:hover {
     transform: scale(1.05);
   }
@@ -129,9 +139,11 @@ function MindMapNode({ id, data, isCorrect,}) {
   };
 
   return (
-    <NodeContainer>
+    <>
+    <TestDiv id={id} isCorrect={isCorrectLocal} />
+    <NodeContainer id={id}>
       <InputWrapper className="inputWrapper" id={id} isCorrect={isCorrectLocal} onContextMenu={(e) => onNodeClick(e)}>
-        <DragHandleArea className="dragHandle">
+        <DragHandleArea id={id} className="dragHandle">
           <P
             value={data.label}
             className="input"
@@ -141,7 +153,6 @@ function MindMapNode({ id, data, isCorrect,}) {
           >{data.label}</P>
          <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/>
         </DragHandleArea>
-        
       </InputWrapper>
       {flipped && (
         <NodeContentsWrapper>
@@ -152,6 +163,7 @@ function MindMapNode({ id, data, isCorrect,}) {
       <Handle type="target" position={Position.Top} />
       <Handle type="source" position={Position.Top} />
     </NodeContainer>
+    </>
   );
 }
 
