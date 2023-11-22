@@ -1,8 +1,9 @@
-import NodeTreeMake from "../node/NodeTreeMake";
+import NodeTreeChoice from "../node/NodeTreeChoice";
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import Header from "../layout/Header";
 import TopLogo from '../images/TopLogo.png'
+import NodeTreeMake from "../node/NodeTreeMake";
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -128,6 +129,7 @@ function Top() {
             </p>
         </LeftSection>
         <RightSection>
+          <NodeTreeChoice />
           <NodeTreeMake />
         </RightSection>
       </Container>

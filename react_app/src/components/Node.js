@@ -30,7 +30,7 @@ const NodeContentsWrapper = styled.div`
 `;
 
 const InputWrapper = styled.div`
-  background-color: ${(props) => (props.id === "root" || props.id === "root2") ? "#17594A": (props.isCorrect ? "#FFE867" : "#7BC74D") };
+  background-color: ${(props) => props.isRootNode ? "#17594A": (props.isCorrect ? "#FFE867" : "#7BC74D") };
   border-radius: 10px;
   z-index: 10000;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -53,7 +53,7 @@ const DragHandleArea = styled.div`
 `
 
 const P = styled.p`
-  color: ${(props) => props.isCorrect && props.id !== "root" ? "#7BC74D" : "#FAFFF7"};
+  color: ${(props) => props.isCorrect && props.isRootNode ? "#7BC74D" : "#FAFFF7"};
   width: 600px;
   border-radius: 10px;
   font-weight: 700;
@@ -65,9 +65,10 @@ const P = styled.p`
   overflow-wrap: break-word;
 `;
 
-function MindMapNode({ id, data, isCorrect }) {
+function MindMapNode({ id, data, isCorrect}) {
   const inputRef = useRef(null);
-  const [isCorrectLocal, setIsCorrectLocal] = useState(isCorrect)
+  const [isCorrectLocal, setIsCorrectLocal] = useState(isCorrect);
+  const [isRootNode, setIsRootNode] = useState(false);
 
   const { nodes, getNodeFlippedStatus, toggleNodeFlipped } = useStore(state => ({
     nodes: state.nodes,
@@ -87,10 +88,15 @@ function MindMapNode({ id, data, isCorrect }) {
     setIsCorrectLocal(gotIsCorrect);
   }, [nodes, id])
 
+  
   useEffect(() => {
     setTimeout(() => {
       inputRef.current?.focus({ preventScroll: true });
     }, 1);
+    //iddが1のnodeのidとこのnodeのidが一致したらisRootNodeをtrueにset
+    if (id === nodes[0].id) {
+      setIsRootNode(true);
+    }
   }, []);
 
   useLayoutEffect(() => {
@@ -107,7 +113,7 @@ function MindMapNode({ id, data, isCorrect }) {
 
   return (
     <NodeContainer>
-      <InputWrapper className="inputWrapper" id={id} isCorrect={isCorrectLocal} onClick={() => onNodeClick()}>
+      <InputWrapper className="inputWrapper" id={id} isCorrect={isCorrectLocal} isRootNode={isRootNode} onClick={() => onNodeClick()}>
         <DragHandleArea className="dragHandle">
           <P
             value={data.label}
@@ -115,6 +121,7 @@ function MindMapNode({ id, data, isCorrect }) {
             ref={inputRef}
             id={id}
             isCorrect={isCorrectLocal}
+            isRootNode={isRootNode}
           >{data.label}</P>
          <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/>
         </DragHandleArea>
