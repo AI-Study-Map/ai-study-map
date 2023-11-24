@@ -46,6 +46,33 @@ const StyledButton = styled.button`
   }
 `;
 
+const StyledButtonFirst = styled.button`
+  border-radius: 10px;
+  background-color: #FFE867;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border: none; // デフォルトのボーダーを削除（必要に応じて）
+  cursor: pointer; // ボタンにマウスカーソルが乗ったときのスタイル
+  padding: 4px 8px; // ボタンのパディング（必要に応じて）
+  width: 120px;
+  // font
+  color: var(--1, #17594A);
+  text-align: center;
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 1000;
+  line-height: normal;
+  margin: auto;
+  width: 160px;
+  &:hover {
+    background-color: #FFD433; // ボタンにマウスカーソルが乗ったときの背景色
+  }
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
 const StyledButtonGreen = styled(StyledButton)`
   background-color: #7BC74D;
   align-items: center;
@@ -81,8 +108,10 @@ function NodeContents(props) {
     const [example, setExample] = useState('');
     const [isAddExplain, setIsAddExplain] = useState(false);
     const [isRegenerate, setIsRegenerate] = useState(false);
-    const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, 
-      setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId
+    const [isRootNodeLocal, setIsRootNodeLocal] = useState(false);
+    const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodes,
+      setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId, appendFirstNodes,
+      firstNodes
     } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -93,29 +122,48 @@ function NodeContents(props) {
           setQuestion: state.setQuestion,
           mapId: state.mapId,
           setSelectedNodeId: state.setSelectedNodeId,
+          nodes: state.nodes,
+          appendFirstNodes: state.appendFirstNodes,
+          firstNodes: state.firstNodes,
         })
       );
+
+      const checkIsRootNode = () => {
+        if (id === nodes[0].id) {
+          return true;
+        }
+      }
 
     useEffect(() => {
       // titleが変更されると実行される
       console.log("title: ", title);
       console.log("selectedNodeId:", selectedNodeId);
-      fetch(`${API_HOST}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nodeId: id, mapId: mapId, user_input: title, resend: "false" }),
-      })
-      .then((response) => response.json())
-      .then((data) => {
-      // ChatGPTからの応答をパースして、説明文と例文を取得、set
-      console.log("data", data);
-      const parsedContent = JSON.parse(data);
-          console.log("parsedContent", parsedContent);
-          setDescription(parsedContent.description);
-          setExample(parsedContent.example);
-      });
+      const isRootNode = checkIsRootNode();
+      setIsRootNodeLocal(isRootNode);
+      if (isRootNode) {
+        const description = "このマップのテーマです。\n\n";
+        const example = "学習を始める を押して、木に最初の葉っぱを付けましょう！";
+        setDescription(description);
+        setExample(example);
+      }
+      else {
+        fetch(`${API_HOST}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ nodeId: id, mapId: mapId, user_input: title, resend: "false" }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+        // ChatGPTからの応答をパースして、説明文と例文を取得、set
+        console.log("data", data);
+        const parsedContent = JSON.parse(data);
+            console.log("parsedContent", parsedContent);
+            setDescription(parsedContent.description);
+            setExample(parsedContent.example);
+        });
+      }
     }, [title]);
 
     const handleAddExplain = () => {
@@ -123,20 +171,21 @@ function NodeContents(props) {
         //inputlogの最後の要素を取得し、文章を追加
         const thisTitle = title;
         const thisDescription = description;
+        const thisId = id;
         
         fetch(`${API_HOST_DESCRIPTION}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"title": thisTitle, "mapId": mapId, "description": thisDescription }),
+            body: JSON.stringify({"title": thisTitle, "nodeId": thisId, "mapId": mapId, "description": thisDescription }),
           })
         .then((response) => response.json())
         .then((data) => {
         const chatReply = JSON.parse(data);
         console.log(chatReply);
         // responselogの最後の要素を取得、ChatGPTからの応答を繋げる
-        setDescription(description + chatReply.add_description);
+        setDescription(description + "\n\n" + chatReply.add_description);
       });
     }
     
@@ -198,6 +247,15 @@ function NodeContents(props) {
           setQuestionTitle(title);
           setQuestionMenu(true);
     }
+    
+    const handleAddFirstNode = () => {
+      appendFirstNodes(firstNodes);
+    }
+
+    useEffect(() => {
+      console.log("SSSS");
+    }
+    , [firstNodes]);
 
     return (
         <NodeContentsArea className='NodeContents' >
@@ -207,6 +265,8 @@ function NodeContents(props) {
                 <ReactMarkdown>{example}</ReactMarkdown>
             </ResponseLogArea>
             <ButtonContainer id='buttons'>
+              {isRootNodeLocal ? <StyledButtonFirst id='addFirstNode' onClick={handleAddFirstNode}>学習を始める</StyledButtonFirst>
+              : <>
                 <StyledButton id='addQuestion' onClick={handleAddQuestion}>問題作成</StyledButton>
                 <StyledButton id='addExplain' onClick={handleAddExplain} disabled={isAddExplain}>説明文追加</StyledButton>
                 <StyledButtonGreen id='regenerate'onClick={handleResend} disabled={isRegenerate}>
@@ -215,6 +275,8 @@ function NodeContents(props) {
                     <path d="M17.5 32.0833C15.6771 32.0833 13.9694 31.7367 12.3769 31.0435C10.7844 30.3504 9.39896 29.4151 8.22062 28.2377C7.04229 27.0584 6.10701 25.673 5.41479 24.0815C4.72257 22.4899 4.37597 20.7822 4.375 18.9583C4.375 18.5451 4.515 18.1985 4.795 17.9185C5.075 17.6385 5.42111 17.499 5.83333 17.5C6.24653 17.5 6.59312 17.64 6.87312 17.92C7.15312 18.2 7.29264 18.5461 7.29167 18.9583C7.29167 21.8021 8.28236 24.2147 10.2637 26.196C12.2451 28.1774 14.6572 29.1676 17.5 29.1667C20.3437 29.1667 22.7563 28.176 24.7377 26.1946C26.7191 24.2132 27.7093 21.8011 27.7083 18.9583C27.7083 16.1146 26.7176 13.702 24.7362 11.7206C22.7549 9.73924 20.3428 8.74903 17.5 8.75H17.2812L18.5208 9.98959C18.8125 10.2813 18.9525 10.6215 18.9408 11.0104C18.9292 11.3993 18.7892 11.7396 18.5208 12.0313C18.2292 12.3229 17.8831 12.4751 17.4825 12.4877C17.0819 12.5003 16.7353 12.3603 16.4427 12.0677L12.6875 8.3125C12.3958 8.02084 12.25 7.68056 12.25 7.29167C12.25 6.90278 12.3958 6.5625 12.6875 6.27084L16.4427 2.51563C16.7344 2.22396 17.081 2.08396 17.4825 2.09563C17.884 2.1073 18.2301 2.25945 18.5208 2.55209C18.7882 2.84375 18.9282 3.18403 18.9408 3.57292C18.9535 3.96181 18.8135 4.30209 18.5208 4.59375L17.2812 5.83334H17.5C19.3229 5.83334 21.0306 6.17993 22.6231 6.87313C24.2156 7.56632 25.601 8.50209 26.7794 9.68042C27.9577 10.8588 28.8935 12.2442 29.5867 13.8367C30.2799 15.4292 30.626 17.1364 30.625 18.9583C30.625 20.7813 30.2784 22.489 29.5852 24.0815C28.892 25.674 27.9567 27.0594 26.7794 28.2377C25.6001 29.416 24.2147 30.3518 22.6231 31.045C21.0316 31.7382 19.3239 32.0843 17.5 32.0833Z"/>
                   </RegenerateSvg>
                 </StyledButtonGreen>
+              </>
+            }
             </ButtonContainer>
         </NodeContentsArea>
 

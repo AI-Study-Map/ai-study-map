@@ -28,10 +28,11 @@ const API_MAP_MAKE = "http://localhost:8000/api/gpt_calling/make_map";
 function NodeTreeMake() {
     const [formData, setFormData] = useState("");
     const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
-    const{ setLoadedMapData
+    const{ setLoadedMapData, setFirstLoadedMap
       } = useStore(
           state => ({
             setLoadedMapData: state.setLoadedMapData,
+            setFirstLoadedMap: state.setFirstLoadedMap,
           })
         );
     const navigate = useNavigate();
@@ -71,7 +72,10 @@ function NodeTreeMake() {
                 const edges = JSON.stringify(parseData.edge_list);
                 const nodesJSON = JSON.parse(nodes);
                 const edgesJSON = JSON.parse(edges);
-                setLoadedMapData(tree, mapId, themeName, nodesJSON, edgesJSON);
+                const RootNode = [nodesJSON[0]];
+                const FirstNode = [nodesJSON[1], nodesJSON[2], nodesJSON[3], nodesJSON[4]];
+                setFirstLoadedMap(FirstNode);
+                setLoadedMapData(tree, mapId, themeName, RootNode, edgesJSON);
                 console.log("NODES:", nodesJSON);
                 navigate("/map");
             });

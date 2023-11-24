@@ -210,7 +210,7 @@ def gpt_calling(request):
 def question(request):
     node_id = request.data['nodeId']
     map_id = request.data['mapId']
-    #Nodeテーブルにnode_idのレコードが存在し、かつ、questionが存在する場合はそれを返す
+    # Nodeテーブルにnode_idのレコードが存在し、かつ、questionが存在する場合はそれを返す
     if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists() and Node.objects.filter(map_id=map_id).get(node_id=node_id).question != None:
         print("NODE ID AND QUESTION EXISTS")
         node = Node.objects.get(node_id=node_id)
@@ -292,7 +292,7 @@ def question(request):
         else:
             print("SERIALIZE ERROR")
             print(serializer.errors)
-        
+
         return Response(json.dumps(serializer.validated_data))
 
 #送られたdescriptionが不十分だった場合に、descriptionに後付けで追加する
@@ -300,6 +300,8 @@ def question(request):
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def add_description(request):
+    map_id = request.data['mapId']
+    node_id = request.data['nodeId']
     title = request.data['title']
     description = request.data['description']
     guidance.llm= guidance.llms.OpenAI("gpt-3.5-turbo")
@@ -332,6 +334,19 @@ def add_description(request):
         result = out["add_description"] + "\"}\n"
     else:
         result = out["add_description"] + "\n"
+    
+    json_result = json.loads(result)
+    add_description = json_result["add_description"]
+    description = description + '\n\n' + add_description
+    if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists():
+        node = Node.objects.filter(map_id=map_id).get(node_id=node_id)
+        serializer = DescriptionSerializer(instance=node, data={"node_id": node_id, 'map_id': map_id, "title": title, "description": description})
+        if serializer.is_valid():
+            print("SERIALIZER IS VALID")
+            serializer.save()
+        else:
+            print("SERIALIZE ERROR")
+            print(serializer.errors)
     return Response(result)
 
 #make_mapで使用する関数
@@ -368,68 +383,128 @@ def count_json_tree(json_tree):
 @renderer_classes([JSONRenderer])
 def make_map(request):
     print("MAKE MAP")
-    # map_id = request.data['map_id']
-    # theme = request.data['theme']
+    map_id = request.data['map_id']
+    theme = request.data['theme']
 
-    # random_word_li = [random.choice(string.ascii_letters + string.digits) for i in range(10)]
-    # random_word = "".join(random_word_li)
+    random_word_li = [random.choice(string.ascii_letters + string.digits) for i in range(10)]
+    random_word = "".join(random_word_li)
 
-    # #themeに対応する木構造を生成
-    # guidance.llm = guidance.llms.OpenAI(model="gpt-4")
-    # create_prompt = guidance("""
-    #     {{#system~}}
-    #         あなたは{{theme}}について詳しい教師です。あなたには分かりやすい学習教材を作る能力があります。
-    #     {{~/system}}
-    #     {{#user~}}
-    #         {{theme}}の学習を効率的に行うために、以下の絶対条件をもとに木構造を作ってください。
-    #         #絶対条件
-    #         1. ノード数は合計で60個
-    #         2. 深さは5
-    #         3. ルートノードである{{theme}}からは4つの子ノードを付けてください。
-    #         4. 学ぶにあたって推奨される順番が分かるよう、priorityを連番で振ってください。
-    #         5. priorityは学ぶべき順番なので、発展的な内容のpriorityの値が高くなるようにしてください。
-    #         5. 深さが浅いほど基本的な内容、深いほど応用的な内容となるようにしてください。
-    #         6. 木構造のみを記述してください。
-    #         7. 木構造は全て日本語で記述してください。
-    #         {{~! これより下の文字列はシステムメッセージのため無視してください ~}}
-    #         {{random_word}}
-    #     {{~/user}}
-    #     {{#assistant~}}
-    #         {{gen 'response' temperature=1.0 max_tokens=7800}} }}
-    #     {{/assistant~}}           
-    # """)
-    # out = create_prompt(theme=theme, random_word=random_word)
-    # print("MAKE MAP RESPONSE", out)
-    # response = out["response"]
+    #themeに対応する木構造を生成
+    guidance.llm = guidance.llms.OpenAI(model="gpt-4")
+    create_prompt = guidance("""
+        {{#system~}}
+            あなたは{{theme}}について詳しい教師です。あなたには分かりやすい学習教材を作る能力があります。
+        {{~/system}}
+        {{#user~}}
+            {{theme}}の学習を効率的に行うために、以下の絶対条件をもとに木構造を作ってください。
+            #絶対条件
+            1. ノード数は合計で60個
+            2. 深さは5
+            3. ルートノードである{{theme}}からは4つの子ノードを付けてください。
+            4. 学ぶにあたって推奨される順番が分かるよう、priorityを連番で振ってください。
+            5. priorityは学ぶべき順番なので、発展的な内容のpriorityの値が高くなるようにしてください。
+            5. 深さが浅いほど基本的な内容、深いほど応用的な内容となるようにしてください。
+            6. 木構造のみを記述してください。
+            7. 木構造は全て日本語で記述してください。
+            {{~! これより下の文字列はシステムメッセージのため無視してください ~}}
+            {{random_word}}
+        {{~/user}}
+        {{#assistant~}}
+            {{gen 'response' temperature=1.0 max_tokens=7800}} }}
+        {{/assistant~}}           
+    """)
+    out = create_prompt(theme=theme, random_word=random_word)
+    print("MAKE MAP RESPONSE", out)
+    response = out["response"]
 
-    # #作成された木構造をJSON形式に変換
-    # content = """Please convert the following data to JSON format. Please exclude superfluous text. 
-    # {{
-    #     name: node_name,
-    #     priority: priority,
-    #     children: [
-    #         name: node_name,
-    #         priority: priority,
-    #         children:[]
-    #     ]
-    # }}
-    # data: {response}""".format(response=response)
-    # res = openai.ChatCompletion.create(
-    #     model="gpt-3.5-turbo-1106",
-    #     response_format={"type": "json_object"},
-    #     messages=[
-    #         {"role": "system", "content": "You are a bot that creates a tree structure"},
-    #         {"role": "user", "content": content},
-    #     ]
-    # )
-    # json_tree = res.choices[0].message.content
-    # print("JSON_TREE: ", json_tree)
-    # #フロントで必要なキーを追加
-    # json_tree = json.loads(json_tree)
-    # check_and_add_key(json_tree)
-    map_id = "1000"
-    theme = "Python"
-    json_tree = {'name': 'Python', 'priority': 1, 'children': [{'name': '基本文法', 'priority': 2, 'children': [{'name': '変数と型', 'priority': 8, 'children': [{'name': '数値', 'priority': 24, 'children': [], 'id': None}, {'name': '文字列', 'priority': 25, 'children': [], 'id': None}, {'name': 'リスト', 'priority': 26, 'children': [], 'id': None}, {'name': '辞書', 'priority': 27, 'children': [], 'id': None}], 'id': None}, {'name': '演算子', 'priority': 9, 'children': [], 'id': None}, {'name': '制御構文', 'priority': 10, 'children': [{'name': '条件分岐(if)', 'priority': 28, 'children': [], 'id': None}, {'name': 'ループ(for,while)', 'priority': 29, 'children': [], 'id': None}, {'name': '内包表記', 'priority': 30, 'children': [], 'id': None}], 'id': None}, {'name': '関数', 'priority': 11, 'children': [{'name': 'ユーザー定義関数', 'priority': 31, 'children': [], 'id': None}, {'name': 'ラムダ関数', 'priority': 32, 'children': [], 'id': None}, {'name': 'ビルトイン関数', 'priority': 33, 'children': [], 'id': None}], 'id': None}], 'id': None}, {'name': 'ライブラリ活用', 'priority': 3, 'children': [{'name': 'numpy', 'priority': 12, 'children': [], 'id': None}, {'name': 'pandas', 'priority': 13, 'children': [], 'id': None}, {'name': 'matplotlib', 'priority': 14, 'children': [], 'id': None}, {'name': 'scikit-learn', 'priority': 15, 'children': [], 'id': None}], 'id': None}, {'name': 'データ分析', 'priority': 4, 'children': [{'name': 'データクレンジング', 'priority': 16, 'children': [], 'id': None}, {'name': 'EDA', 'priority': 17, 'children': [{'name': '統計量計算', 'priority': 34, 'children': [], 'id': None}, {'name': 'データ可視化', 'priority': 35, 'children': [], 'id': None}, {'name': 'コレーション分析', 'priority': 36, 'children': [], 'id': None}], 'id': None}, {'name': 'モデル作成', 'priority': 18, 'children': [{'name': '教師あり学習', 'priority': 37, 'children': [{'name': '回帰', 'priority': 46, 'children': [], 'id': None}, {'name': '分類', 'priority': 47, 'children': [], 'id': None}], 'id': None}, {'name': '教師なし学習', 'priority': 38, 'children': [{'name': 'クラスタリング', 'priority': 48, 'children': [], 'id': None}, {'name': '次元削減', 'priority': 49, 'children': [], 'id': None}], 'id': None}], 'id': None}], 'id': None}, {'name': 'Web開発', 'priority': 5, 'children': [{'name': 'Flask', 'priority': 19, 'children': [], 'id': None}, {'name': 'Django', 'priority': 20, 'children': [{'name': 'ルーティング', 'priority': 39, 'children': [], 'id': None}, {'name': 'ビューとテンプレート', 'priority': 40, 'children': [], 'id': None}, {'name': 'データベースとモデル', 'priority': 41, 'children': [], 'id': None}, {'name': 'ユーザの認証と権限管理', 'priority': 42, 'children': [], 'id': None}], 'id': None}, {'name': 'REST API', 'priority': 21, 'children': [{'name': 'APIの設計', 'priority': 43, 'children': [], 'id': None}, {'name': '状態コード', 'priority': 44, 'children': [], 'id': None}, {'name': 'CRUD操作', 'priority': 45, 'children': [], 'id': None}], 'id': None}, {'name': '非同期処理', 'priority': 22, 'children': [{'name': 'マルチスレッド', 'priority': 50, 'children': [], 'id': None}, {'name': 'マルチプロセス', 'priority': 51, 'children': [], 'id': None}, {'name': 'コルーチンとasyncio', 'priority': 52, 'children': [], 'id': None}], 'id': None}], 'id': None}], 'id': None}
+    #作成された木構造をJSON形式に変換
+    content = """Please convert the following data to JSON format. Please exclude superfluous text. 
+    {{
+        name: node_name,
+        priority: priority,
+        children: [
+            name: node_name,
+            priority: priority,
+            children:[]
+        ]
+    }}
+    data: {response}""".format(response=response)
+    res = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-1106",
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": "You are a bot that creates a tree structure"},
+            {"role": "user", "content": content},
+        ]
+    )
+    json_tree = res.choices[0].message.content
+    print("JSON_TREE: ", json_tree)
+    #フロントで必要なキーを追加
+    json_tree = json.loads(json_tree)
+    check_and_add_key(json_tree)
+    # map_id = "test5"
+    # theme = "ノード名重複テスト3"
+    # json_tree = {'name': 'Python', 'priority': 1, 'children': [{'name': '基本文法', 'priority': 2, 'children': [{'name': '変数と型', 'priority': 8, 'children': [{'name': '数値', 'priority': 24, 'children': [], 'id': None}, {'name': '文字列', 'priority': 25, 'children': [], 'id': None}, {'name': 'リスト', 'priority': 26, 'children': [], 'id': None}, {'name': '辞書', 'priority': 27, 'children': [], 'id': None}], 'id': None}, {'name': '演算子', 'priority': 9, 'children': [], 'id': None}, {'name': '制御構文', 'priority': 10, 'children': [{'name': '条件分岐(if)', 'priority': 28, 'children': [], 'id': None}, {'name': 'ループ(for,while)', 'priority': 29, 'children': [], 'id': None}, {'name': '内包表記', 'priority': 30, 'children': [], 'id': None}], 'id': None}, {'name': '関数', 'priority': 11, 'children': [{'name': 'ユーザー定義関数', 'priority': 31, 'children': [], 'id': None}, {'name': 'ラムダ関数', 'priority': 32, 'children': [], 'id': None}, {'name': 'ビルトイン関数', 'priority': 33, 'children': [], 'id': None}], 'id': None}], 'id': None}, {'name': 'ライブラリ活用', 'priority': 3, 'children': [{'name': 'numpy', 'priority': 12, 'children': [], 'id': None}, {'name': 'pandas', 'priority': 13, 'children': [], 'id': None}, {'name': 'matplotlib', 'priority': 14, 'children': [], 'id': None}, {'name': 'scikit-learn', 'priority': 15, 'children': [], 'id': None}], 'id': None}, {'name': 'データ分析', 'priority': 4, 'children': [{'name': 'データクレンジング', 'priority': 16, 'children': [], 'id': None}, {'name': 'EDA', 'priority': 17, 'children': [{'name': '統計量計算', 'priority': 34, 'children': [], 'id': None}, {'name': 'データ可視化', 'priority': 35, 'children': [], 'id': None}, {'name': 'コレーション分析', 'priority': 36, 'children': [], 'id': None}], 'id': None}, {'name': 'モデル作成', 'priority': 18, 'children': [{'name': '教師あり学習', 'priority': 37, 'children': [{'name': '回帰', 'priority': 46, 'children': [], 'id': None}, {'name': '分類', 'priority': 47, 'children': [], 'id': None}], 'id': None}, {'name': '教師なし学習', 'priority': 38, 'children': [{'name': 'クラスタリング', 'priority': 48, 'children': [], 'id': None}, {'name': '次元削減', 'priority': 49, 'children': [], 'id': None}], 'id': None}], 'id': None}], 'id': None}, {'name': 'Web開発', 'priority': 5, 'children': [{'name': 'Flask', 'priority': 19, 'children': [], 'id': None}, {'name': 'Django', 'priority': 20, 'children': [{'name': 'ルーティング', 'priority': 39, 'children': [], 'id': None}, {'name': 'ビューとテンプレート', 'priority': 40, 'children': [], 'id': None}, {'name': 'データベースとモデル', 'priority': 41, 'children': [], 'id': None}, {'name': 'ユーザの認証と権限管理', 'priority': 42, 'children': [], 'id': None}], 'id': None}, {'name': 'REST API', 'priority': 21, 'children': [{'name': 'APIの設計', 'priority': 43, 'children': [], 'id': None}, {'name': '状態コード', 'priority': 44, 'children': [], 'id': None}, {'name': 'CRUD操作', 'priority': 45, 'children': [], 'id': None}], 'id': None}, {'name': '非同期処理', 'priority': 22, 'children': [{'name': 'マルチスレッド', 'priority': 50, 'children': [], 'id': None}, {'name': 'マルチプロセス', 'priority': 51, 'children': [], 'id': None}, {'name': 'コルーチンとasyncio', 'priority': 52, 'children': [], 'id': None}], 'id': None}], 'id': None}], 'id': None}
+    # json_tree = {
+    #     'name':'ノード名重複テスト3',
+    #     'id':None,
+    #     'priority':1,
+    #     'children':[
+    #         {
+    #             'name':'node1',
+    #             'id':None,
+    #             'priority':2,
+    #             'children':[
+    #                 {
+    #                     'name':'node2',
+    #                     'id':None,
+    #                     'priority':3,
+    #                     'children':[
+    #                         {
+    #                             'name':'node3',
+    #                             'id':None,
+    #                             'priority':4,
+    #                             'children':[]
+    #                         },
+    #                         {
+    #                             'name':'node1',
+    #                             'id':None,
+    #                             'priority':5,
+    #                             'children':[]
+    #                         }
+    #                     ]
+    #                 }
+    #             ]
+    #         },
+    #         {
+    #             'name':'node1',
+    #             'id':None,
+    #             'priority':6,
+    #             'children':[
+    #                 {
+    #                     'name':'node2',
+    #                     'id':None,
+    #                     'priority':7,
+    #                     'children':[]         
+    #                 }
+    #             ]
+    #         },
+    #         {
+    #             'name':'node2',
+    #             'id':None,
+    #             'priority':7,
+    #             'children':[]
+                
+    #         },
+    #         {
+    #             'name':'node2',
+    #             'id':None,
+    #             'priority':7,
+    #             'children':[]      
+    #         }
+    #     ]    
+    # }
+    
     print("COMPLEMENTED JSON_TREE: ", json_tree)
 
     #rootノードとその直下の子ノード4つのみを抽出しnodesに格納

@@ -8,12 +8,12 @@ const useAddNode = () => {
   }));
 
   const nodeTemplate = (node, name, xnum, ynum) => {
-    const child1NodePosition = { x: node.position.x + xnum / node.idd, y: node.position.y + ynum / node.idd };
+    const child1NodePosition = { x: (node.position.x + xnum / node.idd), y: (node.position.y + ynum / node.idd) };
     addChildNode(node, child1NodePosition, name);
   }
 
   const addNewNode = (nodeNameList, num) => {
-    const parentNode = nodes.find(node => node.id === selectedNodeId) || nodes.find(node => node.id === 'root');
+    const parentNode = nodes.find(node => node.id === selectedNodeId) || nodes.find(node => node.idd === 1);
     console.log("parentNode:", parentNode)
     if (parentNode) {
       switch (num) {

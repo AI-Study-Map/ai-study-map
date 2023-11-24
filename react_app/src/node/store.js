@@ -15,6 +15,7 @@ import {
 
     themeName: "", // setLoadedMapDataで設定
     mapId: null, // setLoadedMapDataで設定
+    firstNodes: [], //setFirstLoadMapで設定
     nodes: [], //setLoadedMapDataで設定
     //[
     //   {
@@ -103,10 +104,10 @@ import {
         }),
       });
     },
-    updateNodeIsCorrect: (title) => {
+    updateNodeIsCorrect: (id) => {
       set({
         nodes: get().nodes.map((node) => {
-          if (node.data.label === title) {
+          if (node.id === id) {
             // it's important to create a new object here, to inform React Flow about the changes
             node.isCorrect = true;
           }
@@ -116,8 +117,9 @@ import {
       });
     },
     addChildNode: (parentNode, position, nodeName) => {
+      const newNodeId = nanoid();
       const newNode = {
-        id: nanoid(),
+        id: newNodeId,
         type: 'mindmap',
         data: { label: nodeName },
         position,
@@ -137,24 +139,51 @@ import {
         nodes: [...get().nodes, newNode],
         edges: [...get().edges, newEdge],
       });
+
+      //newNodeのidをtreeに追加
+      const searchNode = (tree, parentNodeId, childNodeId) => {
+        if (tree.id !== null && tree.id === parentNodeId) {
+          for (let child of tree.children) {
+            if (child.name === nodeName) {
+              child.id = childNodeId;
+              return true; // Return true when the task is finished
+            }
+          }
+        } else {
+          for (let child2 of tree.children) {
+            const result = searchNode(child2, parentNodeId, childNodeId);
+            if (result) {
+              return true; // Return true when the task is finished
+            }
+          }
+        }
+        return false;
+      }
+
+      const tree = get().tree;
+      const dictTree = JSON.parse(tree)
+      const taskFinished = searchNode(dictTree, parentNode.id, newNodeId);
+      if (taskFinished) {
+        set({ tree: JSON.stringify(dictTree) });
+      }
       
       // DBに新しいノードを追加
-      fetch(API_HOST_CREATENEWNODE, {
-        method: 'POST',
-        body: JSON.stringify({
-          "map_id": get().mapId,
-          "node_id": newNode.id,
-          "title": nodeName,
-          "x_coordinate": position.x,
-          "y_coordinate": position.y,
-          "idd": newNode.idd,
-          "edge_id": newEdge.id,
-          "parent_node": newEdge.source,
-          "child_node": newEdge.target,
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }}).then((response) => console.log('NEW NODE DATA SENDED'))
+    //   fetch(API_HOST_CREATENEWNODE, {
+    //     method: 'POST',
+    //     body: JSON.stringify({
+    //       "map_id": get().mapId,
+    //       "node_id": newNode.id,
+    //       "title": nodeName,
+    //       "x_coordinate": position.x,
+    //       "y_coordinate": position.y,
+    //       "idd": newNode.idd,
+    //       "edge_id": newEdge.id,
+    //       "parent_node": newEdge.source,
+    //       "child_node": newEdge.target,
+    //     }),
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     }}).then((response) => console.log('NEW NODE DATA SENDED'))
       
     },
     
@@ -465,6 +494,19 @@ import {
     setLoadedMapData(tree, mapId, themeName, nodes, edges) {
       set({ tree: tree, mapId: mapId, themeName: themeName, nodes: nodes, edges: edges })
     },
+    
+    setFirstLoadedMap(node) {
+      set({ firstNodes: node })
+      console.log("FirstNODES", get().firstNodes);
+    },
+
+    appendFirstNodes: (nodeList) => {
+      const nodesLocal = get().nodes;
+      for (let node of nodeList) {
+        nodesLocal.push(node);
+      }
+      set({ nodes: nodesLocal });
+    }
   }));
   
   export default useStore;

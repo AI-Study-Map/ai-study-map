@@ -230,7 +230,6 @@ function QuestionMenu() {
       tree: state.tree,
     })
   );
-  
 
   // ユーザの回答が正解か判断し、エフェクトを表示
   const handleCheckAnswer = (user_answer) => {
@@ -252,7 +251,8 @@ function QuestionMenu() {
     }
   };
 
-  const findChildrenByName = (node, name) => {
+  //旧ver バグあり
+  const findChildrenByName = (node, name) => { 
       if (node.name === name) {
         return node.children.map(child => child.name);
       }
@@ -263,6 +263,21 @@ function QuestionMenu() {
         }
       }
       return null;
+  }
+
+  //新ver 
+  //idを指定して子ノードのnameのリストを返す関数
+  const findChildrenById = (node, id) => {
+    if (node.id !== null && node.id === id) {
+      return node.children.map(child => child.name);
+    }
+    for (let child of node.children) {
+      const result = findChildrenById(child, id);
+      if (result) {
+        return result;
+      }
+    } 
+    return null;
   }
 
   // idを指定して正解済みかの真偽値を返す関数
@@ -281,7 +296,6 @@ function QuestionMenu() {
   // const setTitleMatchedAsCorrect = (nodes, title) => {
   //   nodes.forEach(node => {
   //     if (node.data && node.data.label === title) {
-  //       console.log("きたーーーーーーー", node.data.label, title)
   //       node.isCorrect = true;
   //     }
   //   });
@@ -291,12 +305,12 @@ function QuestionMenu() {
   const handleHideEffect = () => {
     setShowEffect(false);
     setQuestionMenu(false);
-    updateNodeIsCorrect(nodeTitle);
+    updateNodeIsCorrect(selectedNodeId);
     const dictTree = JSON.parse(tree);
-    const childrenNames = findChildrenByName(dictTree, nodeTitle);
-    if (childrenNames === null) {
-      console.log("子ノードがありません")
-      return 
+    const childrenNames = findChildrenById(dictTree, selectedNodeId);
+    if (childrenNames.length === 0) {
+      console.log("子ノードがありません");
+      return;
     } else {
       newAddNode(childrenNames, childrenNames.length);
     }
