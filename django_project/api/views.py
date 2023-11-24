@@ -153,7 +153,7 @@ def gpt_calling(request):
                 }'
             {{~/system}}
             {{#user~}}
-                アジアの郷土料理のの{{question_title}}に関する解説文を作ってください。
+                C言語の{{question_title}}に関する解説文を作ってください。
                 このテーマにおける解説をdescriptionとして、それに対応する例をexampleとしてください。
                 解説はなるべく詳細かつ網羅的である必要があります。
                 例は簡潔に、分かりやすさを重視してください。
@@ -239,7 +239,7 @@ def question(request):
                 あなたは教科書の中の章のまとめとして4択問題を作り、JSON形式で返す優秀なbotです。
             {{~/system}}
             {{#user~}}
-                アジアの郷土料理における{{question_title}}に関する問題を日本語で作ってください。
+                C言語における{{question_title}}に関する問題を日本語で作ってください。
                 このトピックに使用した解説文と例は以下の通りです。
                 解説文: {{description}}
                 例: {{example}}        

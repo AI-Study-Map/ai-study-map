@@ -116,7 +116,7 @@ function NodeTreeChoice() {
         />
         </Selecter>
         <Button buttonIsDisabled={buttonIsDisabled}>
-        <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>選択してマインドマップ作成(仮)</button>
+        <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>選択してマインドマップ作成</button>
         </Button>
     </>
     );

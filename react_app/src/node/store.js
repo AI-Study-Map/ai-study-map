@@ -168,22 +168,22 @@ import {
       }
       
       // DBに新しいノードを追加
-    //   fetch(API_HOST_CREATENEWNODE, {
-    //     method: 'POST',
-    //     body: JSON.stringify({
-    //       "map_id": get().mapId,
-    //       "node_id": newNode.id,
-    //       "title": nodeName,
-    //       "x_coordinate": position.x,
-    //       "y_coordinate": position.y,
-    //       "idd": newNode.idd,
-    //       "edge_id": newEdge.id,
-    //       "parent_node": newEdge.source,
-    //       "child_node": newEdge.target,
-    //     }),
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     }}).then((response) => console.log('NEW NODE DATA SENDED'))
+      fetch(API_HOST_CREATENEWNODE, {
+        method: 'POST',
+        body: JSON.stringify({
+          "map_id": get().mapId,
+          "node_id": newNode.id,
+          "title": nodeName,
+          "x_coordinate": position.x,
+          "y_coordinate": position.y,
+          "idd": newNode.idd,
+          "edge_id": newEdge.id,
+          "parent_node": newEdge.source,
+          "child_node": newEdge.target,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }}).then((response) => console.log('NEW NODE DATA SENDED'))
       
     },
     

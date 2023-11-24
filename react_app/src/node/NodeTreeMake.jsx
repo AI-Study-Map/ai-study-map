@@ -93,7 +93,7 @@ function NodeTreeMake() {
             </label>
         </form>
         <Button>
-        <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>自由にマインドマップ作成(仮)</button>
+        <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>自由にマインドマップ作成</button>
         </Button>
     </>
     );
