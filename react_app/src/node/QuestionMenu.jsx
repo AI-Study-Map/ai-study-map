@@ -208,7 +208,7 @@ function QuestionMenu() {
     d: false
   });
   const { nodes, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
-    nodeExample, setQuestionTitle, selectedNodeId, getQUestion,
+    nodeExample, setQuestionTitle, selectedNodeId, getQUestion,toggleNodeFlipped,
     question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect,
     isQuestionMenuLoading
   } = useStore(
@@ -230,7 +230,8 @@ function QuestionMenu() {
       question_d: state.question_d,
       correctAns: state.correctAnswer,
       tree: state.tree,
-      isQuestionMenuLoading: state.isQuestionMenuLoading
+      isQuestionMenuLoading: state.isQuestionMenuLoading,
+      toggleNodeFlipped: state.toggleNodeFlipped
     })
   );
 
@@ -317,12 +318,14 @@ function QuestionMenu() {
     } else {
       newAddNode(childrenNames, childrenNames.length);
     }
+    toggleNodeFlipped(selectedNodeId);
   };
 
   // CLEARエフェクトを非表示、問題メニューを非表示のみ
   const handleClose = () => {
     setShowEffect(false);
     setQuestionMenu(false);
+    toggleNodeFlipped(selectedNodeId);
   }
 
   function questionSetting(quest, a, b, c, d, correctaAnswer) {

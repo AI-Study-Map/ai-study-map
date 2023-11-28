@@ -6,6 +6,28 @@ import { styled } from 'styled-components';
 import SwitchBtn from './SwitchBtn';
 import NodeContents from '../NodeContents/NodeContents';
 
+const TestDiv = styled.div`
+  background-image: ${(props) => props.isRootNode ? "url(wood.png)": (props.isCorrect ? "url(leaf_yellow.png)" : "url(leaf_green.png)") };
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: ${(props) => props.isRootNode ? "1000px": props.isLongString ? "150px": "120px" };
+  width: ${(props) => props.isRootNode ? "800px": props.isLongString ? "450px": "400px" };
+  position: absolute;
+  top: ${(props) => props.isRootNode ? "-100px": props.isLongString ? "-45px": "-37px" };
+  left: ${(props) => props.isRootNode ? "-320px": props.isLongString ? "-50px": "-20px" };
+`
+
+const Ground = styled.div`
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: ${(props) => props.isRootNode ? "url(ground.png)": null };
+  height: ${(props) => props.isRootNode ? "700px": "0" };
+  width: ${(props) => props.isRootNode ? "1500px": "0" };
+  top: 360px;
+  left: -650px;
+`
+
 const NodeContainer = styled.div`
   position: relative;
 `;
@@ -21,19 +43,20 @@ const NodeContentsWrapper = styled.div`
   height: auto;
   overflow-x: auto; //はみ出したときスクロールバー
   background-color: #FAFFF7;
-  border-radius: 10px;
+  border-radius: 22px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  padding: 10px;
+  padding: 15px;
     p {
       line-height: 1.3em;
     }
 `;
 
 const InputWrapper = styled.div`
-  background-color: ${(props) => props.isRootNode ? "#17594A": (props.isCorrect ? "#FFE867" : "#7BC74D") };
-  border-radius: 10px;
+  /* background-color: ${(props) => props.isRootNode ? "#17594A": (props.isCorrect ? "#FFE867" : "#7BC74D") }; */
+  background-color: transparent;
+  /* border-radius: 10px; */
   z-index: 10000;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
   &:hover {
     transform: scale(1.05);
   }
@@ -45,11 +68,12 @@ const DragHandleArea = styled.div`
   padding: 6px 10px;
   font-size: 20px;
   background: transparent;
-  height: 90%;
+  height: 100%;
   display: flex;
   align-items: center;
   pointer-events: all;
   text-align: center;
+  padding: 10px 10px 20px 10px;
 `
 
 const P = styled.p`
@@ -69,6 +93,7 @@ function MindMapNode({ id, data, isCorrect}) {
   const inputRef = useRef(null);
   const [isCorrectLocal, setIsCorrectLocal] = useState(isCorrect);
   const [isRootNode, setIsRootNode] = useState(false);
+  const [isLongString, setIsLongString] = useState(false)
 
   const { nodes, getNodeFlippedStatus, toggleNodeFlipped } = useStore(state => ({
     nodes: state.nodes,
@@ -103,6 +128,9 @@ function MindMapNode({ id, data, isCorrect}) {
     if (inputRef.current) {
       // inputRef.current.style.width = `${data.label.length * 8}px`;
         inputRef.current.style.width = `170px`;
+        if (data.label.length > 8) {
+          setIsLongString(true)
+        }
     }
   }, [data.label]);
 
@@ -112,9 +140,12 @@ function MindMapNode({ id, data, isCorrect}) {
   };
 
   return (
-    <NodeContainer>
-      <InputWrapper className="inputWrapper" id={id} isCorrect={isCorrectLocal} isRootNode={isRootNode} onClick={() => onNodeClick()}>
-        <DragHandleArea className="dragHandle">
+    <>
+    <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}/>
+    <Ground isRootNode={isRootNode} />
+    <NodeContainer id={id}>
+      <InputWrapper className="inputWrapper  dragHandle" id={id} isCorrect={isCorrectLocal} isRootNode={isRootNode} onClick={() => onNodeClick()}>
+        <DragHandleArea id={id} className="dragHandle">
           <P
             value={data.label}
             className="input"
@@ -123,7 +154,7 @@ function MindMapNode({ id, data, isCorrect}) {
             isCorrect={isCorrectLocal}
             isRootNode={isRootNode}
           >{data.label}</P>
-         <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/>
+         {/* <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/> */}
         </DragHandleArea>
         
       </InputWrapper>
@@ -136,6 +167,7 @@ function MindMapNode({ id, data, isCorrect}) {
       <Handle type="target" position={Position.Top} />
       <Handle type="source" position={Position.Top} />
     </NodeContainer>
+    </>
   );
 }
 
