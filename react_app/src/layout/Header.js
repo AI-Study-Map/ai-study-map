@@ -6,13 +6,12 @@ import MapDataLoad from '../save/MapDataLoad';
 import { useNavigate } from 'react-router-dom';
 import AiStudyMap_logo from '../images/ai-study-map-logo.png';
 
-const AiStudyMapLogo = styled.img`
-  width: 80px;
-  height: auto;
-`;
-
 const StyledHeader = styled.header`
   background-color: #FFE867;
+  background-image: url(${AiStudyMap_logo});
+  background-repeat: no-repeat;
+  background-position: 30px;
+  background-size: contain;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,14 +19,6 @@ const StyledHeader = styled.header`
   color: #7BC74D;
   position: relative;
   z-index: 10;
-`;
-
-const LogoContainer = styled.div`
-  position: absolute;
-  left: 10px;
-  display: flex;
-  margin-left: 10px;
-  cursor: pointer;
 `;
 
 const SidebarMenu = styled.div`
@@ -113,9 +104,6 @@ const Header = ({ title }) => {
   return (
     <>
       <StyledHeader>
-      <LogoContainer onClick={handleGoTop}>
-          <AiStudyMapLogo src={AiStudyMap_logo} alt="ai-study-mapロゴ" />
-        </LogoContainer>
         {title}
         <SidebarIconToggle onClick={() => setIsOpen(!isOpen)}>
           <Spinner className="diagonal part-1" $isOpen={isOpen} />
