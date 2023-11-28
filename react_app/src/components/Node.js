@@ -10,11 +10,11 @@ const TestDiv = styled.div`
   background-image: ${(props) => props.isRootNode ? "url(wood.png)": (props.isCorrect ? "url(leaf_yellow.png)" : "url(leaf_green.png)") };
   background-size: contain;
   background-repeat: no-repeat;
-  height: ${(props) => props.isRootNode ? "1000px": "120px" };
-  width: ${(props) => props.isRootNode ? "800px": "400px" };
+  height: ${(props) => props.isRootNode ? "1000px": props.isLongString ? "150px": "120px" };
+  width: ${(props) => props.isRootNode ? "800px": props.isLongString ? "450px": "400px" };
   position: absolute;
-  top: ${(props) => props.isRootNode ? "-100px": "-37px" };
-  left: ${(props) => props.isRootNode ? "-320px": "-20px" };
+  top: ${(props) => props.isRootNode ? "-100px": props.isLongString ? "-45px": "-37px" };
+  left: ${(props) => props.isRootNode ? "-320px": props.isLongString ? "-50px": "-20px" };
 `
 
 const Ground = styled.div`
@@ -93,6 +93,7 @@ function MindMapNode({ id, data, isCorrect}) {
   const inputRef = useRef(null);
   const [isCorrectLocal, setIsCorrectLocal] = useState(isCorrect);
   const [isRootNode, setIsRootNode] = useState(false);
+  const [isLongString, setIsLongString] = useState(false)
 
   const { nodes, getNodeFlippedStatus, toggleNodeFlipped } = useStore(state => ({
     nodes: state.nodes,
@@ -127,6 +128,9 @@ function MindMapNode({ id, data, isCorrect}) {
     if (inputRef.current) {
       // inputRef.current.style.width = `${data.label.length * 8}px`;
         inputRef.current.style.width = `170px`;
+        if (data.label.length > 8) {
+          setIsLongString(true)
+        }
     }
   }, [data.label]);
 
@@ -137,7 +141,7 @@ function MindMapNode({ id, data, isCorrect}) {
 
   return (
     <>
-    <TestDiv id={id} isCorrect={isCorrectLocal} isRootNode={isRootNode}/>
+    <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}/>
     <Ground isRootNode={isRootNode} />
     <NodeContainer id={id}>
       <InputWrapper className="inputWrapper  dragHandle" id={id} isCorrect={isCorrectLocal} isRootNode={isRootNode} onClick={() => onNodeClick()}>
@@ -150,7 +154,7 @@ function MindMapNode({ id, data, isCorrect}) {
             isCorrect={isCorrectLocal}
             isRootNode={isRootNode}
           >{data.label}</P>
-         <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/>
+         {/* <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/> */}
         </DragHandleArea>
         
       </InputWrapper>
