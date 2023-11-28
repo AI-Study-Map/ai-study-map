@@ -506,7 +506,14 @@ import {
         nodesLocal.push(node);
       }
       set({ nodes: nodesLocal });
-    }
+    },
+
+    //QuestionMenuのローディング画面管理
+    isQuestionMenuLoading: false,
+    setIsQuestionMenuLoading: (boolean) => {
+      
+      set({ isQuestionMenuLoading: boolean })
+      console.log("setIsQuestionMenuLoading: ", get().isQuestionMenuLoading);},
   }));
   
   export default useStore;

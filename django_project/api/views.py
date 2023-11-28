@@ -18,6 +18,7 @@ from nanoid import generate
 openai.api_key = OPENAI_API_KEY
 openai.api_base = OPENAI_API_BASE
 
+#旧ver 未使用
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def gpt_calling_old(request):
@@ -62,6 +63,8 @@ def gpt_calling_old(request):
     print("SERIALIZER: ", serializer.data)
     return Response(serializer.data) # returns a JSON response
 
+
+#旧ver 未使用
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def question_old(request):
@@ -127,6 +130,7 @@ def gpt_calling(request):
     map_id = request.data['mapId']
     question_title = request.data['user_input']
     resend = request.data['resend']
+    parents_list = request.data['parentNode']
     random_word = ""
     #Nodeテーブルにnode_idのレコードが存在し、かつ、descriptionが存在し、かつ、再生成でない場合はそれを返す
     if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists() and Node.objects.filter(map_id=map_id).get(node_id=node_id).description != None and resend != "true": 
@@ -142,6 +146,7 @@ def gpt_calling(request):
             random_word_li = [random.choice(string.ascii_letters + string.digits) for i in range(10)]
             random_word = "".join(random_word_li)
 
+        parents = "の".join(parents_list)
         guidance.llm= guidance.llms.OpenAI("gpt-4") 
         create_prompt = guidance("""
             {{#system~}}
@@ -153,7 +158,7 @@ def gpt_calling(request):
                 }'
             {{~/system}}
             {{#user~}}
-                C言語の{{question_title}}に関する解説文を作ってください。
+                {{parents}}における{{question_title}}に関する解説文を作ってください。
                 このテーマにおける解説をdescriptionとして、それに対応する例をexampleとしてください。
                 解説はなるべく詳細かつ網羅的である必要があります。
                 例は簡潔に、分かりやすさを重視してください。
@@ -169,7 +174,7 @@ def gpt_calling(request):
                 {{gen 'response' temperature=0 }}
             {{/assistant~}}         
         """)
-        out = create_prompt(question_title=question_title, random_word=random_word)
+        out = create_prompt(question_title=question_title, random_word=random_word, parents=parents)
         print("out", out)
         #JSON形式で返されなかった時の対策
         if out["response"][-1] != "}":
@@ -232,6 +237,8 @@ def question(request):
         question_title = request.data['title']
         description = request.data['description']
         example = request.data['example']
+        parents_list = request.data['parentNode']
+        parents = "の".join(parents_list)
 
         guidance.llm= guidance.llms.OpenAI("gpt-4")
         create_prompt = guidance("""
@@ -239,7 +246,7 @@ def question(request):
                 あなたは教科書の中の章のまとめとして4択問題を作り、JSON形式で返す優秀なbotです。
             {{~/system}}
             {{#user~}}
-                C言語における{{question_title}}に関する問題を日本語で作ってください。
+                {{parents}}における{{question_title}}に関する問題を日本語で作ってください。
                 このトピックに使用した解説文と例は以下の通りです。
                 解説文: {{description}}
                 例: {{example}}        
@@ -272,7 +279,7 @@ def question(request):
                 {{gen 'question' temperature=0 max_tokens=500}}
             {{/assistant~}}                         
         """)
-        out = create_prompt(question_title=question_title, true_answer=true_answer, description=description, example=example)
+        out = create_prompt(parents=parents, question_title=question_title, true_answer=true_answer, description=description, example=example)
         result = out["question"] + "\n"
         print(result)
         # DBに保存するために各種変数を取得

@@ -2,13 +2,13 @@ import styled, { keyframes } from 'styled-components';
 
 const circleAnimation = keyframes`
     0% {
-        top:60px;
-        height:5px;
-        border-radius: 50px 50px 25px 25px;
+        top:6em;
+        height:0.5em;
+        border-radius: 5em 5em 2.5em 2.5em;
         transform: scaleX(1.7);
     }
     40% {
-        height:20px;
+        height:2em;
         border-radius: 50%;
         transform: scaleX(1);
     }
@@ -32,42 +32,41 @@ const shadowAnimation = keyframes`
 `;
 
 const Wrapper = styled.div`
-    width: 200px;
-    height: 60px;
+    width: 2em;
+    height: 6em;
     position: absolute;
-    left: 50%;
-    top: 50%;
+    left: 41%;
+    top: 35%;
     transform: translate(-50%, -50%);
 `;
 
 const Circle = styled.div`
-    width: 20px;
-    height: 20px;
+    width: 2em;
+    height: 2em;
     position: absolute;
     border-radius: 50%;
-    background-color: #fff;
+    background-color: #696969;
     left: 15%;
     transform-origin: 50%;
     animation: ${circleAnimation} .5s alternate infinite ease;
 
     &:nth-child(2) {
-        left: 45%;
+        left: 150%;
         animation-delay: .2s;
     }
     &:nth-child(3) {
-        left: auto;
-        right: 15%;
+        left: 285%;
         animation-delay: .3s;
     }
 `;
 
 const Shadow = styled.div`
-    width: 20px;
-    height: 4px;
+    width: 2em;
+    height: 0.4em;
     border-radius: 50%;
     background-color: rgba(0, 0, 0, .5);
     position: absolute;
-    top: 62px;
+    top: 6.2em;
     transform-origin: 50%;
     z-index: -1;
     left: 15%;
@@ -75,24 +74,23 @@ const Shadow = styled.div`
     animation: ${shadowAnimation} .5s alternate infinite ease;
 
     &:nth-child(4) {
-        left: 45%;
+        left: 150%;
         animation-delay: .2s;
     }
     &:nth-child(5) {
-        left: auto;
-        right: 15%;
+        left: 285%;
         animation-delay: .3s;
     }
 `;
 
 const LoadingText = styled.span`
     position: absolute;
-    top: 75px;
+    top: 5em;
     font-family: 'Lato';
-    font-size: 20px;
-    letter-spacing: 12px;
-    color: #fff;
-    left: 15%;
+    font-size: 2.0em;
+    letter-spacing: 0.5em;
+    color: #696969;
+    left: -160%;
 `;
 
 const LoadingScreen = () => (

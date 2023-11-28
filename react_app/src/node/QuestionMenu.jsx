@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import useStore from './store';
 import useAddNode from './useAddNode';
+import LoadingScreen from '../components/LoadingScreen';
 
 const API_HOST_QUESTION = 'http://localhost:8000/api/gpt_calling/question';
 
@@ -209,6 +210,7 @@ function QuestionMenu() {
   const { nodes, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion,
     question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect,
+    isQuestionMenuLoading
   } = useStore(
     state => ({
       nodes: state.nodes,
@@ -228,6 +230,7 @@ function QuestionMenu() {
       question_d: state.question_d,
       correctAns: state.correctAnswer,
       tree: state.tree,
+      isQuestionMenuLoading: state.isQuestionMenuLoading
     })
   );
 
@@ -351,6 +354,10 @@ function QuestionMenu() {
     setError('');
   }, [nodeTitle])
 
+  useEffect(() => {
+    console.log("AAAAAAAA: ", isQuestionMenuLoading);
+  }, [isQuestionMenuLoading]);
+
   return (
     <>
       <MenuWrapper open={questionMenuIsOpen}>
@@ -363,6 +370,10 @@ function QuestionMenu() {
           <StyledQuestionHeader>
             <p>{nodeTitle}</p>
           </StyledQuestionHeader>
+          {isQuestionMenuLoading ? 
+          <LoadingScreen />
+          :
+          <>
           <StyledQuestionContent>
             <p>問題</p>
             <p>{question}</p>
@@ -373,9 +384,11 @@ function QuestionMenu() {
             <ButtonAAndC onClick={() => handleCheckAnswer("a")} disabled={disabledOptions["a"]}>A: {answerA}</ButtonAAndC>
             <ButtonBAndD onClick={() => handleCheckAnswer("b")} disabled={disabledOptions["b"]}>B: {answerB}</ButtonBAndD> <br></br>
             <ButtonAAndC onClick={() => handleCheckAnswer("c")} disabled={disabledOptions["c"]}>C: {answerC}</ButtonAAndC>
-            <ButtonBAndD onClick={() => handleCheckAnswer("d")} disabled={disabledOptions["d"]}>D: {answerD}</ButtonBAndD>
-            
+            <ButtonBAndD onClick={() => handleCheckAnswer("d")} disabled={disabledOptions["d"]}>D: {answerD}</ButtonBAndD>  
           </StyledQuestionButtons>
+          </>
+          
+          }
           {showEffect && (
             <>
               <Overlay />

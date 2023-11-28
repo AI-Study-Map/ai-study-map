@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 import useStore from '../node/store';
+import LoadingScreen from '../components/LoadingScreen';
 
 const NodeContentsArea = styled.div`
   z-index: 10000;
@@ -91,6 +92,13 @@ const StyledButtonGreen = styled(StyledButton)`
   }
 `
 
+const LoadingScreenArea = styled.div`
+  /* max-height: 300px; */
+  cursor: default;
+  z-index: 10000000;
+  height: 300px;
+`
+
 const RegenerateSvg = styled.svg`
   margin-left: 8px; // テキストとSVGの間にマージンを追加
   vertical-align: middle; // テキストとSVGを中央揃え
@@ -106,12 +114,15 @@ function NodeContents(props) {
     const [inputed, setInput] = useState(title); 
     const [description, setDescription] = useState('');
     const [example, setExample] = useState('');
+    const [isAddQuestion, setIsAddQuestion] = useState(false);
     const [isAddExplain, setIsAddExplain] = useState(false);
     const [isRegenerate, setIsRegenerate] = useState(false);
     const [isRootNodeLocal, setIsRootNodeLocal] = useState(false);
-    const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodes,
+    const [parentNodeList, setParentNodeList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodes, tree, 
       setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId, appendFirstNodes,
-      firstNodes
+      firstNodes, setIsQuestionMenuLoading
     } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -125,19 +136,48 @@ function NodeContents(props) {
           nodes: state.nodes,
           appendFirstNodes: state.appendFirstNodes,
           firstNodes: state.firstNodes,
+          tree: state.tree,
+          setIsQuestionMenuLoading: state.setIsQuestionMenuLoading,
         })
       );
 
+      // ルートノードかどうか判定
       const checkIsRootNode = () => {
         if (id === nodes[0].id) {
           return true;
         }
       }
+      // 親ノードのリストを取得
+      function findParentNodes(data, targetId, parents = []) {
+      
+        if (data.id === targetId) {
+          return parents;
+        }
+      
+        if (data.children) {
+          for (const child of data.children) {
+            const result = findParentNodes(child, targetId, [...parents, data.name]);
+            if (result) {
+              return result;
+            }
+          }
+        }
+      
+        return null;
+      }
 
+    // titleが変更されると実行される
     useEffect(() => {
-      // titleが変更されると実行される
+      setIsLoading(true);
       console.log("title: ", title);
       console.log("selectedNodeId:", selectedNodeId);
+      // 親ノードのリストを取得
+      const jsonTree = JSON.parse(tree);
+      const parentsList = findParentNodes(jsonTree, id)
+      setParentNodeList(parentsList);
+      console.log("tree: ", jsonTree);
+      console.log("parentNodeList: ", parentsList);
+      // ルートノードかどうか判定
       const isRootNode = checkIsRootNode();
       setIsRootNodeLocal(isRootNode);
       if (isRootNode) {
@@ -152,7 +192,7 @@ function NodeContents(props) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ nodeId: id, mapId: mapId, user_input: title, resend: "false" }),
+          body: JSON.stringify({ nodeId: id, mapId: mapId, user_input: title, parentNode: parentsList, resend: "false" }),
         })
         .then((response) => response.json())
         .then((data) => {
@@ -162,11 +202,13 @@ function NodeContents(props) {
             console.log("parsedContent", parsedContent);
             setDescription(parsedContent.description);
             setExample(parsedContent.example);
+            setIsLoading(false);
         });
       }
     }, [title]);
 
     const handleAddExplain = () => {
+        setIsLoading(true);
         setIsAddExplain(true);
         //inputlogの最後の要素を取得し、文章を追加
         const thisTitle = title;
@@ -186,11 +228,13 @@ function NodeContents(props) {
         console.log(chatReply);
         // responselogの最後の要素を取得、ChatGPTからの応答を繋げる
         setDescription(description + "\n\n" + chatReply.add_description);
+        setIsLoading(false);
       });
     }
     
 
     const handleResend = () => {
+      setIsLoading(true);
       setIsRegenerate(true);
       const thisId = id;
         fetch(`${API_HOST}`, {
@@ -198,7 +242,7 @@ function NodeContents(props) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({nodeId: thisId, user_input: title, mapId: mapId, resend: "true" }),
+            body: JSON.stringify({nodeId: thisId, user_input: title, mapId: mapId, parentNode: parentNodeList, resend: "true" }),
           })
         .then((response) => response.json())
         .then((data) => {
@@ -206,10 +250,12 @@ function NodeContents(props) {
           console.log("parsedContent", parsedContent);
           setDescription(parsedContent.description);
           setExample(parsedContent.example);
+          setIsLoading(false);
       });
     };
 
     const handleAddQuestion = () => {
+        setIsQuestionMenuLoading(true);
         //ノード名と説明文をセット
         const thisId = id;
         const thisTitle = title;
@@ -226,7 +272,7 @@ function NodeContents(props) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"nodeId": thisId, "mapId": mapId, "title": thisTitle, "description": desc, "example": exa}),
+            body: JSON.stringify({"nodeId": thisId, "mapId": mapId, "title": thisTitle, "description": desc, "example": exa, "parentNode": parentNodeList}),
           })
           .then((response) => response.json())
           .then((data) => {
@@ -238,6 +284,7 @@ function NodeContents(props) {
               qData.question_b, qData.question_c,
               qData.question_d, qData.true_answer
             )
+            setIsQuestionMenuLoading(false);
           });
 
           } catch (error) {
@@ -252,13 +299,14 @@ function NodeContents(props) {
       appendFirstNodes(firstNodes);
     }
 
-    useEffect(() => {
-      console.log("SSSS");
-    }
-    , [firstNodes]);
-
     return (
         <NodeContentsArea className='NodeContents' >
+          {isLoading ? 
+            <LoadingScreenArea>
+              <LoadingScreen /> 
+            </LoadingScreenArea>
+            :
+            <>
             <ResponseLogArea id='response_log'>
                 <ReactMarkdown>{description}</ReactMarkdown>
                 <hr></hr>
@@ -267,7 +315,7 @@ function NodeContents(props) {
             <ButtonContainer id='buttons'>
               {isRootNodeLocal ? <StyledButtonFirst id='addFirstNode' onClick={handleAddFirstNode}>学習を始める</StyledButtonFirst>
               : <>
-                <StyledButton id='addQuestion' onClick={handleAddQuestion}>問題作成</StyledButton>
+                <StyledButton id='addQuestion' onClick={handleAddQuestion} disabled={isAddQuestion} >問題作成</StyledButton>
                 <StyledButton id='addExplain' onClick={handleAddExplain} disabled={isAddExplain}>説明文追加</StyledButton>
                 <StyledButtonGreen id='regenerate'onClick={handleResend} disabled={isRegenerate}>
                   再生成
@@ -278,6 +326,8 @@ function NodeContents(props) {
               </>
             }
             </ButtonContainer>
+            </>
+          }
         </NodeContentsArea>
 
     );
