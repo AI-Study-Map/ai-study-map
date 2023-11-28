@@ -28,7 +28,7 @@ function MindMapEdge(props) {
   // edgeのstyle
   const style = {
     strokeWidth: setStroke(nodes, source),
-    stroke: "rgb(110, 44, 0)",
+    stroke: "#9C8468",
   }
 
   const [edgePath] = getSimpleBezierPath({
