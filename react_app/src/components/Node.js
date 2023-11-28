@@ -9,11 +9,22 @@ const TestDiv = styled.div`
   background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(wood.png)": (props.isCorrect ? "url(leaf_yellow.png)" : "url(leaf_green.png)") };
   background-size: contain;
   background-repeat: no-repeat;
-  height: ${(props) => (props.id === "root" || props.id === "root2") ? "730px": "80px" };
-  width: 400px;
+  height: ${(props) => (props.id === "root" || props.id === "root2") ? "1000px": "120px" };
+  width: ${(props) => (props.id === "root" || props.id === "root2") ? "800px": "400px" };
   position: absolute;
-  top: ${(props) => (props.id === "root" || props.id === "root2") ? "-220px": "-20px" };
-  left: ${(props) => (props.id === "root" || props.id === "root2") ? "-115px": "-20px" };
+  top: ${(props) => (props.id === "root" || props.id === "root2") ? "-100px": "-37px" };
+  left: ${(props) => (props.id === "root" || props.id === "root2") ? "-335px": "-30px" };
+`
+
+const Ground = styled.div`
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(ground.png)": null };
+  height: ${(props) => (props.id === "root" || props.id === "root2") ? "700px": "0" };
+  width: ${(props) => (props.id === "root" || props.id === "root2") ? "1500px": "0" };
+  top: 360px;
+  left: -650px;
 `
 
 const NodeContainer = styled.div`
@@ -31,9 +42,9 @@ const NodeContentsWrapper = styled.div`
   height: auto;
   overflow-x: auto; //はみ出したときスクロールバー
   background-color: #FAFFF7;
-  border-radius: 10px;
+  border-radius: 22px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  padding: 10px;
+  padding: 15px;
     p {
       line-height: 1.3em;
     }
@@ -41,7 +52,7 @@ const NodeContentsWrapper = styled.div`
 const InputWrapper = styled.div`
   /* background-color: ${(props) => (props.id === "root" || props.id === "root2") ? "#9C8468": (props.isCorrect ? "#FFE867" : "#7BC74D") }; */
   background-color: transparent;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   z-index: 10000;
   box-shadow: ${(props) => (props.id === "root" || props.id === "root2") ? "none": "none" };
   /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
@@ -56,11 +67,12 @@ const DragHandleArea = styled.div`
   padding: 6px 10px;
   font-size: 20px;
   background: transparent;
-  height: 90%;
+  height: 100%;
   display: flex;
   align-items: center;
   pointer-events: all;
   text-align: center;
+  padding: 10px 10px 20px 10px;
 `
 
 const P = styled.p`
@@ -140,9 +152,10 @@ function MindMapNode({ id, data, isCorrect,}) {
 
   return (
     <>
-    <TestDiv id={id} isCorrect={isCorrectLocal} />
+    <TestDiv id={id} isCorrect={isCorrectLocal}/>
+    <Ground id={id} />
     <NodeContainer id={id}>
-      <InputWrapper className="inputWrapper" id={id} isCorrect={isCorrectLocal} onContextMenu={(e) => onNodeClick(e)}>
+      <InputWrapper className="inputWrapper dragHandle" id={id} isCorrect={isCorrectLocal} onClick={(e) => onNodeClick(e)}>
         <DragHandleArea id={id} className="dragHandle">
           <P
             value={data.label}

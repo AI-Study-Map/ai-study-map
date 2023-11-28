@@ -4,8 +4,28 @@ import ReactMarkdown from 'react-markdown';
 import useStore from '../node/store';
 
 const NodeContentsArea = styled.div`
-  z-index: 10000;
+  /* z-index: 1; */
   /* margin-bottom: 30px; */
+`
+
+const BackGroundImg1 = styled.img`
+  position: absolute;
+  top: 0; // 親要素の上端に合わせる
+  right: 0; // 親要素の右端に合わせる
+  width: 130px; // 画像のサイズを調整
+  height: auto; // 縦横比を維持
+  z-index: 1;
+  pointer-events: none;
+`
+
+const BackGroundImg2 = styled.img`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 130px;
+  height: auto;
+  z-index: 1;
+  pointer-events: none;
 `
 
 const ResponseLogArea = styled.div`
@@ -19,6 +39,8 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin: auto 30px;
+  margin-top: 10px;
+  z-index: 10000;
 `;
 
 const StyledButton = styled.button`
@@ -213,13 +235,15 @@ function NodeContents(props) {
 
     return (
         <NodeContentsArea className='NodeContents' >
+          <BackGroundImg1 src="node_background1.svg" alt='右上'/>
+          <BackGroundImg2 src="node_background2.svg" alt='左下'/>
             <ResponseLogArea id='response_log'>
                 <ReactMarkdown>{description}</ReactMarkdown>
                 <hr></hr>
                 <ReactMarkdown>{example}</ReactMarkdown>
             </ResponseLogArea>
             <ButtonContainer id='buttons'>
-                <StyledButton id='addQuestion' onClick={handleAddQuestion}>問題作成</StyledButton>
+                <StyledButton id='addQuestion' onClick={handleAddQuestion}>問題を解く</StyledButton>
                 <StyledButton id='addExplain' onClick={handleAddExplain}>説明文追加</StyledButton>
                 <StyledButtonGreen id='regenerate'onClick={handleResend}>
                   再生成
