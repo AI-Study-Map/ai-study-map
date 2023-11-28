@@ -1,35 +1,8 @@
 import { BaseEdge, getStraightPath } from 'reactflow';
 import { getSimpleBezierPath } from 'reactflow'; //少し曲がるエッジ
-import useStore from '../node/store';
 
 function MindMapEdge(props) {
-  const { sourceX, sourceY, targetX, targetY, source } = props;
-  const { nodes } = useStore(state => ({nodes: state.nodes}))
-
-  // sourceからparentNodeのiddを取得
-  const findNodeIsCorrect = (nodes, id) => {
-    for (let node of nodes) {
-      if (node.id === id) {
-        return node.idd;
-      }
-    }
-    return null;
-  };
-
-  // edgeの太さを設定
-  const setStroke = (nodes, source) => {
-    const strokeWidth = 20 - (findNodeIsCorrect(nodes, source)*4)
-    if (strokeWidth < 2) {
-      return 2
-    }
-    return strokeWidth
-  }
-
-  // edgeのstyle
-  const style = {
-    strokeWidth: setStroke(nodes, source),
-    stroke: "#9C8468",
-  }
+  const { sourceX, sourceY, targetX, targetY } = props;
 
   const [edgePath] = getSimpleBezierPath({
     sourceX,
@@ -38,7 +11,7 @@ function MindMapEdge(props) {
     targetY,
   });
 
-  return <BaseEdge path={edgePath} {...props} style={style}/>;
+  return <BaseEdge path={edgePath} {...props} />;
 }
 
 export default MindMapEdge;
