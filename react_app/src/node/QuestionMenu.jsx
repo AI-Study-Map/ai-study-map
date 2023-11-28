@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import useStore from './store';
 import useAddNode from './useAddNode';
+import LoadingScreen from '../components/LoadingScreen';
 
 const API_HOST_QUESTION = 'http://localhost:8000/api/gpt_calling/question';
 
@@ -209,6 +210,7 @@ function QuestionMenu() {
   const { nodes, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion, toggleNodeFlipped,
     question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect,
+    isQuestionMenuLoading
   } = useStore(
     state => ({
       nodes: state.nodes,
@@ -228,10 +230,10 @@ function QuestionMenu() {
       question_d: state.question_d,
       correctAns: state.correctAnswer,
       tree: state.tree,
+      isQuestionMenuLoading: state.isQuestionMenuLoading,
       toggleNodeFlipped: state.toggleNodeFlipped
     })
   );
-  
 
   // ユーザの回答が正解か判断し、エフェクトを表示
   const handleCheckAnswer = (user_answer) => {
@@ -253,7 +255,8 @@ function QuestionMenu() {
     }
   };
 
-  const findChildrenByName = (node, name) => {
+  //旧ver バグあり
+  const findChildrenByName = (node, name) => { 
       if (node.name === name) {
         return node.children.map(child => child.name);
       }
@@ -264,6 +267,21 @@ function QuestionMenu() {
         }
       }
       return null;
+  }
+
+  //新ver 
+  //idを指定して子ノードのnameのリストを返す関数
+  const findChildrenById = (node, id) => {
+    if (node.id !== null && node.id === id) {
+      return node.children.map(child => child.name);
+    }
+    for (let child of node.children) {
+      const result = findChildrenById(child, id);
+      if (result) {
+        return result;
+      }
+    } 
+    return null;
   }
 
   // idを指定して正解済みかの真偽値を返す関数
@@ -282,7 +300,6 @@ function QuestionMenu() {
   // const setTitleMatchedAsCorrect = (nodes, title) => {
   //   nodes.forEach(node => {
   //     if (node.data && node.data.label === title) {
-  //       console.log("きたーーーーーーー", node.data.label, title)
   //       node.isCorrect = true;
   //     }
   //   });
@@ -292,12 +309,12 @@ function QuestionMenu() {
   const handleHideEffect = () => {
     setShowEffect(false);
     setQuestionMenu(false);
-    updateNodeIsCorrect(nodeTitle);
+    updateNodeIsCorrect(selectedNodeId);
     const dictTree = JSON.parse(tree);
-    const childrenNames = findChildrenByName(dictTree, nodeTitle);
-    if (childrenNames === null) {
-      console.log("子ノードがありません")
-      return 
+    const childrenNames = findChildrenById(dictTree, selectedNodeId);
+    if (childrenNames.length === 0) {
+      console.log("子ノードがありません");
+      return;
     } else {
       newAddNode(childrenNames, childrenNames.length);
     }
@@ -340,6 +357,10 @@ function QuestionMenu() {
     setError('');
   }, [nodeTitle])
 
+  useEffect(() => {
+    console.log("AAAAAAAA: ", isQuestionMenuLoading);
+  }, [isQuestionMenuLoading]);
+
   return (
     <>
       <MenuWrapper open={questionMenuIsOpen}>
@@ -352,6 +373,10 @@ function QuestionMenu() {
           <StyledQuestionHeader>
             <p>{nodeTitle}</p>
           </StyledQuestionHeader>
+          {isQuestionMenuLoading ? 
+          <LoadingScreen />
+          :
+          <>
           <StyledQuestionContent>
             <p>問題</p>
             <p>{question}</p>
@@ -362,9 +387,11 @@ function QuestionMenu() {
             <ButtonAAndC onClick={() => handleCheckAnswer("a")} disabled={disabledOptions["a"]}>A: {answerA}</ButtonAAndC>
             <ButtonBAndD onClick={() => handleCheckAnswer("b")} disabled={disabledOptions["b"]}>B: {answerB}</ButtonBAndD> <br></br>
             <ButtonAAndC onClick={() => handleCheckAnswer("c")} disabled={disabledOptions["c"]}>C: {answerC}</ButtonAAndC>
-            <ButtonBAndD onClick={() => handleCheckAnswer("d")} disabled={disabledOptions["d"]}>D: {answerD}</ButtonBAndD>
-            
+            <ButtonBAndD onClick={() => handleCheckAnswer("d")} disabled={disabledOptions["d"]}>D: {answerD}</ButtonBAndD>  
           </StyledQuestionButtons>
+          </>
+          
+          }
           {showEffect && (
             <>
               <Overlay />
