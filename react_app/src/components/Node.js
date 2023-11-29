@@ -10,11 +10,11 @@ const TestDiv = styled.div`
   background-image: ${(props) => props.isRootNode ? "url(wood.png)": (props.isCorrect ? "url(leaf_yellow.png)" : "url(leaf_green.png)") };
   background-size: contain;
   background-repeat: no-repeat;
-  height: ${(props) => props.isRootNode ? "1000px": props.isLongString ? "150px": "120px" };
-  width: ${(props) => props.isRootNode ? "800px": props.isLongString ? "450px": "400px" };
+  height: ${(props) => props.isRootNode ? "560px": props.isLongString ? "150px": "120px" };
+  width: ${(props) => props.isRootNode ? "300px": props.isLongString ? "280px": "400px" };
   position: absolute;
-  top: ${(props) => props.isRootNode ? "-100px": props.isLongString ? "-45px": "-37px" };
-  left: ${(props) => props.isRootNode ? "-320px": props.isLongString ? "-50px": "-20px" };
+  top: ${(props) => props.isRootNode ? "-65px": props.isLongString ? "-45px": "-37px" };
+  left: ${(props) => props.isRootNode ? "-58px": props.isLongString ? "-50px": "-20px" };
 `
 
 const Ground = styled.div`
