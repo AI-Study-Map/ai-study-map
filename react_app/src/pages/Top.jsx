@@ -50,7 +50,7 @@ const LeftSection = styled.div` // コンテナ左
     color: #213363;
     font-size: 30px;
     line-height: 1.5em;
-    margin-top: 2rem;
+    margin-top: 3em;
     background-color: #FAFFF7;
   }
 `;
@@ -124,8 +124,7 @@ function Top() {
             <h1>AI Study Mapは<br />誰でも手軽に素早く<br />体系的に学習できる<br />Webアプリです</h1>
           </div>
             <p>
-              マインドマップを活用しゲーム感覚で楽しく学ぶことができます。<br/>
-              INIAD-Fesではクイズを解きながら単語を見つけ出す宝探しゲームとして体験していただきます!
+              マインドマップを活用し<br />ゲーム感覚で楽しく学ぶことができます。<br/>
             </p>
         </LeftSection>
         <RightSection>

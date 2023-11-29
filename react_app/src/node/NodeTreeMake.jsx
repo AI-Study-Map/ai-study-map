@@ -56,7 +56,7 @@ const FormWrapper = styled.div`
         outline: none;
         font-family: "メイリオ";
         transition: border-color 0.5s ease;
-        
+
         &:hover {
             border-color: #4CAF50;
         }
@@ -143,7 +143,7 @@ function NodeTreeMake() {
             <>
             <Starter>
             <h1>はじめる</h1>
-            <p>下記のメニューからテーマを選択して宝探しを始めましょう</p>
+            <p>下記のメニューからテーマを選択して学習を始めましょう</p>
             </Starter>
             <Wrapper>
                 <FormWrapper>
