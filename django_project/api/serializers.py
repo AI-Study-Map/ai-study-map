@@ -35,3 +35,8 @@ class CreateNewNodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Node
         fields = ['node_id', 'map_id', 'idd', 'x_coordinate', 'y_coordinate', 'title']
+
+class SaveIsClearedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Node
+        fields = ['node_id', 'map_id', 'is_cleared']

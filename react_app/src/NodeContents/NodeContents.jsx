@@ -207,6 +207,7 @@ function NodeContents(props) {
         const example = "学習を始める を押して、木に最初の葉っぱを付けましょう！";
         setDescription(description);
         setExample(example);
+        setIsLoading(false);
       }
       else {
         fetch(`${API_HOST}`, {

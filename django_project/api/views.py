@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from .serializers import PostSerializer, QuestionSerializer, DescriptionSerializer, SaveMapSerializer, SaveNodeSerializer, SaveEdgeSerializer, CreateNewNodeSerializer
+from .serializers import PostSerializer, QuestionSerializer, DescriptionSerializer, SaveMapSerializer, SaveNodeSerializer, SaveEdgeSerializer, CreateNewNodeSerializer, SaveIsClearedSerializer
 from .models import Node, Map, Edge
 from django.middleware.csrf import get_token
 import openai
@@ -556,7 +556,7 @@ def make_map(request):
           'data': { 'label': json_tree['children'][3]['name'] },
           'position': { 'x': -200, 'y': 100 },
           'dragHandle': '.dragHandle',
-          'idd': 2
+          'idd': 2,
         }
      ]
     edges =  [
@@ -765,6 +765,32 @@ def create_newnode(request):
             print("SERIALIZE ERROR")
             print(serializer_node.errors)
             return Response("error")
+        
+@sync_to_async
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def save_is_cleared(request):
+    is_cleared = request.data['is_cleared']
+    map_id = request.data['map_id']
+    node_id = request.data['node_id']
+
+    if is_cleared == "true":
+        is_cleared = True
+    #指定された外部キーmap_idを持つnodeのうちnode_idと一致するものを検索
+    if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists():
+        node = Node.objects.filter(map_id=map_id).get(node_id=node_id)
+        serializer = SaveIsClearedSerializer(instance=node, data={"node_id": node_id, "map_id": map_id, "is_cleared": is_cleared})
+        if serializer.is_valid():
+            print("SERIALIZER IS VALID")
+            serializer.save()
+            return Response("success")
+        else:
+            print("SERIALIZE ERROR")
+            print(serializer.errors)
+            return Response("error")
+    else:
+        print("NODE ID NOT EXISTS")
+        return Response("error")
     
 
 @sync_to_async
@@ -788,6 +814,7 @@ def load_map(request):
         node_dict["position"] = {"x": node.x_coordinate, "y": node.y_coordinate}
         node_dict["dragHandle"] = ".dragHandle"
         node_dict["idd"] = node.idd
+        node_dict["isCorrect"] = node.is_cleared
         node_list.append(node_dict)
 
     edge_data = Edge.objects.filter(map_id=map_id)

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { nanoid } from 'nanoid/non-secure';
 import useStore from './store';
 import styled from 'styled-components';
+import LoadingScreenTreeMake from '../components/LoadingScreenTreeMake';
 
 const Starter = styled.div`
     border-bottom: 5px dotted #FFE867;
@@ -15,12 +16,59 @@ const Starter = styled.div`
 `
 
 const Button = styled.div`
-    text-align: right;
+    display: flex;
+    justify-content: center;
 `
 const Selecter = styled.div`
     padding: 0.5rem 1rem;
     margin: 3em 1em;
     
+`
+const LoadingScreenWrapper = styled.div`
+    margin: auto;
+`
+
+const FormWrapper = styled.div`
+    margin-top: 3em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "メイリオ";
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+    }
+
+    label {
+        margin-bottom: 1em;
+    }
+
+    input {
+        width: 15em;
+        height: 3em;
+        font-size: 1em;
+        font-weight: 1000;
+        padding: 0.5em;
+        border: 4px solid #ccc;
+        border-radius: 10px;
+        outline: none;
+        font-family: "メイリオ";
+        transition: border-color 0.5s ease;
+        
+        &:hover {
+            border-color: #4CAF50;
+        }
+        &:focus {
+            border-color: #4CAF50;
+        }
+
+    }
+`
+
+const Wrapper = styled.div`
+    /* display: table; */
 `
 
 const API_MAP_MAKE = "http://localhost:8000/api/gpt_calling/make_map";
@@ -28,11 +76,13 @@ const API_MAP_MAKE = "http://localhost:8000/api/gpt_calling/make_map";
 function NodeTreeMake() {
     const [formData, setFormData] = useState("");
     const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
-    const{ setLoadedMapData, setFirstLoadedMap
+    const{ setLoadedMapData, setFirstLoadedMap, isCommonLoading, setIsCommonLoading
       } = useStore(
           state => ({
             setLoadedMapData: state.setLoadedMapData,
             setFirstLoadedMap: state.setFirstLoadedMap,
+            isCommonLoading: state.isCommonLoading,
+            setIsCommonLoading: state.setIsCommonLoading,
           })
         );
     const navigate = useNavigate();
@@ -50,6 +100,7 @@ function NodeTreeMake() {
     
     // ボタンが押されたら、テーマに応じたマインドマップを作成
     const handleButton = () => {
+        setIsCommonLoading(true);
         setButtonIsDisabled(true);
         const mapId = nanoid();
         const thisFormData = formData;
@@ -77,25 +128,43 @@ function NodeTreeMake() {
                 setFirstLoadedMap(FirstNode);
                 setLoadedMapData(tree, mapId, themeName, RootNode, edgesJSON);
                 console.log("NODES:", nodesJSON);
+                setIsCommonLoading(false);
                 navigate("/map");
             });
     }
 
     return (
-    <>
-        <form  onLoad={handleInputChange} >
-            <label>
-                
-                <input
-                    onChange={handleInputChange}
-                    placeholder='自由にテーマを決めましょう'
-                />
-            </label>
-        </form>
-        <Button>
-        <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>自由にマインドマップ作成</button>
-        </Button>
-    </>
+        <>
+        {isCommonLoading ? 
+        <LoadingScreenWrapper>
+            <LoadingScreenTreeMake /> 
+        </LoadingScreenWrapper>
+        :
+            <>
+            <Starter>
+            <h1>はじめる</h1>
+            <p>下記のメニューからテーマを選択して宝探しを始めましょう</p>
+            </Starter>
+            <Wrapper>
+                <FormWrapper>
+                    <form  onLoad={handleInputChange} >
+                        <label>
+                            
+                            <input
+                                onChange={handleInputChange}
+                                placeholder='自由にテーマを決めましょう'
+                            />
+                        </label>
+                    </form>
+                </FormWrapper>
+                <Button>
+                <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>マインドマップ作成</button>
+                </Button>
+            </Wrapper>
+            </>
+        }
+        </>
+        
     );
 }
 

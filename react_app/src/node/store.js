@@ -510,10 +510,10 @@ import {
 
     //QuestionMenuのローディング画面管理
     isQuestionMenuLoading: false,
-    setIsQuestionMenuLoading: (boolean) => {
-      
-      set({ isQuestionMenuLoading: boolean })
-      console.log("setIsQuestionMenuLoading: ", get().isQuestionMenuLoading);},
+    setIsQuestionMenuLoading: (boolean) => {set({ isQuestionMenuLoading: boolean })},
+
+    isCommonLoading: false,
+    setIsCommonLoading: (boolean) => {set({ isCommonLoading: boolean })},
   }));
   
   export default useStore;

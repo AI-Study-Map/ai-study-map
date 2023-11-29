@@ -4,8 +4,6 @@ import useStore from './store';
 import useAddNode from './useAddNode';
 import LoadingScreen from '../components/LoadingScreen';
 
-const API_HOST_QUESTION = 'http://localhost:8000/api/gpt_calling/question';
-
 const MenuWrapper = styled.div`
   position: fixed;
   top: 0;
@@ -190,6 +188,8 @@ const ButtonBAndD = styled.button`
   }
 `;
 
+const API_SAVE_ISCORRECT = "http://localhost:8000/api/save/is_cleared";
+
 function QuestionMenu() {
   const newAddNode = useAddNode();
   const [showEffect, setShowEffect] = useState(false);
@@ -210,7 +210,7 @@ function QuestionMenu() {
   const { nodes, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion, toggleNodeFlipped,
     question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect,
-    isQuestionMenuLoading
+    isQuestionMenuLoading, mapId
   } = useStore(
     state => ({
       nodes: state.nodes,
@@ -231,7 +231,8 @@ function QuestionMenu() {
       correctAns: state.correctAnswer,
       tree: state.tree,
       isQuestionMenuLoading: state.isQuestionMenuLoading,
-      toggleNodeFlipped: state.toggleNodeFlipped
+      toggleNodeFlipped: state.toggleNodeFlipped,
+      mapId: state.mapId,
     })
   );
 
@@ -245,6 +246,14 @@ function QuestionMenu() {
         b: false,
         c: false,
         d: false
+      });
+      // DBのis_clearedをtrueにする
+      fetch(`${API_SAVE_ISCORRECT}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({"node_id": selectedNodeId, "map_id": mapId, "is_cleared": "true"}),
       });
     } else {
       setError('不正解です。もう一度選択してください。');
@@ -356,10 +365,6 @@ function QuestionMenu() {
     });
     setError('');
   }, [nodeTitle])
-
-  useEffect(() => {
-    console.log("AAAAAAAA: ", isQuestionMenuLoading);
-  }, [isQuestionMenuLoading]);
 
   return (
     <>

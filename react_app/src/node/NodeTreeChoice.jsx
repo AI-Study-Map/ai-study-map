@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import useStore from './store';
 import styled from 'styled-components';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Starter = styled.div`
     border-bottom: 5px dotted #FFE867;
@@ -35,10 +36,11 @@ function NodeTreeChoice() {
     const [selectedValue, setSelectedValue] = useState(options[0]);
     const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
     
-    const{ setLoadedMapData
+    const{ setLoadedMapData, isCommonLoading, setIsCommonLoading
       } = useStore(
           state => ({
             setLoadedMapData: state.setLoadedMapData,
+            isCommonLoading: state.isCommonLoading,
           })
         );
     const navigate = useNavigate();
@@ -103,21 +105,26 @@ function NodeTreeChoice() {
     }
 
     return (
+        
     <>
-        <Starter>
-        <h1>はじめる</h1>
-        <p>下記のメニューからテーマを選択して宝探しを始めましょう</p>
-        </Starter>
-        <Selecter>
-        <Select
-            options={options}
-            defaultValue={selectedValue}
-            onChange={(value) => { setSelectedValue(value); }}
-        />
-        </Selecter>
-        <Button buttonIsDisabled={buttonIsDisabled}>
-        <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>選択してマインドマップ作成</button>
-        </Button>
+        {isCommonLoading ? null:
+        <>
+            <Starter>
+            <h1>はじめる</h1>
+            <p>下記のメニューからテーマを選択して宝探しを始めましょう</p>
+            </Starter>
+            <Selecter>
+            <Select
+                options={options}
+                defaultValue={selectedValue}
+                onChange={(value) => { setSelectedValue(value); }}
+            />
+            </Selecter>
+            <Button buttonIsDisabled={buttonIsDisabled}>
+            <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>選択してマインドマップ作成</button>
+            </Button>
+        </>
+        }
     </>
     );
 }

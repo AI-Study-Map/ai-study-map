@@ -46,6 +46,8 @@ class Node(models.Model):
     is_cleared = models.BooleanField(default=False)
     is_extra_node = models.BooleanField(default=False)
 
+    #todo viewsのifをメソッドにする return (bool, node_id or None)
+
 class Edge(models.Model):
     edge_id = models.CharField(max_length=255, primary_key=True)
     map_id = models.ForeignKey(Map, on_delete=models.CASCADE, null=True)
