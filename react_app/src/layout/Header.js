@@ -96,7 +96,7 @@ const Header = ({ title }) => {
   const navigate = useNavigate();
 
   const handleGoTop = () => {
-    navigate("/top");
+    navigate("/");
   }
 
 

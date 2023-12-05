@@ -8,6 +8,9 @@ import NodeContents from './NodeContents/NodeContents';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Top from './pages/Top';
 import Page404 from './pages/Page404';
+import LogInDemoUser from './pages/LogInDemoUser';
+import Start from './pages/Start';
+import StartLibrary from './pages/StartLibrary';
 
 function Index () {
   return (
@@ -22,7 +25,10 @@ root.render(
   <>
   <BrowserRouter>
     <Routes>
-        <Route exact path="/top" element={<Top />} />
+        <Route exact path="/" element={<Top />} />
+        <Route exact path="/login" element={<LogInDemoUser />} />
+        <Route path="/start" element={<Start />} />
+        <Route path="/library" element={<StartLibrary />} />
         <Route path="/map" element={<Index />} />
         <Route path="*" element={<Page404 />} />
     </Routes>

@@ -4,8 +4,10 @@ import styled, { createGlobalStyle } from 'styled-components';
 import Header from "../layout/Header";
 import TopLogo from '../images/TopLogo.png'
 import NodeTreeMake from "../node/NodeTreeMake";
+import { useNavigate } from 'react-router-dom';
 
-const GlobalStyle = createGlobalStyle`
+
+export const GlobalStyle = createGlobalStyle`
   html {
     height: 100%;/*高さを100%にして描画エリアをとる*/
   }
@@ -17,7 +19,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Container = styled.div`
+export const Container = styled.div`
   height: auto;
   display: flex; //横並び
   justify-content: space-between;
@@ -113,6 +115,11 @@ const RightSection = styled.div` // コンテナ右
 `;
 
 function Top() {
+  const navigate = useNavigate();
+  const handleGoStart = () => {
+    navigate("/start");
+  }
+
   return (
     <>
     <GlobalStyle />
@@ -128,8 +135,10 @@ function Top() {
             </p>
         </LeftSection>
         <RightSection>
-          <NodeTreeChoice />
-          <NodeTreeMake />
+          <h1>AI Study Mapをはじめよう(仮)</h1>
+          <button className="btnripple" onClick={()=>handleGoStart()}>はじめる(仮)</button>
+          {/* <NodeTreeChoice />
+          <NodeTreeMake /> */}
         </RightSection>
       </Container>
     </>
