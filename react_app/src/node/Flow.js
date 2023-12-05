@@ -14,6 +14,22 @@ import MindMapEdge from '../components/Edge';
 import 'reactflow/dist/style.css';
 import Header from '../layout/Header';
 import QuestionMenu from './QuestionMenu';
+import styled from 'styled-components';
+import { useEffect } from 'react';
+
+const SuggestNodeWrapper = styled.div`
+  font-size: 20px;
+  position: absolute;
+  top: 6.6%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  pointer-events: none;
+  border: 2px solid #999;
+  padding: 30px 105px;
+  border-radius: 10px;
+`;
+
 
 const selector = (state) => ({
   nodes: state.nodes,
@@ -43,12 +59,17 @@ const Flow = () =>  {
     selector,
     shallow,
   );
-  const{ questionMenuIsOpen, setQuestionMenu } = useStore(
+  const{ suggestNode, setSuggestNode } = useStore(
     state => ({
-      questionMenuIsOpen: state.questionMenuIsOpen,
-      setQuestionMenu: state.setQuestionMenu,
+      suggestNode: state.suggestNode,
+      setSuggestNode: state.setSuggestNode,
     })
   );
+
+  useEffect(() => {
+    setSuggestNode();
+    console.log("suggestNode:", suggestNode);
+  }, [])
 
   // const defaultViewport = { x: 500, y: 500, zoom: 1.0 };
 
@@ -73,7 +94,9 @@ const Flow = () =>  {
         {/* <Background color="#FAFFF7" style={{"backgroundColor": "#FAFFF7"}}/> */}
         <Background color="#000"/>
         <Controls showInteractive={false} />
-        
+        <SuggestNodeWrapper>
+          おすすめノード：{suggestNode? suggestNode.data.label: "なし"}
+        </SuggestNodeWrapper>
         <Panel position="top-left" className="header">
           AI Study Map
         </Panel>

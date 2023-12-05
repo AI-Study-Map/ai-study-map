@@ -144,7 +144,7 @@ function NodeContents(props) {
     const [isLoading, setIsLoading] = useState(false);
     const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodes, tree, 
       setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId, appendFirstNodes,
-      firstNodes, setIsQuestionMenuLoading
+      firstNodes, setIsQuestionMenuLoading, setSuggestNode, updateNodeIsCorrect, toggleNodeFlipped
     } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -160,6 +160,9 @@ function NodeContents(props) {
           firstNodes: state.firstNodes,
           tree: state.tree,
           setIsQuestionMenuLoading: state.setIsQuestionMenuLoading,
+          setSuggestNode: state.setSuggestNode,
+          updateNodeIsCorrect: state.updateNodeIsCorrect,
+          toggleNodeFlipped: state.toggleNodeFlipped,
         })
       );
 
@@ -319,7 +322,10 @@ function NodeContents(props) {
     }
     
     const handleAddFirstNode = () => {
+      updateNodeIsCorrect(id);
+      toggleNodeFlipped(id);
       appendFirstNodes(firstNodes);
+      setSuggestNode();
     }
 
     return (

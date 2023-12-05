@@ -127,6 +127,7 @@ import {
         parentNode: parentNode.id,
         idd: parentNode.idd + 1,
         isCorrect: false,
+        priority: 9999,
       };
   
       const newEdge = {
@@ -159,12 +160,39 @@ import {
         }
         return false;
       }
+      //idでnodeを検索してpriorityを返す
+      const findNodePriorityById = (node, id) => {
+        if (node.id !== null && node.id === id) {
+          return node.priority;
+        }
+        for (let child of node.children) {
+          const result = findNodePriorityById(child, id);
+          if (result) {
+            return result;
+          }
+        }
+        return null;
+      }
 
       const tree = get().tree;
       const dictTree = JSON.parse(tree)
       const taskFinished = searchNode(dictTree, parentNode.id, newNodeId);
       if (taskFinished) {
         set({ tree: JSON.stringify(dictTree) });
+      }
+      const tree2 = get().tree;
+      const dictTree2 = JSON.parse(tree2);
+      const priority = findNodePriorityById(dictTree2, newNodeId);
+      //priorityを更新したnodesをset
+      if (priority) {
+        set({
+          nodes: get().nodes.map((node) => {
+            if (node.id === newNodeId) {
+              node.priority = priority;
+            }
+            return node;
+          })
+        });
       }
       
       // DBに新しいノードを追加
@@ -514,6 +542,27 @@ import {
 
     isCommonLoading: false,
     setIsCommonLoading: (boolean) => {set({ isCommonLoading: boolean })},
+  
+    userId: null,
+    isDemo: false,
+    setUserId: (userId) => {set({ userId: userId })},
+    setIsDemo: (boolean) => {set({ isDemo: boolean })},
+
+    suggestNode: null,
+    //setSuggestNode suggestNodeを設定する
+    //suggestNodeは、nodesの中でisCorrectがFalseのうち、最もpriorityの値が小さいノード
+    setSuggestNode: () => {
+      const nodes = get().nodes;
+      let suggestNode = null;
+      let minPriority = 9999;
+      for (let node of nodes) {
+        if (node.isCorrect === false && node.priority < minPriority) {
+          suggestNode = node;
+          minPriority = node.priority;
+        }
+      }
+      set({ suggestNode: suggestNode });
+    },
   }));
   
   export default useStore;

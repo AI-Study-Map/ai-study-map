@@ -210,7 +210,7 @@ function QuestionMenu() {
   const { nodes, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion, toggleNodeFlipped,
     question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect,
-    isQuestionMenuLoading, mapId
+    isQuestionMenuLoading, mapId, setSuggestNode
   } = useStore(
     state => ({
       nodes: state.nodes,
@@ -233,6 +233,7 @@ function QuestionMenu() {
       isQuestionMenuLoading: state.isQuestionMenuLoading,
       toggleNodeFlipped: state.toggleNodeFlipped,
       mapId: state.mapId,
+      setSuggestNode: state.setSuggestNode
     })
   );
 
@@ -323,11 +324,14 @@ function QuestionMenu() {
     const childrenNames = findChildrenById(dictTree, selectedNodeId);
     if (childrenNames.length === 0) {
       console.log("子ノードがありません");
+      setSuggestNode();
+      toggleNodeFlipped(selectedNodeId);
       return;
     } else {
       newAddNode(childrenNames, childrenNames.length);
+      setSuggestNode();
+      toggleNodeFlipped(selectedNodeId);
     }
-    toggleNodeFlipped(selectedNodeId);
   };
 
   // CLEARエフェクトを非表示、問題メニューを非表示のみ
