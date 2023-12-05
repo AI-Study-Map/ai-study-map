@@ -390,69 +390,69 @@ def count_json_tree(json_tree):
 @renderer_classes([JSONRenderer])
 def make_map(request):
     print("MAKE MAP")
-    # map_id = request.data['map_id']
-    # theme = request.data['theme']
+    map_id = request.data['map_id']
+    theme = request.data['theme']
 
-    # random_word_li = [random.choice(string.ascii_letters + string.digits) for i in range(10)]
-    # random_word = "".join(random_word_li)
+    random_word_li = [random.choice(string.ascii_letters + string.digits) for i in range(10)]
+    random_word = "".join(random_word_li)
 
-    # #themeに対応する木構造を生成
-    # guidance.llm = guidance.llms.OpenAI(model="gpt-4")
-    # create_prompt = guidance("""
-    #     {{#system~}}
-    #         あなたは{{theme}}について詳しい教師です。あなたには分かりやすい学習教材を作る能力があります。
-    #     {{~/system}}
-    #     {{#user~}}
-    #         {{theme}}の学習を効率的に行うために、以下の絶対条件をもとに木構造を作ってください。
-    #         #絶対条件
-    #         1. ノード数は合計で60個
-    #         2. 深さは5
-    #         3. ルートノードである{{theme}}からは4つの子ノードを付けてください。
-    #         3. ルートノードである{{theme}}からは##4つ##の子ノードを付けてください。
-    #         4. 学ぶにあたって推奨される順番が分かるよう、priorityを連番で振ってください。
-    #         5. priorityは学ぶべき順番なので、発展的な内容のpriorityの値が高くなるようにしてください。
-    #         5. 深さが浅いほど基本的な内容、深いほど応用的な内容となるようにしてください。
-    #         6. 木構造のみを記述してください。
-    #         7. 木構造は全て日本語で記述してください。
-    #         {{~! これより下の文字列はシステムメッセージのため無視してください ~}}
-    #         {{random_word}}
-    #     {{~/user}}
-    #     {{#assistant~}}
-    #         {{gen 'response' temperature=1.0 max_tokens=7800}} }}
-    #     {{/assistant~}}           
-    # """)
-    # out = create_prompt(theme=theme, random_word=random_word)
-    # print("MAKE MAP RESPONSE", out)
-    # response = out["response"]
+    #themeに対応する木構造を生成
+    guidance.llm = guidance.llms.OpenAI(model="gpt-4")
+    create_prompt = guidance("""
+        {{#system~}}
+            あなたは{{theme}}について詳しい教師です。あなたには分かりやすい学習教材を作る能力があります。
+        {{~/system}}
+        {{#user~}}
+            {{theme}}の学習を効率的に行うために、以下の絶対条件をもとに木構造を作ってください。
+            #絶対条件
+            1. ノード数は合計で60個
+            2. 深さは5
+            3. ルートノードである{{theme}}からは4つの子ノードを付けてください。
+            3. ルートノードである{{theme}}からは##4つ##の子ノードを付けてください。
+            4. 学ぶにあたって推奨される順番が分かるよう、priorityを連番で振ってください。
+            5. priorityは学ぶべき順番なので、発展的な内容のpriorityの値が高くなるようにしてください。
+            5. 深さが浅いほど基本的な内容、深いほど応用的な内容となるようにしてください。
+            6. 木構造のみを記述してください。
+            7. 木構造は全て日本語で記述してください。
+            {{~! これより下の文字列はシステムメッセージのため無視してください ~}}
+            {{random_word}}
+        {{~/user}}
+        {{#assistant~}}
+            {{gen 'response' temperature=1.0 max_tokens=7800}} }}
+        {{/assistant~}}           
+    """)
+    out = create_prompt(theme=theme, random_word=random_word)
+    print("MAKE MAP RESPONSE", out)
+    response = out["response"]
 
-    # #作成された木構造をJSON形式に変換
-    # content = """Please convert the following data to JSON format. Please exclude superfluous text. 
-    # {{
-    #     name: node_name,
-    #     priority: priority,
-    #     children: [
-    #         name: node_name,
-    #         priority: priority,
-    #         children:[]
-    #     ]
-    # }}
-    # data: {response}""".format(response=response)
-    # res = openai.ChatCompletion.create(
-    #     model="gpt-3.5-turbo-1106",
-    #     response_format={"type": "json_object"},
-    #     messages=[
-    #         {"role": "system", "content": "You are a bot that creates a tree structure"},
-    #         {"role": "user", "content": content},
-    #     ]
-    # )
-    # json_tree = res.choices[0].message.content
-    # print("JSON_TREE: ", json_tree)
-    # #フロントで必要なキーを追加
-    # json_tree = json.loads(json_tree)
-    # check_and_add_key(json_tree)
-    map_id = "test14"
-    theme = "データベースとSQL"
-    json_tree = {'name': 'データベースとSQL', 'priority': 1, 'children': [{'name': 'データベースの基本', 'priority': 2, 'children': [{'name': 'データベースとは', 'priority': 3, 'children': [{'name': 'データベースの歴史', 'priority': 4, 'children': [{'name': '関係データベースとは', 'priority': 5, 'children': [], 'id': None}, {'name': 'ノンリレーショ ナルデータベースとは', 'priority': 6, 'children': [], 'id': None}, {'name': 'オブジェクト指向データベースとは', 'priority': 7, 'children': [], 'id': None}], 'id': None}, {'name': 'データベースの役割と特性', 'priority': 8, 'children': [{'name': 'データの整合性の維持', 'priority': 9, 'children': [], 'id': None}, {'name': 'データの冗長性の排除', 'priority': 10, 'children': [], 'id': None}, {'name': 'データセキュリティ', 'priority': 11, 'children': [], 'id': None}], 'id': None}, {'name': 'データモデルの理解', 'priority': 12, 'children': [{'name': 'ERモデルとは', 'priority': 13, 'children': [], 'id': None}, {'name': '正規化とは', 'priority': 14, 'children': [], 'id': None}, {'name': 'データベース設計とは', 'priority': 15, 'children': [], 'id': None}], 'id': None}], 'id': None}, {'name': 'SQLの基本', 'priority': 16, 'children': [{'name': 'SQLの歴史と特性', 'priority': 17, 'children': [{'name': 'DDL, DML, DCLとは', 'priority': 18, 'children': [], 'id': None}, {'name': 'SQLの基本構文', 'priority': 19, 'children': [], 'id': None}, {'name': 'SELECT文、INSERT文、UPDATE文、DELETE文', 'priority': 20, 'children': [], 'id': None}], 'id': None}, {'name': 'テーブル操作とインデックス', 'priority': 21, 'children': [{'name': 'テーブルの作成、変更、削除', 'priority': 22, 'children': [], 'id': None}, {'name': 'インデックスとは', 'priority': 23, 'children': [], 'id': None}, {'name': 'プライマリキーと外部キーの理解', 'priority': 24, 'children': [], 'id': None}], 'id': None}, {'name': 'データ操作とトランザクション', 'priority': 25, 'children': [{'name': 'データの検索(SELECT文の詳細)', 'priority': 26, 'children': [], 'id': None}, {'name': 'データの挿入、更新、削除(INSERT文、UPDATE文、DELETE文の詳細)', 'priority': 27, 'children': [], 'id': None}, {'name': 'トランザクションとは', 'priority': 28, 'children': [], 'id': None}], 'id': None}], 'id': None}], 'id': None}, {'name': 'データベースの応用', 'priority': 29, 'children': [{'name': 'DBMSの理解', 'priority': 30, 'children': [{'name': 'OracleとMySQL', 'priority': 31, 'children': [{'name': 'Oracleの特性と機能', 'priority': 32, 'children': [], 'id': None}, {'name': 'MySQLの特性と機能', 'priority': 33, 'children': [], 'id': None}, {'name': 'OracleとMySQLの違い', 'priority': 34, 'children': [], 'id': None}], 'id': None}, {'name': 'NoSQLデータベース', 'priority': 35, 'children': [{'name': 'MongoDBの特性と機能', 'priority': 36, 'children': [], 'id': None}, {'name': 'Cassandraの特性と機能', 'priority': 37, 'children': [], 'id': None}, {'name': 'NoSQLとRDBMSの違い', 'priority': 38, 'children': [], 'id': None}], 'id': None}, {'name': 'データベースのチューニング', 'priority': 39, 'children': [{'name': 'データベースパフォーマンスの最適化', 'priority': 40, 'children': [], 'id': None}, {'name': 'インデックスの最適化', 'priority': 41, 'children': [], 'id': None}, {'name': 'SQLクエリの最適化', 'priority': 42, 'children': [], 'id': None}], 'id': None}], 'id': None}, {'name': 'SQLの応用', 'priority': 43, 'children': [{'name': '高度なSQLクエ リ', 'priority': 44, 'children': [{'name': '結合(JOIN)', 'priority': 45, 'children': [], 'id': None}, {'name': 'サブクエリ', 'priority': 46, 'children': [], 'id': None}, {'name': 'ビューとは', 'priority': 47, 'children': [], 'id': None}], 'id': None}, {'name': 'ストアドプロシージャとトリガー', 'priority': 48, 'children': [{'name': 'ストアドプロシージャとは', 'priority': 49, 'children': [], 'id': None}, {'name': 'トリガーとは', 'priority': 50, 'children': [], 'id': None}, {'name': 'ストアドプロシージャとトリガーの違い', 'priority': 51, 'children': [], 'id': None}], 'id': None}, {'name': 'SQLの 最適化', 'priority': 52, 'children': [{'name': 'SQLクエリパフォーマンスの最適化', 'priority': 53, 'children': [], 'id': None}, {'name': 'エクスプレインプランの理解', 'priority': 54, 'children': [], 'id': None}, {'name': '索引の使用と最適化', 'priority': 55, 'children': [], 'id': None}], 'id': None}], 'id': None}], 'id': None}, {'name': 'データベースとSQLの最新トレンド', 'priority': 56, 'children': [{'name': 'クラウドデータベースサービス', 'priority': 57, 'children': [{'name': 'AWS RDS', 'priority': 58, 'children': [], 'id': None}, {'name': 'Google Cloud SQL', 'priority': 59, 'children': [], 'id': None}], 'id': None}, {'name': 'データベースとSQLのフォローアップ学習', 'priority': 60, 'children': [], 'id': None}], 'id': None}, {'name': '主導補充', 'priority': 9999, 'children': [], 'id': None}], 'id': None}
+    #作成された木構造をJSON形式に変換
+    content = """Please convert the following data to JSON format. Please exclude superfluous text. 
+    {{
+        name: node_name,
+        priority: priority,
+        children: [
+            name: node_name,
+            priority: priority,
+            children:[]
+        ]
+    }}
+    data: {response}""".format(response=response)
+    res = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-1106",
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": "You are a bot that creates a tree structure"},
+            {"role": "user", "content": content},
+        ]
+    )
+    json_tree = res.choices[0].message.content
+    print("JSON_TREE: ", json_tree)
+    #フロントで必要なキーを追加
+    json_tree = json.loads(json_tree)
+    check_and_add_key(json_tree)
+    # map_id = "test14"
+    # theme = "データベースとSQL"
+    # json_tree = {'name': 'データベースとSQL', 'priority': 1, 'children': [{'name': 'データベースの基本', 'priority': 2, 'children': [{'name': 'データベースとは', 'priority': 3, 'children': [{'name': 'データベースの歴史', 'priority': 4, 'children': [{'name': '関係データベースとは', 'priority': 5, 'children': [], 'id': None}, {'name': 'ノンリレーショ ナルデータベースとは', 'priority': 6, 'children': [], 'id': None}, {'name': 'オブジェクト指向データベースとは', 'priority': 7, 'children': [], 'id': None}], 'id': None}, {'name': 'データベースの役割と特性', 'priority': 8, 'children': [{'name': 'データの整合性の維持', 'priority': 9, 'children': [], 'id': None}, {'name': 'データの冗長性の排除', 'priority': 10, 'children': [], 'id': None}, {'name': 'データセキュリティ', 'priority': 11, 'children': [], 'id': None}], 'id': None}, {'name': 'データモデルの理解', 'priority': 12, 'children': [{'name': 'ERモデルとは', 'priority': 13, 'children': [], 'id': None}, {'name': '正規化とは', 'priority': 14, 'children': [], 'id': None}, {'name': 'データベース設計とは', 'priority': 15, 'children': [], 'id': None}], 'id': None}], 'id': None}, {'name': 'SQLの基本', 'priority': 16, 'children': [{'name': 'SQLの歴史と特性', 'priority': 17, 'children': [{'name': 'DDL, DML, DCLとは', 'priority': 18, 'children': [], 'id': None}, {'name': 'SQLの基本構文', 'priority': 19, 'children': [], 'id': None}, {'name': 'SELECT文、INSERT文、UPDATE文、DELETE文', 'priority': 20, 'children': [], 'id': None}], 'id': None}, {'name': 'テーブル操作とインデックス', 'priority': 21, 'children': [{'name': 'テーブルの作成、変更、削除', 'priority': 22, 'children': [], 'id': None}, {'name': 'インデックスとは', 'priority': 23, 'children': [], 'id': None}, {'name': 'プライマリキーと外部キーの理解', 'priority': 24, 'children': [], 'id': None}], 'id': None}, {'name': 'データ操作とトランザクション', 'priority': 25, 'children': [{'name': 'データの検索(SELECT文の詳細)', 'priority': 26, 'children': [], 'id': None}, {'name': 'データの挿入、更新、削除(INSERT文、UPDATE文、DELETE文の詳細)', 'priority': 27, 'children': [], 'id': None}, {'name': 'トランザクションとは', 'priority': 28, 'children': [], 'id': None}], 'id': None}], 'id': None}], 'id': None}, {'name': 'データベースの応用', 'priority': 29, 'children': [{'name': 'DBMSの理解', 'priority': 30, 'children': [{'name': 'OracleとMySQL', 'priority': 31, 'children': [{'name': 'Oracleの特性と機能', 'priority': 32, 'children': [], 'id': None}, {'name': 'MySQLの特性と機能', 'priority': 33, 'children': [], 'id': None}, {'name': 'OracleとMySQLの違い', 'priority': 34, 'children': [], 'id': None}], 'id': None}, {'name': 'NoSQLデータベース', 'priority': 35, 'children': [{'name': 'MongoDBの特性と機能', 'priority': 36, 'children': [], 'id': None}, {'name': 'Cassandraの特性と機能', 'priority': 37, 'children': [], 'id': None}, {'name': 'NoSQLとRDBMSの違い', 'priority': 38, 'children': [], 'id': None}], 'id': None}, {'name': 'データベースのチューニング', 'priority': 39, 'children': [{'name': 'データベースパフォーマンスの最適化', 'priority': 40, 'children': [], 'id': None}, {'name': 'インデックスの最適化', 'priority': 41, 'children': [], 'id': None}, {'name': 'SQLクエリの最適化', 'priority': 42, 'children': [], 'id': None}], 'id': None}], 'id': None}, {'name': 'SQLの応用', 'priority': 43, 'children': [{'name': '高度なSQLクエ リ', 'priority': 44, 'children': [{'name': '結合(JOIN)', 'priority': 45, 'children': [], 'id': None}, {'name': 'サブクエリ', 'priority': 46, 'children': [], 'id': None}, {'name': 'ビューとは', 'priority': 47, 'children': [], 'id': None}], 'id': None}, {'name': 'ストアドプロシージャとトリガー', 'priority': 48, 'children': [{'name': 'ストアドプロシージャとは', 'priority': 49, 'children': [], 'id': None}, {'name': 'トリガーとは', 'priority': 50, 'children': [], 'id': None}, {'name': 'ストアドプロシージャとトリガーの違い', 'priority': 51, 'children': [], 'id': None}], 'id': None}, {'name': 'SQLの 最適化', 'priority': 52, 'children': [{'name': 'SQLクエリパフォーマンスの最適化', 'priority': 53, 'children': [], 'id': None}, {'name': 'エクスプレインプランの理解', 'priority': 54, 'children': [], 'id': None}, {'name': '索引の使用と最適化', 'priority': 55, 'children': [], 'id': None}], 'id': None}], 'id': None}], 'id': None}, {'name': 'データベースとSQLの最新トレンド', 'priority': 56, 'children': [{'name': 'クラウドデータベースサービス', 'priority': 57, 'children': [{'name': 'AWS RDS', 'priority': 58, 'children': [], 'id': None}, {'name': 'Google Cloud SQL', 'priority': 59, 'children': [], 'id': None}], 'id': None}, {'name': 'データベースとSQLのフォローアップ学習', 'priority': 60, 'children': [], 'id': None}], 'id': None}, {'name': '主導補充', 'priority': 9999, 'children': [], 'id': None}], 'id': None}
     print("COMPLEMENTED JSON_TREE: ", json_tree)
 
     #rootノードとその直下の子ノード4つのみを抽出しnodesに格納
