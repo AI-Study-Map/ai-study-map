@@ -191,6 +191,7 @@ const ButtonBAndD = styled.button`
   &:hover {
     background-color: ${props => props.disabled ? '#ccc' : '#5E9E3E'}; /* ホバー時の背景色 */
   }
+  transition: background-color 0.5s;
 `;
 
 function QuestionMenu() {

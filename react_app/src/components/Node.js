@@ -6,31 +6,44 @@ import SwitchBtn from './SwitchBtn';
 import NodeContents from '../NodeContents/NodeContents';
 
 const NodethemeColorId = [
-  {"main": "node/leaf_green.png", "sub": "node/leaf_yellow.png"},
-  {"main": "node/leaf_green.png", "sub": "node/leaf_pink.png"},
-  {"main": "node/leaf_green.png", "sub": "node/leaf_orange.png"},
+  {"main": "node/leaf-green.png", "sub": "node/leaf-yellow.png"},
+  {"main": "node/leaf-green.png", "sub": "node/leaf-pink.png"},
+  {"main": "node/leaf-green.png", "sub": "node/leaf-orange.png"},
 ]
 
 const TestDiv = styled.div`
   background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(node/wood.png)": (props.isCorrect ? `url(${NodethemeColorId[props.themeColorId]["sub"]})` : `url(${NodethemeColorId[props.themeColorId]["main"]})`) };
   background-size: contain;
   background-repeat: no-repeat;
-  height: ${(props) => (props.id === "root" || props.id === "root2") ? "560px": "120px" };
-  width: ${(props) => (props.id === "root" || props.id === "root2") ? "300px": "220px" };
+  height: ${(props) => (props.id === "root" || props.id === "root2") ? "560px": "90px" };
+  width: ${(props) => (props.id === "root" || props.id === "root2") ? "300px": "200px" };
   position: absolute;
-  top: ${(props) => (props.id === "root" || props.id === "root2") ? "-65px": "-37px" };
-  left: ${(props) => (props.id === "root" || props.id === "root2") ? "-77px": "-30px" };
+  top: ${(props) => (props.id === "root" || props.id === "root2") ? "-65px": "-20px" };
+  left: ${(props) => (props.id === "root" || props.id === "root2") ? "-77px": "-20px" };
 `
 
-const Ground = styled.div`
+const GroundWithGrass = styled.div`
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
   background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(node/ground.png)": null };
   height: ${(props) => (props.id === "root" || props.id === "root2") ? "700px": "0" };
   width: ${(props) => (props.id === "root" || props.id === "root2") ? "1500px": "0" };
-  top: 360px;
+  top: 455px;
   left: -650px;
+  z-index: 1000;
+`
+
+const Ground = styled.div`
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(node/ground.svg)": null };
+  height: ${(props) => (props.id === "root" || props.id === "root2") ? "10000px": "0" };
+  width: ${(props) => (props.id === "root" || props.id === "root2") ? "10000px": "0" };
+  top: 485px;
+  left: -5000px;
+  z-index: 999;
 `
 
 const NodeContainer = styled.div`
@@ -42,7 +55,7 @@ const NodeContentsWrapper = styled.div`
   position: absolute;
   top: 80%;
   left: 0;
-  z-index: 1000;
+  z-index: 10000;
   pointer-events: auto;
   width: 500px;
   height: auto;
@@ -63,8 +76,9 @@ const InputWrapper = styled.div`
   box-shadow: ${(props) => (props.id === "root" || props.id === "root2") ? "none": "none" };
   /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
   &:hover {
-    ${(props) => (props.id === "root" || props.id === "root2") ? "": "transform: scale(1.05)"};
+    ${(props) => (props.id === "root" || props.id === "root2") ? "": "transform: scale(1.30)"};
   }
+  transition: transform 0.15s ease;
 `;
 
 const DragHandleArea = styled.div`
@@ -163,6 +177,7 @@ function MindMapNode({ id, data, isCorrect,}) {
   return (
     <>
     {/* <TestDiv id={id} isCorrect={isCorrectLocal} themeColorId={themeColorId}/> */}
+    <GroundWithGrass id={id} />
     <Ground id={id} />
     <NodeContainer id={id}>
       <InputWrapper className="inputWrapper dragHandle" id={id} isCorrect={isCorrectLocal} onClick={(e) => onNodeClick(e)}>

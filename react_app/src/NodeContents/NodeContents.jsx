@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 import useStore from '../node/store';
+import CodeBlock from '../components/CodeBlock';
 
 const themeColors = [
   "#FFE867", "#FFC8C8", "#FF8B67"
@@ -247,9 +248,19 @@ function NodeContents(props) {
           <BackGroundImg1 src="node/node_background1.svg" alt='右上'/>
           <BackGroundImg2 src="node/node_background2.svg" alt='左下'/>
             <ResponseLogArea id='response_log'>
-                <ReactMarkdown>{description}</ReactMarkdown>
+                <ReactMarkdown 
+                  components={{
+                    code: CodeBlock,
+                  }}>
+                  {description}
+                </ReactMarkdown>
                 <hr></hr>
-                <ReactMarkdown>{example}</ReactMarkdown>
+                <ReactMarkdown 
+                  components={{
+                    code: CodeBlock,
+                  }}>
+                  {example}
+                </ReactMarkdown>
             </ResponseLogArea>
             <ButtonContainer id='buttons'>
                 <StyledButton id='addQuestion' onClick={handleAddQuestion} themeColorId={themeColorId}>問題を解く</StyledButton>

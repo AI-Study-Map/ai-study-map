@@ -71,7 +71,7 @@ const Flow = () =>  {
         connectionLineType={ConnectionLineType.Straight}
         // defaultViewport={defaultViewport}
         fitView
-        minZoom={0.3}
+        minZoom={0.1}
       >
         {/* <Background color="#FAFFF7" style={{"backgroundColor": "#FAFFF7"}}/> */}
         <Background color="#000"/>
