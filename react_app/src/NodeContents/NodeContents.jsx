@@ -3,6 +3,14 @@ import { styled } from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 import useStore from '../node/store';
 
+const themeColors = [
+  "#FFE867", "#FFC8C8", "#FF8B67"
+]
+
+const hoverThemeColors = [
+  "#FFD433", "#ffafaf", "#ff764d"
+]
+
 const NodeContentsArea = styled.div`
   /* z-index: 1; */
   /* margin-bottom: 30px; */
@@ -45,7 +53,7 @@ const ButtonContainer = styled.div`
 
 const StyledButton = styled.button`
   border-radius: 10px;
-  background-color: #FFE867;
+  background-color: ${(props) => themeColors[props.themeColorId]};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   border: none; // デフォルトのボーダーを削除（必要に応じて）
   cursor: pointer; // ボタンにマウスカーソルが乗ったときのスタイル
@@ -60,7 +68,7 @@ const StyledButton = styled.button`
   font-weight: 500;
   line-height: normal;
   &:hover {
-    background-color: #FFD433; // ボタンにマウスカーソルが乗ったときの背景色
+    background-color: ${(props) => hoverThemeColors[props.themeColorId]}; // ボタンにマウスカーソルが乗ったときの背景色
   }
 `;
 
@@ -92,7 +100,7 @@ function NodeContents(props) {
     const [example, setExample] = useState('');
     const [parentNodeList, setParentNodeList] = useState([]);
     const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, 
-      setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId, tree
+      setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId, tree, themeColorId
     } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -104,6 +112,7 @@ function NodeContents(props) {
           mapId: state.mapId,
           setSelectedNodeId: state.setSelectedNodeId,
           tree: state.tree,
+          themeColorId: state.themeColorId,
         })
       );
 
@@ -243,8 +252,8 @@ function NodeContents(props) {
                 <ReactMarkdown>{example}</ReactMarkdown>
             </ResponseLogArea>
             <ButtonContainer id='buttons'>
-                <StyledButton id='addQuestion' onClick={handleAddQuestion}>問題を解く</StyledButton>
-                <StyledButton id='addExplain' onClick={handleAddExplain}>説明文追加</StyledButton>
+                <StyledButton id='addQuestion' onClick={handleAddQuestion} themeColorId={themeColorId}>問題を解く</StyledButton>
+                <StyledButton id='addExplain' onClick={handleAddExplain} themeColorId={themeColorId}>説明文追加</StyledButton>
                 <StyledButtonGreen id='regenerate'onClick={handleResend}>
                   再生成
                   <RegenerateSvg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 35 35" fill="none">

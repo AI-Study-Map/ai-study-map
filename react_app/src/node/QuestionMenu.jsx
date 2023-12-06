@@ -5,6 +5,10 @@ import useAddNode from './useAddNode';
 
 const API_HOST_QUESTION = 'http://localhost:8000/api/gpt_calling/question';
 
+const themeColors = [
+  "#FFE867", "#FFC8C8", "#FF8B67"
+]
+
 const MenuWrapper = styled.div`
   position: fixed;
   top: 0;
@@ -21,7 +25,7 @@ const StyledQuestionHeader = styled.div`
   display: flex;
   width: 450px;
   align-items: center;
-  background-color:#FFE867;
+  background-color:${(props) => themeColors[props.themeColorId]};
   height: 8vh;
     p {
       color: #17594A;
@@ -49,7 +53,7 @@ const StyledQuestionButtons = styled.div`
   height: 32vh;
   overflow-y: auto; /* ボタンがはみ出す場合にスクロールバーを表示 */
   padding: 10px;
-  background-color:#FFE867;
+  background-color:${(props) => themeColors[props.themeColorId]};
   overflow-y: auto;
   white-space: nowrap;
   
@@ -208,7 +212,7 @@ function QuestionMenu() {
   });
   const { nodes, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion,toggleNodeFlipped,
-    question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect,
+    question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect, themeColorId
   } = useStore(
     state => ({
       nodes: state.nodes,
@@ -228,7 +232,8 @@ function QuestionMenu() {
       question_d: state.question_d,
       correctAns: state.correctAnswer,
       tree: state.tree,
-      toggleNodeFlipped: state.toggleNodeFlipped
+      toggleNodeFlipped: state.toggleNodeFlipped,
+      themeColorId: state.themeColorId,
     })
   );
   
@@ -349,14 +354,14 @@ function QuestionMenu() {
           </svg>
         </CloseButton>
         <div id='clearEffect'>
-          <StyledQuestionHeader>
+          <StyledQuestionHeader themeColorId={themeColorId}>
             <p>{nodeTitle}</p>
           </StyledQuestionHeader>
           <StyledQuestionContent>
             <p>問題</p>
             <p>{question}</p>
           </StyledQuestionContent>
-          <StyledQuestionButtons>
+          <StyledQuestionButtons themeColorId={themeColorId}>
             <p id='buttonMessage'>正しい選択肢を選んでください</p>
             <ErrorMessage>{error}</ErrorMessage>
             <ButtonAAndC onClick={() => handleCheckAnswer("a")} disabled={disabledOptions["a"]}>A: {answerA}</ButtonAAndC>
