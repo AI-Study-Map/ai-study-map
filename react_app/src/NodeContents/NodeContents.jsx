@@ -3,6 +3,8 @@ import { styled } from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 import useStore from '../node/store';
 import LoadingScreen from '../components/LoadingScreen';
+import '../noto_sans_jp.css'
+
 
 const NodeContentsArea = styled.div`
   /* z-index: 1; */
@@ -34,6 +36,8 @@ const ResponseLogArea = styled.div`
   max-height: 300px;
   cursor: default;
   z-index: 10000000;
+  font-weight: 400;
+  font-family: "Noto Sans Japanese"; 
 `
 
 const ButtonContainer = styled.div`
@@ -42,6 +46,7 @@ const ButtonContainer = styled.div`
   margin: auto 30px;
   margin-top: 10px;
   z-index: 10000;
+  font-family: "Noto Sans Japanese"; 
 `;
 
 const StyledButton = styled.button`
@@ -55,11 +60,11 @@ const StyledButton = styled.button`
   // font
   color: var(--1, #17594A);
   text-align: center;
-  font-family: Inter;
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  font-family: "Noto Sans Japanese"; 
   &:hover {
     background-color: #FFD433; // ボタンにマウスカーソルが乗ったときの背景色
   }
@@ -80,7 +85,6 @@ const StyledButtonFirst = styled.button`
   // font
   color: var(--1, #17594A);
   text-align: center;
-  font-family: Inter;
   font-size: 20px;
   font-style: normal;
   font-weight: 1000;

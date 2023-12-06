@@ -5,6 +5,7 @@ import Header from "../layout/Header";
 import TopLogo from '../images/TopLogo.png'
 import NodeTreeMake from "../node/NodeTreeMake";
 import { useNavigate } from 'react-router-dom';
+import '../noto_sans_jp.css'
 
 
 export const GlobalStyle = createGlobalStyle`
@@ -14,7 +15,7 @@ export const GlobalStyle = createGlobalStyle`
 
   body {
     height: 100%;/*高さを100%にして描画エリアをとる*/
-    font-family: "メイリオ";
+    font-family: "Noto Sans Japanese"; 
     background-color: #FAFFF7;
   }
 `;

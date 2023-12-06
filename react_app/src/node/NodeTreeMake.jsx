@@ -33,7 +33,7 @@ const FormWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: "メイリオ";
+    font-family: "Noto Sans Japanese"; 
     form {
         display: flex;
         flex-direction: column;
@@ -54,7 +54,7 @@ const FormWrapper = styled.div`
         border: 4px solid #ccc;
         border-radius: 10px;
         outline: none;
-        font-family: "メイリオ";
+        font-family: "Noto Sans Japanese"; 
         transition: border-color 0.5s ease;
 
         &:hover {
