@@ -15,11 +15,11 @@ const TestDiv = styled.div`
   background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(node/wood.png)": (props.isCorrect ? `url(${NodethemeColorId[props.themeColorId]["sub"]})` : `url(${NodethemeColorId[props.themeColorId]["main"]})`) };
   background-size: contain;
   background-repeat: no-repeat;
-  height: ${(props) => (props.id === "root" || props.id === "root2") ? "1000px": "120px" };
-  width: ${(props) => (props.id === "root" || props.id === "root2") ? "800px": "400px" };
+  height: ${(props) => (props.id === "root" || props.id === "root2") ? "560px": "120px" };
+  width: ${(props) => (props.id === "root" || props.id === "root2") ? "300px": "220px" };
   position: absolute;
-  top: ${(props) => (props.id === "root" || props.id === "root2") ? "-100px": "-37px" };
-  left: ${(props) => (props.id === "root" || props.id === "root2") ? "-335px": "-30px" };
+  top: ${(props) => (props.id === "root" || props.id === "root2") ? "-65px": "-37px" };
+  left: ${(props) => (props.id === "root" || props.id === "root2") ? "-77px": "-30px" };
 `
 
 const Ground = styled.div`
@@ -63,7 +63,7 @@ const InputWrapper = styled.div`
   box-shadow: ${(props) => (props.id === "root" || props.id === "root2") ? "none": "none" };
   /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
   &:hover {
-    transform: scale(1.05);
+    ${(props) => (props.id === "root" || props.id === "root2") ? "": "transform: scale(1.05)"};
   }
 `;
 
@@ -92,6 +92,9 @@ const P = styled.p`
   margin: 0;
   font-size: 14px;
   overflow-wrap: break-word;
+  position: relative;
+  top: ${(props) => (props.id === "root" || props.id === "root2") ? "12%" : "30%"};
+  left: ${(props) => (props.id === "root" || props.id === "root2") ? "4%" : "10%"};
 `;
 
 function MindMapNode({ id, data, isCorrect,}) {
@@ -159,10 +162,11 @@ function MindMapNode({ id, data, isCorrect,}) {
 
   return (
     <>
-    <TestDiv id={id} isCorrect={isCorrectLocal} themeColorId={themeColorId}/>
+    {/* <TestDiv id={id} isCorrect={isCorrectLocal} themeColorId={themeColorId}/> */}
     <Ground id={id} />
     <NodeContainer id={id}>
       <InputWrapper className="inputWrapper dragHandle" id={id} isCorrect={isCorrectLocal} onClick={(e) => onNodeClick(e)}>
+        <TestDiv id={id} isCorrect={isCorrectLocal} themeColorId={themeColorId}></TestDiv>
         <DragHandleArea id={id} className="dragHandle">
           <P
             value={data.label}
@@ -171,8 +175,9 @@ function MindMapNode({ id, data, isCorrect,}) {
             id={id}
             isCorrect={isCorrectLocal}
           >{data.label}</P>
-         <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/>
+         {/* <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/> */}
         </DragHandleArea>
+        {/* </TestDiv> */}
       </InputWrapper>
       {flipped && (
         <NodeContentsWrapper>

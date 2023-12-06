@@ -24,6 +24,7 @@ import {
         position: { x: 0, y: 0 },
         dragHandle: '.dragHandle',
         idd: 1,
+        draggable: false
       },
       {
         id: '1',
