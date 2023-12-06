@@ -409,6 +409,9 @@ import {
 
     valuea: null,
     setValuea: (value) => set({ valuea: value }),
+
+    themeColorId: 0,
+    setThemeColorId: (id) => set({ themeColorId: id }),
   }));
   
   export default useStore;

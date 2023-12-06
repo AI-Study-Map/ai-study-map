@@ -235,8 +235,8 @@ function NodeContents(props) {
 
     return (
         <NodeContentsArea className='NodeContents' >
-          <BackGroundImg1 src="node_background1.svg" alt='右上'/>
-          <BackGroundImg2 src="node_background2.svg" alt='左下'/>
+          <BackGroundImg1 src="node/node_background1.svg" alt='右上'/>
+          <BackGroundImg2 src="node/node_background2.svg" alt='左下'/>
             <ResponseLogArea id='response_log'>
                 <ReactMarkdown>{description}</ReactMarkdown>
                 <hr></hr>

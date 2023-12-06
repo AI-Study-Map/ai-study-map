@@ -5,8 +5,14 @@ import { styled } from 'styled-components';
 import SwitchBtn from './SwitchBtn';
 import NodeContents from '../NodeContents/NodeContents';
 
+const NodethemeColorId = [
+  {"main": "node/leaf_green.png", "sub": "node/leaf_yellow.png"},
+  {"main": "node/leaf_green.png", "sub": "node/leaf_pink.png"},
+  {"main": "node/leaf_green.png", "sub": "node/leaf_orange.png"},
+]
+
 const TestDiv = styled.div`
-  background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(wood.png)": (props.isCorrect ? "url(leaf_yellow.png)" : "url(leaf_green.png)") };
+  background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(node/wood.png)": (props.isCorrect ? `url(${NodethemeColorId[props.themeColorId]["sub"]})` : `url(${NodethemeColorId[props.themeColorId]["main"]})`) };
   background-size: contain;
   background-repeat: no-repeat;
   height: ${(props) => (props.id === "root" || props.id === "root2") ? "1000px": "120px" };
@@ -20,7 +26,7 @@ const Ground = styled.div`
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(ground.png)": null };
+  background-image: ${(props) => (props.id === "root" || props.id === "root2") ? "url(node/ground.png)": null };
   height: ${(props) => (props.id === "root" || props.id === "root2") ? "700px": "0" };
   width: ${(props) => (props.id === "root" || props.id === "root2") ? "1500px": "0" };
   top: 360px;
@@ -92,10 +98,11 @@ function MindMapNode({ id, data, isCorrect,}) {
   const inputRef = useRef(null);
   const [isCorrectLocal, setIsCorrectLocal] = useState(isCorrect)
 
-  const { nodes, getNodeFlippedStatus, toggleNodeFlipped } = useStore(state => ({
+  const { nodes, getNodeFlippedStatus, toggleNodeFlipped, themeColorId } = useStore(state => ({
     nodes: state.nodes,
     getNodeFlippedStatus: state.getNodeFlippedStatus,
-    toggleNodeFlipped: state.toggleNodeFlipped
+    toggleNodeFlipped: state.toggleNodeFlipped,
+    themeColorId: state.themeColorId
   }));
 
   // const { setCenter } = useReactFlow();
@@ -152,7 +159,7 @@ function MindMapNode({ id, data, isCorrect,}) {
 
   return (
     <>
-    <TestDiv id={id} isCorrect={isCorrectLocal}/>
+    <TestDiv id={id} isCorrect={isCorrectLocal} themeColorId={themeColorId}/>
     <Ground id={id} />
     <NodeContainer id={id}>
       <InputWrapper className="inputWrapper dragHandle" id={id} isCorrect={isCorrectLocal} onClick={(e) => onNodeClick(e)}>

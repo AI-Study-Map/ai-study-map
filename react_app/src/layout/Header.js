@@ -5,10 +5,16 @@ import MapDataSave from '../save/MapDataSave';
 import MapDataLoad from '../save/MapDataLoad';
 import { useNavigate } from 'react-router-dom';
 import AiStudyMap_logo from '../images/ai-study-map-logo.png';
-import AiStudyMap_logo2 from '../images/ai-study-map-logo2.png';
+import ThemeSwitcher from '../components/ThemeSwitcher';
+import useStore from '../node/store';
+// import AiStudyMap_logo2 from '../images/ai-study-map-logo2.png';
+
+const themeColors = [
+  "#FFE867", "#FFC8C8", "#FF8B67"
+]
 
 const StyledHeader = styled.header`
-  background-color: #FFE867;
+  background-color: ${(props) => themeColors[props.themeColorId]};
   background-image: url(${AiStudyMap_logo});
   background-repeat: no-repeat;
   background-position: 30px;
@@ -30,7 +36,7 @@ const SidebarMenu = styled.div`
   margin-top: 0;
   transform: translateX(${props => (props.$isOpen ? "0" : "250px")});
   transition: transform 250ms ease-in-out;
-  background: #FFE867;
+  background: ${(props) => themeColors[props.themeColorId]};
   z-index: 10000;
 `;
 
@@ -52,8 +58,8 @@ const SidebarMenuInner = styled.ul`
       color: rgba(255, 255, 255, 0.50);
     }
     &:hover {
-    background-color: #ff5757; // ホバー時の背景色変更
-    color: #fff; // ホバー時の文字色変更
+    background-color: #7BC74D; // ホバー時の背景色変更
+    color: ${(props) => themeColors[props.themeColorId]}; // ホバー時の文字色変更
   }
   }
 `;
@@ -89,8 +95,10 @@ const Spinner = styled.div`
   }
 `;
 
-
 const Header = ({ title }) => {
+  const { themeColorId } = useStore(state => ({
+    themeColorId: state.themeColorId
+  }));
   const [isOpen, setIsOpen] = useState(false);
 
   const addNewNode = useAddNode();
@@ -100,11 +108,9 @@ const Header = ({ title }) => {
     navigate("/top");
   }
 
-
-
   return (
     <>
-      <StyledHeader>
+      <StyledHeader themeColorId={themeColorId}>
         {title}
         <SidebarIconToggle onClick={() => setIsOpen(!isOpen)}>
           <Spinner className="diagonal part-1" $isOpen={isOpen} />
@@ -112,9 +118,10 @@ const Header = ({ title }) => {
           <Spinner className="diagonal part-2" $isOpen={isOpen} />
         </SidebarIconToggle>
       </StyledHeader>
-      <SidebarMenu $isOpen={isOpen}>
-        <SidebarMenuInner>
+      <SidebarMenu $isOpen={isOpen} themeColorId={themeColorId}>
+        <SidebarMenuInner themeColorId={themeColorId}>
           <li onClick={()=>handleGoTop()}><p>ホーム</p></li>
+          <li><ThemeSwitcher /></li>
           {/*<li onClick={() => addNewNode("数値型", "文字列型")}><p>ノードを追加</p></li>*/}
           {/* <li><p><MapDataSave /></p></li>
           <li><p><MapDataLoad /></p></li> */}
