@@ -7,7 +7,6 @@ import NodeTreeMake from "../node/NodeTreeMake";
 import { useNavigate } from 'react-router-dom';
 import '../noto_sans_jp.css'
 
-
 export const GlobalStyle = createGlobalStyle`
   html {
     height: 100%;/*高さを100%にして描画エリアをとる*/
@@ -21,29 +20,38 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 export const Container = styled.div`
-  height: auto;
   display: flex; //横並び
-  justify-content: space-between;
-  padding: 6rem 4rem;
+  justify-content: space-around;
+  padding: 6rem 0 4rem 0;
 `;
 
 const LeftSection = styled.div` // コンテナ左
+  width: 45%;
+  min-width: 250px;
   padding: 1rem 2rem;
   flex: 0.5;
-  margin: 2rem 0 2rem 8rem;
-  min-width: 670px;
+  margin: 2rem 1rem 2rem 6rem;
   .logo {
     display: flex; // ロゴとアプリ説明を横並び
   }
 
-  .logo img{
-    width: 300px;
-    height: 300px;
+  .logoimg {
+    max-width: 300px;
+    max-height: 300px;
+    min-width: 200px;
+    min-width: 200px;
+  }
+
+  .logoimg img {
+    width: 100%;
   }
 
   .logo h1 {
+    width: 250px;
+    font-size: 30px;
     color: #17594A;
     max-height: 300px;
+    min-width: 300px;
     text-align: center;
     line-height: 1.5em;
     padding-left: 1em;
@@ -53,22 +61,107 @@ const LeftSection = styled.div` // コンテナ左
     color: #213363;
     font-size: 30px;
     line-height: 1.5em;
-    margin-top: 3em;
+    margin-top: 1em;
     background-color: #FAFFF7;
+  }
+  
+  @media screen and (max-width: 1600px){
+    margin: 2rem 0 2rem 2rem;
+    .logo {
+      display: block;
+    }
+
+    .logo h1 {
+      text-align: left;
+      min-width: 655px;
+    }
+    
+    p {
+      padding-left: 1em;
+    }
+
+    .pc {
+      display: block; // 画面幅が1700px以下になったら改行
+    }
   }
 `;
 const RightSection = styled.div` // コンテナ右
-  max-height: 400px;
-  max-width: 600px;
+  width: 750px;
+  height: 420px;
+  background-color: #857f7f;
+  margin: 4rem 0 0 0;
+`;
+
+const ScrollDown = styled.div`
+  .arrows {
+  width: 60px;
+  height: 72px;
+  position: absolute;
+  left: 50%;
+  margin-left: -30px;
+  bottom: 20px;
+}
+
+  .arrows path {
+    stroke: #7BC74D;
+    fill: transparent;
+    stroke-width: 1px;  
+    animation: arrow 2s infinite;
+    -webkit-animation: arrow 2s infinite; 
+  }
+
+  @keyframes arrow
+  {
+  0% {opacity:0}
+  40% {opacity:1}
+  80% {opacity:0}
+  100% {opacity:0}
+  }
+
+  @-webkit-keyframes arrow /*Safari and Chrome*/
+  {
+  0% {opacity:0}
+  40% {opacity:1}
+  80% {opacity:0}
+  100% {opacity:0}
+  }
+
+  .arrows path.a1 {
+    animation-delay:-1s;
+    -webkit-animation-delay:-1s; /* Safari 和 Chrome */
+  }
+
+  .arrows path.a2 {
+    animation-delay:-0.5s;
+    -webkit-animation-delay:-0.5s; /* Safari 和 Chrome */
+  }
+
+  .arrows path.a3 { 
+    animation-delay:0s;
+    -webkit-animation-delay:0s; /* Safari 和 Chrome */
+  }
+`;
+
+const BottomSection = styled.div`
+  min-width: 250px;
+  max-height: 350px;
   padding: 2rem 2rem;
-  margin: 6rem 10rem 3rem 3rem;
+  margin: 8rem 4rem 4rem 4rem;
   flex: 0.5;
   border: 5px dotted #FFE867;
   border-radius: 10px;
   border-width: 4px;
+  
   h1 {
     color: #17594A;
+    line-height: 1.2em;
   }
+
+  .btn {
+    text-align: right;
+    margin-right: 1.5rem;
+  }
+
   button {
     background-color: #7BC74D;
     color: #FAFFF7;
@@ -77,7 +170,7 @@ const RightSection = styled.div` // コンテナ右
     margin: 5rem 0.5rem 0 0.5rem;
     padding: 1rem 1rem;
     border: none;
-    border-radius: 15px;
+    border-radius: 25px 5px 25px 5px;
     cursor: pointer;
   }
   button:hover {
@@ -113,6 +206,13 @@ const RightSection = styled.div` // コンテナ右
     transition: 0s;
     opacity: 0.3;
 }
+
+@media screen and (max-width: 1200px){
+    .pc {
+      display: block;
+    }
+  }
+
 `;
 
 function Top() {
@@ -123,25 +223,41 @@ function Top() {
 
   return (
     <>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
     <GlobalStyle />
       <Header />
       <Container>
         <LeftSection>
           <div className="logo">
-            <img src={TopLogo} alt="toplogo" />
+            <div className="logoimg">
+              <img src={TopLogo} alt="toplogo" />
+            </div>
             <h1>AI Study Mapは<br />誰でも手軽に素早く<br />体系的に学習できる<br />Webアプリです</h1>
           </div>
             <p>
-              マインドマップを活用し<br />ゲーム感覚で楽しく学ぶことができます。<br/>
+            <span class="pc">マインドマップを活用し</span><span class="pc">ゲーム感覚で楽しく学ぶことができます。</span>
             </p>
         </LeftSection>
         <RightSection>
-          <h1>AI Study Mapをはじめよう(仮)</h1>
-          <button className="btnripple" onClick={()=>handleGoStart()}>はじめる(仮)</button>
+          <div className="spinner">
+          </div>
+        </RightSection>
+        </Container>
+        <ScrollDown>
+        <svg class="arrows">
+              <path class="a1" d="M0 0 L30 32 L60 0"></path>
+              <path class="a2" d="M0 20 L30 52 L60 20"></path>
+              <path class="a3" d="M0 40 L30 72 L60 40"></path>
+            </svg>
+        </ScrollDown>
+        <BottomSection>
+          <h1><span class="pc">AI Study Mapを</span><span class="pc">はじめよう(仮)</span></h1>
+          <div className="btn">
+            <button className="btnripple" onClick={()=>handleGoStart()}>はじめる(仮)</button>
+          </div>
           {/* <NodeTreeChoice />
           <NodeTreeMake /> */}
-        </RightSection>
-      </Container>
+        </BottomSection>
     </>
   );
 }
