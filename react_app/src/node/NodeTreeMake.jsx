@@ -76,13 +76,14 @@ const API_MAP_MAKE = "http://localhost:8000/api/gpt_calling/make_map";
 function NodeTreeMake() {
     const [formData, setFormData] = useState("");
     const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
-    const{ setLoadedMapData, setFirstLoadedMap, isCommonLoading, setIsCommonLoading
+    const{ setLoadedMapData, setFirstLoadedMap, isCommonLoading, setIsCommonLoading, setGauge
       } = useStore(
           state => ({
             setLoadedMapData: state.setLoadedMapData,
             setFirstLoadedMap: state.setFirstLoadedMap,
             isCommonLoading: state.isCommonLoading,
             setIsCommonLoading: state.setIsCommonLoading,
+            setGauge: state.setGauge,
           })
         );
     const navigate = useNavigate();
@@ -119,6 +120,8 @@ function NodeTreeMake() {
                 const tree = parseData.tree;
                 const mapId = parseData.mapId;
                 const themeName = parseData.theme_name;  
+                const allNodes = parseData.total_nodes;
+                const cleared_nodes = 0;
                 const nodes = JSON.stringify(parseData.node_list);
                 const edges = JSON.stringify(parseData.edge_list);
                 const nodesJSON = JSON.parse(nodes);
@@ -127,6 +130,7 @@ function NodeTreeMake() {
                 const FirstNode = [nodesJSON[1], nodesJSON[2], nodesJSON[3], nodesJSON[4]];
                 setFirstLoadedMap(FirstNode);
                 setLoadedMapData(tree, mapId, themeName, RootNode, edgesJSON);
+                setGauge(allNodes, cleared_nodes);
                 console.log("NODES:", nodesJSON);
                 setIsCommonLoading(false);
                 navigate("/map");

@@ -36,11 +36,12 @@ function NodeTreeChoice() {
     const [selectedValue, setSelectedValue] = useState(options[0]);
     const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
     
-    const{ setLoadedMapData, isCommonLoading, setIsCommonLoading
+    const{ setLoadedMapData, isCommonLoading, setIsCommonLoading, setGauge
       } = useStore(
           state => ({
             setLoadedMapData: state.setLoadedMapData,
             isCommonLoading: state.isCommonLoading,
+            setGauge: state.setGauge,
           })
         );
     const navigate = useNavigate();
@@ -95,11 +96,14 @@ function NodeTreeChoice() {
                 const tree = parseData.tree;
                 const mapId = parseData.mapId;
                 const themeName = parseData.theme_name;  
+                const allNodes = parseData.total_nodes;
+                const cleared_nodes = parseData.cleared_nodes;
                 const nodes = JSON.stringify(parseData.node_list);
                 const edges = JSON.stringify(parseData.edge_list);
                 const nodesJSON = JSON.parse(nodes);
                 const edgesJSON = JSON.parse(edges);
                 setLoadedMapData(tree, mapId, themeName, nodesJSON, edgesJSON);
+                setGauge(allNodes, cleared_nodes);
                 navigate("/map");
             });
     }

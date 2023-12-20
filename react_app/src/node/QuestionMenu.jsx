@@ -210,7 +210,7 @@ function QuestionMenu() {
   const { nodes, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion, toggleNodeFlipped,
     question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect,
-    isQuestionMenuLoading, mapId, setSuggestNode
+    isQuestionMenuLoading, mapId, setSuggestNode, setGauge, clearedNodes, allNodes
   } = useStore(
     state => ({
       nodes: state.nodes,
@@ -233,7 +233,10 @@ function QuestionMenu() {
       isQuestionMenuLoading: state.isQuestionMenuLoading,
       toggleNodeFlipped: state.toggleNodeFlipped,
       mapId: state.mapId,
-      setSuggestNode: state.setSuggestNode
+      setSuggestNode: state.setSuggestNode,
+      setGauge: state.setGauge,
+      clearedNodes: state.clearedNodes,
+      allNodes: state.allNodes,
     })
   );
 
@@ -320,6 +323,7 @@ function QuestionMenu() {
     setShowEffect(false);
     setQuestionMenu(false);
     updateNodeIsCorrect(selectedNodeId);
+    setGauge(allNodes, clearedNodes+1);
     const dictTree = JSON.parse(tree);
     const childrenNames = findChildrenById(dictTree, selectedNodeId);
     if (childrenNames.length === 0) {

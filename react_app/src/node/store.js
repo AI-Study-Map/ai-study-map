@@ -563,6 +563,10 @@ import {
       }
       set({ suggestNode: suggestNode });
     },
+
+    allNodes: 0,
+    clearedNodes: 0,
+    setGauge: (allNodes, clearedNodes) => {set({ allNodes: allNodes, clearedNodes: clearedNodes })},
   }));
   
   export default useStore;

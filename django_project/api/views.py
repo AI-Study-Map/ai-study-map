@@ -186,6 +186,11 @@ def gpt_calling(request):
         parsed_result = json.loads(result)
         description = parsed_result["description"]
         example = parsed_result["example"]
+
+        #descriptionとexampleに含まれている"\n"を"\n\n"に変換（マークダウン用）
+        description = description.replace("\n", "\n\n")
+        example = example.replace("\n", "\n\n")
+
         # DBに保存
         if Node.objects.filter(map_id=map_id).filter(node_id=node_id).exists():
             node = Node.objects.filter(map_id=map_id).get(node_id=node_id)
@@ -311,7 +316,7 @@ def add_description(request):
     node_id = request.data['nodeId']
     title = request.data['title']
     description = request.data['description']
-    guidance.llm= guidance.llms.OpenAI("gpt-3.5-turbo")
+    guidance.llm= guidance.llms.OpenAI("gpt-4")
     create_prompt = guidance("""
         {{#system~}}
             あなたは、学ぶ人にとっての教科書として、わかりやすく丁寧な解説を日本語で提供する優秀なbotです。
@@ -469,6 +474,7 @@ def make_map(request):
          'idd': 1,
          'isCorrect': False,
          'priority': json_tree['priority']
+        #  draggable
        },
        {
          'id': generate(),
@@ -543,6 +549,7 @@ def make_map(request):
 
     #json_treeの要素数をカウント
     total_nodes = count_json_tree(json_tree)
+    print("TOTAL NODES: ", total_nodes)
     
     try:
         #Mapテーブルに登録
@@ -583,7 +590,7 @@ def make_map(request):
                 print("SERIALIZE ERROR")
                 print(save_edge_serializer.errors)
 
-        data = json.dumps({"mapId": map_id, "theme_name": theme, "tree": graph_structure, "node_list": nodes, "edge_list": edges})
+        data = json.dumps({"mapId": map_id, "theme_name": theme, "tree": graph_structure, "node_list": nodes, "edge_list": edges, "total_nodes": total_nodes})
         return Response(data)
     except:
         return Response("error")
@@ -596,16 +603,23 @@ def save_map(request):
     graph_structure = request.data['graph_structure']
     graph_structure = json.dumps(graph_structure)
     theme_name = request.data['theme_name']
+    cleared_nodes = request.data['cleared_nodes']
 
     #map_idが存在する場合は更新、存在しない場合は新規作成
     if Map.objects.filter(map_id=map_id).exists():
-        print("MAP ID EXISTS")
         map = Map.objects.get(map_id=map_id)
-        serializer = SaveMapSerializer(instance=map, data={"map_id": map_id, "graph_structure": graph_structure, "theme_name": theme_name})
-        return Response("success")
+        serializer = SaveMapSerializer(instance=map, data={"map_id": map_id, "graph_structure": graph_structure, "theme_name": theme_name, "cleared_nodes": cleared_nodes})
+        if serializer.is_valid():
+            print("SERIALIZER IS VALID")
+            serializer.save()
+            return Response("success")
+        else:
+            print("SERIALIZE ERROR")
+            print(serializer.errors)
+            return Response("error")
     
     else:
-        serializer = SaveMapSerializer(data={"map_id": map_id, "graph_structure": graph_structure, "theme_name": theme_name})
+        serializer = SaveMapSerializer(data={"map_id": map_id, "graph_structure": graph_structure, "theme_name": theme_name, "cleared_nodes": cleared_nodes})
         if serializer.is_valid():
             print("SERIALIZER IS VALID")
             serializer.save()
@@ -725,6 +739,7 @@ def save_is_cleared(request):
     is_cleared = request.data['is_cleared']
     map_id = request.data['map_id']
     node_id = request.data['node_id']
+    print("IS CLEARED: ", node_id)
 
     if is_cleared == "true":
         is_cleared = True
@@ -755,6 +770,8 @@ def load_map(request):
     map_data = Map.objects.get(map_id=map_id)
     theme_name = map_data.theme_name
     graph_structure = map_data.graph_structure
+    total_nodes = map_data.total_nodes
+    cleared_nodes = map_data.cleared_nodes
 
     node_data = Node.objects.filter(map_id=map_id)
     node_list = []
@@ -782,7 +799,7 @@ def load_map(request):
     print("GRAPH STRUCTURE: ", graph_structure)
     print("NODE LIST: ", node_list)
     print("EDGE LIST: ", edge_list)
-    data = {"mapId": map_id, "theme_name": theme_name, "tree": graph_structure, "node_list": node_list, "edge_list": edge_list}
+    data = {"mapId": map_id, "theme_name": theme_name, "total_nodes": total_nodes, "cleared_nodes": cleared_nodes, "tree": graph_structure, "node_list": node_list, "edge_list": edge_list}
     result = json.dumps(data)
     return Response(result)
 

@@ -134,6 +134,7 @@ const RegenerateSvg = styled.svg`
 const API_HOST = 'http://localhost:8000/api/gpt_calling/';
 const API_HOST_DESCRIPTION = 'http://localhost:8000/api/gpt_calling/add_description';
 const API_HOST_QUESTION = 'http://localhost:8000/api/gpt_calling/question';
+const API_SAVE_ISCORRECT = "http://localhost:8000/api/save/is_cleared";
 
 function NodeContents(props) {
     const {title, id} = props;
@@ -146,9 +147,11 @@ function NodeContents(props) {
     const [isRootNodeLocal, setIsRootNodeLocal] = useState(false);
     const [parentNodeList, setParentNodeList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isRootCorrect, setIsRootCorrect] = useState(false);
     const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodes, tree, 
       setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId, appendFirstNodes,
-      firstNodes, setIsQuestionMenuLoading, setSuggestNode, updateNodeIsCorrect, toggleNodeFlipped
+      firstNodes, setIsQuestionMenuLoading, setSuggestNode, updateNodeIsCorrect, toggleNodeFlipped,
+      setGauge, clearedNodes, allNodes
     } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -167,6 +170,9 @@ function NodeContents(props) {
           setSuggestNode: state.setSuggestNode,
           updateNodeIsCorrect: state.updateNodeIsCorrect,
           toggleNodeFlipped: state.toggleNodeFlipped,
+          setGauge: state.setGauge,
+          clearedNodes: state.clearedNodes,
+          allNodes: state.allNodes,
         })
       );
 
@@ -178,12 +184,15 @@ function NodeContents(props) {
       }
       // 親ノードのリストを取得
       function findParentNodes(data, targetId, parents = []) {
-      
+      //dataのtypeがstringならjsonに変換
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
         if (data.id === targetId) {
           return parents;
         }
       
-        if (data.children) {
+        if (data.children != null) {
           for (const child of data.children) {
             const result = findParentNodes(child, targetId, [...parents, data.name]);
             if (result) {
@@ -214,6 +223,14 @@ function NodeContents(props) {
         const example = "学習を始める を押して、木に最初の葉っぱを付けましょう！";
         setDescription(description);
         setExample(example);
+        setGauge(allNodes, clearedNodes);
+        fetch(`${API_SAVE_ISCORRECT}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({"node_id": id, "map_id": mapId, "is_cleared": "true"}),
+        });
         setIsLoading(false);
       }
       else {
@@ -326,10 +343,18 @@ function NodeContents(props) {
     }
     
     const handleAddFirstNode = () => {
-      updateNodeIsCorrect(id);
-      toggleNodeFlipped(id);
-      appendFirstNodes(firstNodes);
-      setSuggestNode();
+      if (isRootCorrect) {
+        toggleNodeFlipped(id);
+        setSuggestNode();
+        return;
+      }
+      else {
+        updateNodeIsCorrect(id);
+        toggleNodeFlipped(id);
+        appendFirstNodes(firstNodes);
+        setSuggestNode();
+        setIsRootCorrect(true);
+      }
     }
 
     return (
