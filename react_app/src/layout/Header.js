@@ -45,13 +45,14 @@ const SidebarMenuInner = styled.ul`
     padding: 20px;
     cursor: pointer;
     border-bottom: 1px solid rgba(255, 255, 255, 0.379);
+    transition: 0.15s ease;
     span {
       display: block;
       font-size: 14px;
       color: rgba(255, 255, 255, 0.50);
     }
     &:hover {
-    background-color: #ff5757; // ホバー時の背景色変更
+    background-color: #7BC74D; // ホバー時の背景色変更
     color: #fff; // ホバー時の文字色変更
   }
   }
