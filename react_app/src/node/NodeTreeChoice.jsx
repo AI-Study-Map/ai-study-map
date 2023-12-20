@@ -110,27 +110,32 @@ function NodeTreeChoice() {
 
     return (
         
-    <>
-        {isCommonLoading ? null:
         <>
-            <Starter>
-            <h1>はじめる</h1>
-            <p>下記のメニューからテーマを選択して宝探しを始めましょう</p>
-            </Starter>
-            <Selecter>
-            <Select
-                options={options}
-                defaultValue={selectedValue}
-                onChange={(value) => { setSelectedValue(value); }}
-            />
-            </Selecter>
-            <Button buttonIsDisabled={buttonIsDisabled}>
-            <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>選択してマインドマップ作成</button>
-            </Button>
+            {isCommonLoading ? null:
+            <>
+                <Starter>
+                <h2>下記のメニューからテーマを選択して学習を再開しましょう</h2>
+                <p>
+                    あなたが作成して学習したテーマのマインドマップを<br/>
+                    「テーマを選択してください」から選択することができます。
+                </p>
+                </Starter>
+                
+                <Selecter>
+                    <p>並び替え（五十音順、作成日時順）や検索</p>
+                <Select
+                    options={options}
+                    defaultValue={selectedValue}
+                    onChange={(value) => { setSelectedValue(value); }}
+                />
+                </Selecter>
+                <Button buttonIsDisabled={buttonIsDisabled}>
+                <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>選択してマインドマップ作成</button>
+                </Button>
+            </>
+            }
         </>
-        }
-    </>
-    );
-}
-
-export default NodeTreeChoice;
+        );
+    }
+    
+    export default NodeTreeChoice;
