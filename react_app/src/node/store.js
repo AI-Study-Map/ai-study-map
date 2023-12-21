@@ -520,10 +520,19 @@ import {
     //   ]
     // },
     setLoadedMapData(tree, mapId, themeName, nodes, edges) {
+      //nodesの中でiddが1のものに、{draggable:false}を追加
+      const nodesLocal = nodes;
+      for (let node of nodesLocal) {
+        if (node.idd === 1) {
+          node["draggable"] = false;
+        }
+      }
       set({ tree: tree, mapId: mapId, themeName: themeName, nodes: nodes, edges: edges })
     },
     
     setFirstLoadedMap(node) {
+      //これ(root node)に{draggable:false}を追加
+      node["draggable"] = false; 
       set({ firstNodes: node })
       console.log("FirstNODES", get().firstNodes);
     },

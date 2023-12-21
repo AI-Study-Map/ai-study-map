@@ -3,6 +3,8 @@ import styled, { keyframes } from 'styled-components';
 import useStore from './store';
 import useAddNode from './useAddNode';
 import LoadingScreen from '../components/LoadingScreen';
+import Clear_animation from '../images/clear_animation.gif';
+import '../noto_sans_jp.css'
 
 const MenuWrapper = styled.div`
   position: fixed;
@@ -95,22 +97,19 @@ const Overlay = styled.div`
 `;
 
 const RedCircle = styled.div`
-  width: 200px;
-  height: 200px;
-  border: 30px solid #FF7A53;
-  border-radius: 50%;
+  img{width: 411.2px;
+  height: 316.8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #FF7A53;
-  font-size: 24px;
   font-weight: bold;
   position: absolute;
-  top: 40%; /* 上下中央に配置 */
-  left: 50%; /* 左右中央に配置 */
+  top: 37%; /* 上下中央に配置 */
+  left: 70%; /* 左右中央に配置 */
   transform: translate(-50%, -50%); /* 中央揃え */
-  animation: ${fadeIn} 0.3s ease-in-out;
+  animation: ${fadeIn} 0.3s ease-in-out;}
+  
 `;
 
 const ClearText = styled.p`
@@ -124,10 +123,9 @@ const ClearText = styled.p`
   animation: ${fadeIn} 0.3s ease-in-out;
 `;
 
-const NextButton = styled.button`
+const NextButton = styled.svg`
   width: 45%;
   height: 2.5em;
-  background-color: #2BA287;
   color: #FAFFF7;
   font-size: 25px;
   border: none;
@@ -136,15 +134,28 @@ const NextButton = styled.button`
   cursor: pointer;
   margin-top: 20px;
   position: absolute;
-  top: 75%; /* 上下中央より下側に配置 */
-  left: 50%; /* 左右中央に配置 */
-  transform: translateX(-50%); /* 中央揃え */
-  animation: ${fadeIn} 0.3s ease-in-out;
+  top: 75%;
+  left: 50%;
+  transform: translateX(-50%);
+  path {
+    animation: ${fadeIn} 0.3s ease-in-out;
+    transition: 0.3s ease;
+  }
+  text {
+    animation: ${fadeIn} 0.3s ease-in-out;
+    fill: #FAFFF7;
+    font-family: "Noto Sans Japanese"; 
+    font-size: 60px;
+    position: absolute;
+    font-weight: 400;
+    transform: translate(0, 5%);
+  }
   &:hover {
- background-color: #229379; /* ホバー時の背景色 */
+    path {
+      fill: #229379;
+    }
   }
 `;
-
 const ErrorMessage = styled.p`
   color: #ff3636;
   font-size: 16px;
@@ -408,11 +419,23 @@ function QuestionMenu() {
           {showEffect && (
             <>
               <Overlay />
-              <RedCircle />
+              <RedCircle>
+                <img src={Clear_animation} alt="gif" />
+              </RedCircle>
               <ClearText>CLEAR!!</ClearText>
               {isCorrect ? 
-              <NextButton onClick={handleClose} className="next-button">閉じる</NextButton>
-              : <NextButton onClick={handleHideEffect} className="next-button">次のノードへ</NextButton>}
+              <NextButton onClick={handleClose} className="next-button">
+                <svg viewBox="0 0 419 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 30C0 13.4315 13.4315 0 30 0H419V85C419 101.569 405.569 115 389 115H0V30Z" fill="#2BA287"/>
+                  <text x="50%" y="50%" alignmentBaseline="middle" textAnchor="middle">閉じる</text>
+                </svg>
+              </NextButton>
+              : <NextButton onClick={handleHideEffect} className="next-button">
+                  <svg viewBox="0 0 419 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 30C0 13.4315 13.4315 0 30 0H419V85C419 101.569 405.569 115 389 115H0V30Z" fill="#2BA287"/>
+                  <text x="50%" y="50%" alignmentBaseline="middle" textAnchor="middle">次のノードへ</text>
+                </svg>
+                </NextButton>}
             </>
           )}
         </div>
