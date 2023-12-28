@@ -7,7 +7,7 @@ import SwitchBtn from './SwitchBtn';
 import NodeContents from '../NodeContents/NodeContents';
 
 const TestDiv = styled.div`
-  background-image: ${(props) => props.isRootNode ? "url(wood.png)": (props.isCorrect ? "url(leaf_yellow.png)" : "url(leaf_green.png)") };
+  background-image: ${(props) => props.isRootNode ? "url(node/wood.png)": (props.isCorrect ? "url(leaf_yellow.png)" : "url(leaf_green.png)") };
   background-size: contain;
   background-repeat: no-repeat;
   height: ${(props) => props.isRootNode ? "560px": props.isLongString ? "150px": "120px" };
@@ -58,7 +58,7 @@ const InputWrapper = styled.div`
   z-index: 10000;
   /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
   &:hover {
-    transform: scale(1.05);
+    ${(props) => props.isRootNode ? "": "transform: scale(1.05)"};
   }
 `;
 
@@ -87,6 +87,9 @@ const P = styled.p`
   margin: 0;
   font-size: 18px;
   overflow-wrap: break-word;
+  position: relative;
+  top: ${(props) => props.isRootNode ? "12%" : "30%"};
+  left: ${(props) => props.isRootNode ? "4%" : "10%"};
 `;
 
 function MindMapNode({ id, data, isCorrect}) {
@@ -141,10 +144,11 @@ function MindMapNode({ id, data, isCorrect}) {
 
   return (
     <>
-    <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}/>
+    {/* <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}/> */}
     <Ground isRootNode={isRootNode} />
     <NodeContainer id={id}>
       <InputWrapper className="inputWrapper  dragHandle" id={id} isCorrect={isCorrectLocal} isRootNode={isRootNode} onClick={() => onNodeClick()}>
+      <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}/>
         <DragHandleArea id={id} className="dragHandle">
           <P
             value={data.label}
