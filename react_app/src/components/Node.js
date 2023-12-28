@@ -3,29 +3,48 @@ import { Handle, Position } from 'reactflow';
 
 import useStore from '../node/store';
 import { styled } from 'styled-components';
-import SwitchBtn from './SwitchBtn';
+// import SwitchBtn from './SwitchBtn';
 import NodeContents from '../NodeContents/NodeContents';
 
+const NodethemeColorId = [
+  {"main": "node/leaf-green.png", "sub": "node/leaf-yellow.png"},
+  {"main": "node/leaf-green.png", "sub": "node/leaf-pink.png"},
+  {"main": "node/leaf-green.png", "sub": "node/leaf-orange.png"},
+]
+
 const TestDiv = styled.div`
-  background-image: ${(props) => props.isRootNode ? "url(node/wood.png)": (props.isCorrect ? "url(leaf_yellow.png)" : "url(leaf_green.png)") };
+  background-image: ${(props) => props.isRootNode ? "url(node/wood.png)": (props.isCorrect ? `url(${NodethemeColorId[props.themeColorId]["sub"]})` : `url(${NodethemeColorId[props.themeColorId]["main"]})`) };
   background-size: contain;
   background-repeat: no-repeat;
-  height: ${(props) => props.isRootNode ? "560px": props.isLongString ? "150px": "120px" };
-  width: ${(props) => props.isRootNode ? "300px": props.isLongString ? "280px": "400px" };
+  height: ${(props) => props.isRootNode ? "560px": props.isLongString ? "125px": "100px" };
+  width: ${(props) => props.isRootNode ? "300px": props.isLongString ? "280px": "220px" };
   position: absolute;
-  top: ${(props) => props.isRootNode ? "-65px": props.isLongString ? "-45px": "-37px" };
-  left: ${(props) => props.isRootNode ? "-58px": props.isLongString ? "-50px": "-20px" };
+  top: ${(props) => props.isRootNode ? "-65px": props.isLongString ? "-30px": "-26px" };
+  left: ${(props) => props.isRootNode ? "-50px": props.isLongString ? "-35px": "-3px" };
+`
+
+const GroundWithGrass = styled.div`
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: ${(props) => props.isRootNode ? "url(node/ground.png)": null };
+  height: ${(props) => props.isRootNode ? "700px": "0" };
+  width: ${(props) => props.isRootNode ? "1500px": "0" };
+  top: 455px;
+  left: -650px;
+  z-index: 1000;
 `
 
 const Ground = styled.div`
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: ${(props) => props.isRootNode ? "url(ground.png)": null };
-  height: ${(props) => props.isRootNode ? "700px": "0" };
-  width: ${(props) => props.isRootNode ? "1500px": "0" };
-  top: 360px;
-  left: -650px;
+  background-image: ${(props) => props.isRootNode ? "url(node/ground.svg)": null };
+  height: ${(props) => props.isRootNode ? "10000px": "0" };
+  width: ${(props) => props.isRootNode ? "10000px": "0" };
+  top: 485px;
+  left: -5000px;
+  z-index: 999;
 `
 
 const NodeContainer = styled.div`
@@ -37,7 +56,7 @@ const NodeContentsWrapper = styled.div`
   position: absolute;
   top: 80%;
   left: 0;
-  z-index: 1000;
+  z-index: 10000;
   pointer-events: auto;
   width: 500px;
   height: auto;
@@ -58,8 +77,9 @@ const InputWrapper = styled.div`
   z-index: 10000;
   /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
   &:hover {
-    ${(props) => props.isRootNode ? "": "transform: scale(1.05)"};
+    ${(props) => props.isRootNode ? "": "transform: scale(1.30)"};
   }
+  transition: transform 0.15s ease;
 `;
 
 const DragHandleArea = styled.div`
@@ -77,7 +97,7 @@ const DragHandleArea = styled.div`
 `
 
 const P = styled.p`
-  color: ${(props) => props.isCorrect && props.isRootNode ? "#7BC74D" : "#FAFFF7"};
+  color: ${(props) => props.isCorrect && !props.isRootNode ? "#7BC74D" : "#FAFFF7"};
   width: 600px;
   border-radius: 10px;
   font-weight: 700;
@@ -98,10 +118,11 @@ function MindMapNode({ id, data, isCorrect}) {
   const [isRootNode, setIsRootNode] = useState(false);
   const [isLongString, setIsLongString] = useState(false)
 
-  const { nodes, getNodeFlippedStatus, toggleNodeFlipped } = useStore(state => ({
+  const { nodes, getNodeFlippedStatus, toggleNodeFlipped, themeColorId } = useStore(state => ({
     nodes: state.nodes,
     getNodeFlippedStatus: state.getNodeFlippedStatus,
-    toggleNodeFlipped: state.toggleNodeFlipped
+    toggleNodeFlipped: state.toggleNodeFlipped,
+    themeColorId: state.themeColorId
   }));
 
   const flipped = getNodeFlippedStatus(id);
@@ -145,10 +166,11 @@ function MindMapNode({ id, data, isCorrect}) {
   return (
     <>
     {/* <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}/> */}
+    <GroundWithGrass isRootNode={isRootNode} />
     <Ground isRootNode={isRootNode} />
     <NodeContainer id={id}>
       <InputWrapper className="inputWrapper  dragHandle" id={id} isCorrect={isCorrectLocal} isRootNode={isRootNode} onClick={() => onNodeClick()}>
-      <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}/>
+      <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}  themeColorId={themeColorId}/>
         <DragHandleArea id={id} className="dragHandle">
           <P
             value={data.label}

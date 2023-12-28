@@ -2,9 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 import useStore from '../node/store';
+import CodeBlock from '../components/CodeBlock';
 import LoadingScreen from '../components/LoadingScreen';
 import '../noto_sans_jp.css'
 
+const themeColors = [
+  "#FFE867", "#FFC8C8", "#FF8B67"
+]
+
+const hoverThemeColors = [
+  "#FFD433", "#ffafaf", "#ff764d"
+]
 
 const NodeContentsArea = styled.div`
   /* z-index: 1; */
@@ -51,7 +59,7 @@ const ButtonContainer = styled.div`
 
 const StyledButton = styled.button`
   border-radius: 10px;
-  background-color: #FFE867;
+  background-color: ${(props) => themeColors[props.themeColorId]};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   border: none; // デフォルトのボーダーを削除（必要に応じて）
   cursor: pointer; // ボタンにマウスカーソルが乗ったときのスタイル
@@ -66,7 +74,7 @@ const StyledButton = styled.button`
   line-height: normal;
   font-family: "Noto Sans Japanese"; 
   &:hover {
-    background-color: #FFD433; // ボタンにマウスカーソルが乗ったときの背景色
+    background-color: ${(props) => hoverThemeColors[props.themeColorId]}; // ボタンにマウスカーソルが乗ったときの背景色
   }
   &:disabled {
     background-color: #ccc;
@@ -151,7 +159,7 @@ function NodeContents(props) {
     const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodes, tree, 
       setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId, appendFirstNodes,
       firstNodes, setIsQuestionMenuLoading, setSuggestNode, updateNodeIsCorrect, toggleNodeFlipped,
-      setGauge, clearedNodes, allNodes
+      setGauge, clearedNodes, allNodes, themeColorId
     } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -173,6 +181,7 @@ function NodeContents(props) {
           setGauge: state.setGauge,
           clearedNodes: state.clearedNodes,
           allNodes: state.allNodes,
+          themeColorId: state.themeColorId,
         })
       );
 
@@ -359,8 +368,8 @@ function NodeContents(props) {
 
     return (
         <NodeContentsArea className='NodeContents' >
-          <BackGroundImg1 src="node_background1.svg" alt='右上'/>
-          <BackGroundImg2 src="node_background2.svg" alt='左下'/>
+          <BackGroundImg1 src="node/node_background1.svg" alt='右上'/>
+          <BackGroundImg2 src="node/node_background2.svg" alt='左下'/>
           {isLoading ? 
             <LoadingScreenArea>
               <LoadingScreen /> 
@@ -368,15 +377,25 @@ function NodeContents(props) {
             :
             <>
             <ResponseLogArea id='response_log'>
-                <ReactMarkdown>{description}</ReactMarkdown>
-                <hr></hr>
-                <ReactMarkdown>{example}</ReactMarkdown>
+              <ReactMarkdown 
+                components={{
+                  code: CodeBlock,
+                }}>
+                {description}
+              </ReactMarkdown>
+              <hr></hr>
+              <ReactMarkdown 
+                components={{
+                  code: CodeBlock,
+                }}>
+                {example}
+              </ReactMarkdown>
             </ResponseLogArea>
             <ButtonContainer id='buttons'>
               {isRootNodeLocal ? <StyledButtonFirst id='addFirstNode' onClick={handleAddFirstNode}>学習を始める</StyledButtonFirst>
               : <>
-                <StyledButton id='addQuestion' onClick={handleAddQuestion} disabled={isAddQuestion} >問題を解く</StyledButton>
-                <StyledButton id='addExplain' onClick={handleAddExplain} disabled={isAddExplain}>説明文追加</StyledButton>
+                <StyledButton id='addQuestion' onClick={handleAddQuestion} disabled={isAddQuestion} themeColorId={themeColorId}>問題を解く</StyledButton>
+                <StyledButton id='addExplain' onClick={handleAddExplain} disabled={isAddExplain} themeColorId={themeColorId}>説明文追加</StyledButton>
                 <StyledButtonGreen id='regenerate'onClick={handleResend} disabled={isRegenerate}>
                   再生成
                   <RegenerateSvg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 35 35" isClick={isRegenerate}>

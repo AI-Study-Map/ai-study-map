@@ -6,6 +6,10 @@ import LoadingScreen from '../components/LoadingScreen';
 import Clear_animation from '../images/clear_animation.gif';
 import '../noto_sans_jp.css'
 
+const themeColors = [
+  "#FFE867", "#FFC8C8", "#FF8B67"
+]
+
 const MenuWrapper = styled.div`
   position: fixed;
   top: 0;
@@ -22,7 +26,7 @@ const StyledQuestionHeader = styled.div`
   display: flex;
   width: 450px;
   align-items: center;
-  background-color:#FFE867;
+  background-color:${(props) => themeColors[props.themeColorId]};
   height: 8vh;
     p {
       color: #17594A;
@@ -50,7 +54,7 @@ const StyledQuestionButtons = styled.div`
   height: 32vh;
   overflow-y: auto; /* ボタンがはみ出す場合にスクロールバーを表示 */
   padding: 10px;
-  background-color:#FFE867;
+  background-color:${(props) => themeColors[props.themeColorId]};
   overflow-y: auto;
   white-space: nowrap;
   
@@ -197,6 +201,7 @@ const ButtonBAndD = styled.button`
   &:hover {
     background-color: ${props => props.disabled ? '#ccc' : '#5E9E3E'}; /* ホバー時の背景色 */
   }
+  transition: background-color 0.5s;
 `;
 
 const API_SAVE_ISCORRECT = "http://localhost:8000/api/save/is_cleared";
@@ -221,7 +226,7 @@ function QuestionMenu() {
   const { nodes, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion, toggleNodeFlipped,
     question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect,
-    isQuestionMenuLoading, mapId, setSuggestNode, setGauge, clearedNodes, allNodes
+    isQuestionMenuLoading, mapId, setSuggestNode, setGauge, clearedNodes, allNodes, themeColorId,
   } = useStore(
     state => ({
       nodes: state.nodes,
@@ -248,6 +253,7 @@ function QuestionMenu() {
       setGauge: state.setGauge,
       clearedNodes: state.clearedNodes,
       allNodes: state.allNodes,
+      themeColorId: state.themeColorId,
     })
   );
 
@@ -394,7 +400,7 @@ function QuestionMenu() {
           </svg>
         </CloseButton>
         <div id='clearEffect'>
-          <StyledQuestionHeader>
+          <StyledQuestionHeader themeColorId={themeColorId}>
             <p>{nodeTitle}</p>
           </StyledQuestionHeader>
           {isQuestionMenuLoading ? 
@@ -405,7 +411,7 @@ function QuestionMenu() {
             <p>問題</p>
             <p>{question}</p>
           </StyledQuestionContent>
-          <StyledQuestionButtons>
+          <StyledQuestionButtons themeColorId={themeColorId}>
             <p id='buttonMessage'>正しい選択肢を選んでください</p>
             <ErrorMessage>{error}</ErrorMessage>
             <ButtonAAndC onClick={() => handleCheckAnswer("a")} disabled={disabledOptions["a"]}>A: {answerA}</ButtonAAndC>
