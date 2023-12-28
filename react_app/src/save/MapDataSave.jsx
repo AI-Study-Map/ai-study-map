@@ -9,13 +9,14 @@ const API_HOST_CREATENEWNODE = 'http://localhost:8000/api/save/create_newnode';
 //メモ：map作るときにrootnodeを作成してそれをnode登録する
 function MapDataSave() {
     const {
-        nodes, edges, tree, themeName, mapId,
+        nodes, edges, tree, themeName, mapId, clearedNodes
     } = useStore((state) => ({
         nodes: state.nodes, 
         edges: state.edges,
         tree: state.tree,
         themeName: state.themeName,
         mapId: state.mapId,
+        clearedNodes: state.clearedNodes,
     }));
 
     const handleSave = async () => {
@@ -31,7 +32,7 @@ function MapDataSave() {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"map_id": mapId, "graph_structure": tree, "theme_name": themeName }),
+            body: JSON.stringify({"map_id": mapId, "graph_structure": tree, "theme_name": themeName, "cleared_nodes": clearedNodes }),
           })
         .then((response) => response.json())
         .then((data) => {

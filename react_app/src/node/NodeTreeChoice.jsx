@@ -36,11 +36,12 @@ function NodeTreeChoice() {
     const [selectedValue, setSelectedValue] = useState(options[0]);
     const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
     
-    const{ setLoadedMapData, isCommonLoading, setIsCommonLoading
+    const{ setLoadedMapData, isCommonLoading, setIsCommonLoading, setGauge
       } = useStore(
           state => ({
             setLoadedMapData: state.setLoadedMapData,
             isCommonLoading: state.isCommonLoading,
+            setGauge: state.setGauge,
           })
         );
     const navigate = useNavigate();
@@ -95,38 +96,46 @@ function NodeTreeChoice() {
                 const tree = parseData.tree;
                 const mapId = parseData.mapId;
                 const themeName = parseData.theme_name;  
+                const allNodes = parseData.total_nodes;
+                const cleared_nodes = parseData.cleared_nodes;
                 const nodes = JSON.stringify(parseData.node_list);
                 const edges = JSON.stringify(parseData.edge_list);
                 const nodesJSON = JSON.parse(nodes);
                 const edgesJSON = JSON.parse(edges);
                 setLoadedMapData(tree, mapId, themeName, nodesJSON, edgesJSON);
+                setGauge(allNodes, cleared_nodes);
                 navigate("/map");
             });
     }
 
     return (
         
-    <>
-        {isCommonLoading ? null:
         <>
-            <Starter>
-            <h1>はじめる</h1>
-            <p>下記のメニューからテーマを選択して宝探しを始めましょう</p>
-            </Starter>
-            <Selecter>
-            <Select
-                options={options}
-                defaultValue={selectedValue}
-                onChange={(value) => { setSelectedValue(value); }}
-            />
-            </Selecter>
-            <Button buttonIsDisabled={buttonIsDisabled}>
-            <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>選択してマインドマップ作成</button>
-            </Button>
+            {isCommonLoading ? null:
+            <>
+                <Starter>
+                <h2>下記のメニューからテーマを選択して学習を再開しましょう</h2>
+                <p>
+                    あなたが作成して学習したテーマのマインドマップを<br/>
+                    「テーマを選択してください」から選択することができます。
+                </p>
+                </Starter>
+                
+                <Selecter>
+                    <p>並び替え（五十音順、作成日時順）や検索</p>
+                <Select
+                    options={options}
+                    defaultValue={selectedValue}
+                    onChange={(value) => { setSelectedValue(value); }}
+                />
+                </Selecter>
+                <Button buttonIsDisabled={buttonIsDisabled}>
+                <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>選択してマインドマップ作成</button>
+                </Button>
+            </>
+            }
         </>
-        }
-    </>
-    );
-}
-
-export default NodeTreeChoice;
+        );
+    }
+    
+    export default NodeTreeChoice;

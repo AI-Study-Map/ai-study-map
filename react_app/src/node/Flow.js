@@ -16,16 +16,18 @@ import Header from '../layout/Header';
 import QuestionMenu from './QuestionMenu';
 import styled from 'styled-components';
 import { useEffect } from 'react';
+import GaugeBar from '../components/GaugeBar';
 
 const SuggestNodeWrapper = styled.div`
   font-size: 20px;
+  color: #17594A;
   position: absolute;
   top: 6.6%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
   pointer-events: none;
-  border: 2px solid #999;
+  border: 2px solid #17594A;
   padding: 30px 105px;
   border-radius: 10px;
 `;
@@ -59,10 +61,13 @@ const Flow = () =>  {
     selector,
     shallow,
   );
-  const{ suggestNode, setSuggestNode } = useStore(
+  const{ suggestNode, setSuggestNode, themeName, allNodes, clearedNodes } = useStore(
     state => ({
       suggestNode: state.suggestNode,
       setSuggestNode: state.setSuggestNode,
+      themeName: state.themeName,
+      allNodes: state.allNodes,
+      clearedNodes: state.clearedNodes,
     })
   );
 
@@ -97,6 +102,7 @@ const Flow = () =>  {
         <SuggestNodeWrapper>
           おすすめノード：{suggestNode? suggestNode.data.label: "なし"}
         </SuggestNodeWrapper>
+        <GaugeBar ClearNodes={(clearedNodes)} AllNodes={(allNodes)} theme={themeName} />
         <Panel position="top-left" className="header">
           AI Study Map
         </Panel>
