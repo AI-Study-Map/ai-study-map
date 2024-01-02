@@ -97,8 +97,8 @@ const Flow = () =>  {
         fitView
         minZoom={0.1}
       >
-        {/* <Background color="#FAFFF7" style={{"backgroundColor": "#FAFFF7"}}/> */}
-        <Background color="#000"/>
+        <Background color="#000" style={{"backgroundColor": "#FAFFF7"}}/>
+        {/* <Background color="#000"/> */}
         <Controls showInteractive={false} />
         <SuggestNodeWrapper>
           おすすめノード：{suggestNode? suggestNode.data.label: "なし"}
