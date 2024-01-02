@@ -6,6 +6,8 @@ import { styled } from 'styled-components';
 // import SwitchBtn from './SwitchBtn';
 import NodeContents from '../NodeContents/NodeContents';
 
+const fontColors = ["#7BC74D", "#66A83E", "#FAFFF7", "#FAFFF7"]
+
 const TestDiv = styled.div`
   background-image: ${(props) => props.isRootNode ? "url(node/wood.png)": (props.isCorrect ? (props.hasChildren ? `url(node/leaf/pattern${props.themeColorId+1}-main.png)`: `url(node/leaf/pattern${props.themeColorId+1}-last.png)`) : `url(node/leaf/pattern${props.themeColorId+1}-sub.png)`) };
   background-size: contain;
@@ -118,7 +120,7 @@ const DragHandleArea = styled.div`
 `
 
 const P = styled.p`
-  color: ${(props) => props.isCorrect && !props.isRootNode ? "#7BC74D" : "#FAFFF7"};
+  color: ${(props) => props.isCorrect && !props.isRootNode ? `${fontColors[props.themeColorId]}` : "#FAFFF7"};
   width: 600px;
   border-radius: 10px;
   font-weight: 700;
@@ -225,6 +227,7 @@ const hasChildrenById = (node, id) => {
             id={id}
             isCorrect={isCorrectLocal}
             isRootNode={isRootNode}
+            themeColorId={themeColorId}
           >{data.label}</P>
          {/* <SwitchBtn flipped={flipped} isCorrect={isCorrectLocal}/> */}
         </DragHandleArea>

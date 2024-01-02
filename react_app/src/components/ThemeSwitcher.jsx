@@ -7,6 +7,7 @@ const themes = {
   yellow: '#FFE867',
   pink: '#FFC8C8',
   orange: '#FF8B67',
+  green: '#478577'
 };
 
 // Styled components

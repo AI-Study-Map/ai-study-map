@@ -8,9 +8,8 @@ import AiStudyMap_logo from '../images/ai-study-map-logo.png';
 import ThemeSwitcher from '../components/ThemeSwitcher';
 import useStore from '../node/store';
 
-const themeColors = [
-  "#FFE867", "#FFC8C8", "#FF8B67"
-]
+const themeColors = ["#FFE867", "#FFC8C8", "#FF7F67", "#478577"]
+const subThemeColors = ["#7BC74D", "#66A83E", "#CD7160", "#70C79D"]
 
 const StyledHeader = styled.header`
   background-color: ${(props) => themeColors[props.themeColorId]};
@@ -45,7 +44,7 @@ const SidebarMenuInner = styled.ul`
   border-top: 1px solid rgba(255, 255, 255, 0.10);
   li {
     list-style: none;
-    color: ${(props) => props.themeColorId === 2 ? "#17594A": "#7BC74D"};
+    color: ${(props) => props.themeColorId === 2 || props.themeColorId === 3 ? "#FAFFF7": "#7BC74D"};
     text-transform: uppercase;
     font-weight: bold;
     padding: 20px;
@@ -58,8 +57,8 @@ const SidebarMenuInner = styled.ul`
       color: rgba(255, 255, 255, 0.50);
     }
     &:hover {
-    background-color: #7BC74D; // ホバー時の背景色変更
-    color: ${(props) => props.themeColorId === 2 ? "#17594A": themeColors[props.themeColorId]}; // ホバー時の文字色変更
+    background-color: ${(props) => subThemeColors[props.themeColorId]}; // ホバー時の背景色変更
+    color: ${(props) => props.themeColorId === 2 || props.themeColorId === 3 ? "#FAFFF7": themeColors[props.themeColorId]}; // ホバー時の文字色変更
   }
   }
 `;
@@ -76,7 +75,7 @@ const SidebarIconToggle = styled.label`
 `;
 
 const Spinner = styled.div`
-  background-color: ${(props) => props.themeColorId === 2 ? "#17594A": "#7BC74D"};
+  background-color: ${(props) => props.themeColorId === 2 || props.themeColorId === 3 ? "#FAFFF7": "#7BC74D"};
   height: 3px;
   width: 22px;
   position: absolute;

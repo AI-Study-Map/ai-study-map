@@ -6,9 +6,10 @@ import LoadingScreen from '../components/LoadingScreen';
 import Clear_animation from '../images/clear_animation.gif';
 import '../noto_sans_jp.css'
 
-const themeColors = [
-  "#FFE867", "#FFC8C8", "#FF8B67"
-]
+const themeColors = ["#FFE867", "#FFC8C8", "#FF8B67", "#478577"]
+const subThemeColors = ["#7BC74D", "#66A83E", "#CD7160", "#70C79D"]
+const hoverSubThemeColors = ["#5d953b", "#48782b", "#955246", "#559878"]
+const fontColors = ["#7BC74D", "#66A83E", "#FAFFF7", "#FAFFF7"]
 
 const MenuWrapper = styled.div`
   position: fixed;
@@ -29,7 +30,7 @@ const StyledQuestionHeader = styled.div`
   background-color:${(props) => themeColors[props.themeColorId]};
   height: 8vh;
     p {
-      color: #17594A;
+      color: ${(props) => fontColors[props.themeColorId]};
       font-size: 25px;
       font-weight: bold;
       margin-left: 20px;
@@ -62,7 +63,7 @@ const StyledQuestionButtons = styled.div`
     font-size: 18px;
     font-weight: bold;
     margin: 7px 0px 15px 10px;
-    color: #17594A;
+    color: ${(props) => fontColors[props.themeColorId]};
 
   }
 `;
@@ -76,6 +77,10 @@ const CloseButton = styled.button`
   border: none;
   cursor: pointer;
 `;
+
+const ClosePath = styled.path`
+  fill: ${(props) => fontColors[props.themeColorId]};
+`
 
 const fadeIn = keyframes`
   0% {
@@ -169,7 +174,7 @@ const ErrorMessage = styled.p`
 `;
 
 const ButtonAAndC = styled.button`
-  background-color: ${props => props.disabled ? '#ccc' : '#7BC74D'};
+  background-color: ${props => props.disabled ? '#ccc' : `${subThemeColors[props.themeColorId]}`};
   color: #FAFFF7;
   border: none;
   border-radius: 10px;
@@ -182,12 +187,12 @@ const ButtonAAndC = styled.button`
   width: 200px;
   white-space: normal;
   &:hover {
-    background-color: ${props => props.disabled ? '#ccc' : '#5E9E3E'};
+    background-color: ${props => props.disabled ? '#ccc' : `${hoverSubThemeColors[props.themeColorId]}`};
   }
 `;
 
 const ButtonBAndD = styled.button`
-  background-color: ${props => props.disabled ? '#ccc' : '#7BC74D'}; /* ボタンの背景色 */
+  background-color: ${props => props.disabled ? '#ccc' : `${subThemeColors[props.themeColorId]}`}; /* ボタンの背景色 */
   color: #FAFFF7; /* ボタンのテキスト色 */
   border: none;
   border-radius: 10px; /* 角の取れたデザイン */
@@ -199,7 +204,7 @@ const ButtonBAndD = styled.button`
   white-space: normal;
 
   &:hover {
-    background-color: ${props => props.disabled ? '#ccc' : '#5E9E3E'}; /* ホバー時の背景色 */
+    background-color: ${props => props.disabled ? '#ccc' : `${hoverSubThemeColors[props.themeColorId]}`}; /* ホバー時の背景色 */
   }
   transition: background-color 0.5s;
 `;
@@ -396,7 +401,7 @@ function QuestionMenu() {
       <MenuWrapper open={questionMenuIsOpen}>
         <CloseButton onClick={() => setQuestionMenu(false)}>
           <svg width="20" height="20" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path id="Union" fillRule="evenodd" clipRule="evenodd" d="M31.1223 1.17157C32.6844 -0.390524 35.217 -0.390524 36.7791 1.17157C38.3412 2.73367 38.3412 5.26633 36.7791 6.82843L24.6322 18.9753L36.7791 31.1223C38.3412 32.6844 38.3412 35.217 36.7791 36.7791C35.217 38.3412 32.6844 38.3412 31.1223 36.7791L18.9754 24.6322L6.82842 36.7791C5.26632 38.3412 2.73366 38.3412 1.17156 36.7791C-0.390536 35.217 -0.390537 32.6844 1.17156 31.1223L13.3185 18.9753L1.17158 6.82843C-0.390521 5.26633 -0.390521 2.73367 1.17158 1.17157C2.73367 -0.390524 5.26633 -0.390524 6.82843 1.17157L18.9754 13.3185L31.1223 1.17157Z" fill="#7BC74D"/>
+            <ClosePath id="Union" fillRule="evenodd" clipRule="evenodd" d="M31.1223 1.17157C32.6844 -0.390524 35.217 -0.390524 36.7791 1.17157C38.3412 2.73367 38.3412 5.26633 36.7791 6.82843L24.6322 18.9753L36.7791 31.1223C38.3412 32.6844 38.3412 35.217 36.7791 36.7791C35.217 38.3412 32.6844 38.3412 31.1223 36.7791L18.9754 24.6322L6.82842 36.7791C5.26632 38.3412 2.73366 38.3412 1.17156 36.7791C-0.390536 35.217 -0.390537 32.6844 1.17156 31.1223L13.3185 18.9753L1.17158 6.82843C-0.390521 5.26633 -0.390521 2.73367 1.17158 1.17157C2.73367 -0.390524 5.26633 -0.390524 6.82843 1.17157L18.9754 13.3185L31.1223 1.17157Z" themeColorId={themeColorId}/>
           </svg>
         </CloseButton>
         <div id='clearEffect'>
@@ -414,10 +419,10 @@ function QuestionMenu() {
           <StyledQuestionButtons themeColorId={themeColorId}>
             <p id='buttonMessage'>正しい選択肢を選んでください</p>
             <ErrorMessage>{error}</ErrorMessage>
-            <ButtonAAndC onClick={() => handleCheckAnswer("a")} disabled={disabledOptions["a"]}>A: {answerA}</ButtonAAndC>
-            <ButtonBAndD onClick={() => handleCheckAnswer("b")} disabled={disabledOptions["b"]}>B: {answerB}</ButtonBAndD> <br></br>
-            <ButtonAAndC onClick={() => handleCheckAnswer("c")} disabled={disabledOptions["c"]}>C: {answerC}</ButtonAAndC>
-            <ButtonBAndD onClick={() => handleCheckAnswer("d")} disabled={disabledOptions["d"]}>D: {answerD}</ButtonBAndD>  
+            <ButtonAAndC onClick={() => handleCheckAnswer("a")} disabled={disabledOptions["a"]} themeColorId={themeColorId}>A: {answerA}</ButtonAAndC>
+            <ButtonBAndD onClick={() => handleCheckAnswer("b")} disabled={disabledOptions["b"]} themeColorId={themeColorId}>B: {answerB}</ButtonBAndD> <br></br>
+            <ButtonAAndC onClick={() => handleCheckAnswer("c")} disabled={disabledOptions["c"]} themeColorId={themeColorId}>C: {answerC}</ButtonAAndC>
+            <ButtonBAndD onClick={() => handleCheckAnswer("d")} disabled={disabledOptions["d"]} themeColorId={themeColorId}>D: {answerD}</ButtonBAndD>  
           </StyledQuestionButtons>
           </>
           
