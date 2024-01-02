@@ -6,14 +6,8 @@ import { styled } from 'styled-components';
 // import SwitchBtn from './SwitchBtn';
 import NodeContents from '../NodeContents/NodeContents';
 
-const NodethemeColorId = [
-  {"main": "node/leaf-green.png", "sub": "node/leaf-yellow.png"},
-  {"main": "node/leaf-green.png", "sub": "node/leaf-pink.png"},
-  {"main": "node/leaf-green.png", "sub": "node/leaf-orange.png"},
-]
-
 const TestDiv = styled.div`
-  background-image: ${(props) => props.isRootNode ? "url(node/wood.png)": (props.isCorrect ? `url(${NodethemeColorId[props.themeColorId]["sub"]})` : `url(${NodethemeColorId[props.themeColorId]["main"]})`) };
+  background-image: ${(props) => props.isRootNode ? "url(node/wood.png)": (props.isCorrect ? (props.hasChildren ? `url(node/leaf/pattern${props.themeColorId+1}-main.png)`: `url(node/leaf/pattern${props.themeColorId+1}-last.png)`) : `url(node/leaf/pattern${props.themeColorId+1}-sub.png)`) };
   background-size: contain;
   background-repeat: no-repeat;
   height: ${(props) => props.isRootNode ? "1000px": props.isLongString ? "125px": "100px" };
@@ -27,9 +21,24 @@ const GroundWithGrass = styled.div`
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: ${(props) => props.isRootNode ? "url(node/ground.png)": null };
-  height: ${(props) => props.isRootNode ? "700px": "0" };
-  width: ${(props) => props.isRootNode ? "1500px": "0" };
+  background-image: ${(props) => {
+    if (props.isRootNode) {
+      let imageUrl;
+      if (props.mapProgressPercentage === 0) {
+        imageUrl = "url(node/ground/first.png)";
+      } else if (props.mapProgressPercentage > 0 && props.mapProgressPercentage <= 25) {
+        imageUrl = `url(node/ground/pattern${props.themeColorId + 1}-second.png)`;
+      } else if (props.mapProgressPercentage > 25 && props.mapProgressPercentage <= 75) {
+        imageUrl = `url(node/ground/pattern${props.themeColorId + 1}-third.png)`;
+      } else if (props.mapProgressPercentage > 75 && props.mapProgressPercentage <= 100) {
+        imageUrl = `url(node/ground/pattern${props.themeColorId + 1}-last.png)`;
+      }
+      return imageUrl;
+    }
+    return null;
+  }};
+  height: ${(props) => props.isRootNode ? "700px" : "0"};
+  width: ${(props) => props.isRootNode ? "1500px" : "0"};
   top: 615px;
   left: -650px;
   z-index: 1000;
@@ -39,7 +48,7 @@ const Ground = styled.div`
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: ${(props) => props.isRootNode ? "url(node/ground.svg)": null };
+  background-image: ${(props) => props.isRootNode ? "url(node/ground/ground.svg)": null };
   height: ${(props) => props.isRootNode ? "10000px": "0" };
   width: ${(props) => props.isRootNode ? "10000px": "0" };
   top: 645px;
@@ -51,7 +60,7 @@ const SuggestIcon = styled.div`
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: ${(props) => props.isSuggest ? "url(node/butterfly/yellow.png)": null };
+  background-image: ${(props) => props.isSuggest ? `url("node/butterfly/pattern${props.themeColorId+1}.png")`: null };
   height: ${(props) => props.isSuggest ? "70px": "0" };
   width: ${(props) => props.isSuggest ? "1500px": "0" };
   top: -60px;
@@ -129,13 +138,17 @@ function MindMapNode({ id, data, isCorrect}) {
   const [isCorrectLocal, setIsCorrectLocal] = useState(isCorrect);
   const [isRootNode, setIsRootNode] = useState(false);
   const [isLongString, setIsLongString] = useState(false)
+  const [hasChildren, setHasChildren] = useState(true)
 
-  const { nodes, getNodeFlippedStatus, toggleNodeFlipped, themeColorId, suggestNode } = useStore(state => ({
+  const { nodes, getNodeFlippedStatus, toggleNodeFlipped, themeColorId, suggestNode, tree, allNodes, clearedNodes } = useStore(state => ({
     nodes: state.nodes,
     getNodeFlippedStatus: state.getNodeFlippedStatus,
     toggleNodeFlipped: state.toggleNodeFlipped,
     themeColorId: state.themeColorId,
-    suggestNode: state.suggestNode
+    suggestNode: state.suggestNode,
+    tree: state.tree,
+    allNodes: state.allNodes,
+    clearedNodes: state.clearedNodes,
   }));
 
   const flipped = getNodeFlippedStatus(id);
@@ -144,6 +157,20 @@ function MindMapNode({ id, data, isCorrect}) {
     const node = nodes.find(node => node.id === targetId);
     return node ? node.isCorrect : null;
   };
+
+// idを指定して子ノードが存在するかどうかを返す関数
+const hasChildrenById = (node, id) => {
+  if (node.id !== null && node.id === id) {
+    return node.children && node.children.length > 0;
+  }
+  for (let child of node.children) {
+    const result = hasChildrenById(child, id);
+    if (result) {
+      return true;
+    }
+  }
+  return false;
+}
 
   useEffect(() => {
     const gotIsCorrect = getIsCorrectById(nodes, id);
@@ -159,6 +186,10 @@ function MindMapNode({ id, data, isCorrect}) {
     if (id === nodes[0].id) {
       setIsRootNode(true);
     }
+
+    // 子ノードを持つかを調べる
+    // const dictTree = JSON.parse(tree);
+    // setHasChildren(dictTree && hasChildrenById(dictTree, id));
   }, []);
 
   useLayoutEffect(() => {
@@ -180,12 +211,12 @@ function MindMapNode({ id, data, isCorrect}) {
   return (
     <>
     {/* <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}/> */}
-    <GroundWithGrass isRootNode={isRootNode} />
+    <GroundWithGrass isRootNode={isRootNode} themeColorId={themeColorId} mapProgressPercentage={clearedNodes / allNodes * 100}/>
     <Ground isRootNode={isRootNode} />
     <NodeContainer id={id}>
       <InputWrapper className="inputWrapper  dragHandle" id={id} isCorrect={isCorrectLocal} isRootNode={isRootNode} onClick={() => onNodeClick()}>
-      <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}  themeColorId={themeColorId}/>
-      <SuggestIcon isSuggest={suggestNode && suggestNode.id === id}/>
+      <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString} themeColorId={themeColorId} hasChildren={hasChildren}/>
+      <SuggestIcon isSuggest={suggestNode && suggestNode.id === id} themeColorId={themeColorId}/>
         <DragHandleArea id={id} className="dragHandle">
           <P
             value={data.label}
