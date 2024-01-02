@@ -16,11 +16,11 @@ const TestDiv = styled.div`
   background-image: ${(props) => props.isRootNode ? "url(node/wood.png)": (props.isCorrect ? `url(${NodethemeColorId[props.themeColorId]["sub"]})` : `url(${NodethemeColorId[props.themeColorId]["main"]})`) };
   background-size: contain;
   background-repeat: no-repeat;
-  height: ${(props) => props.isRootNode ? "560px": props.isLongString ? "125px": "100px" };
-  width: ${(props) => props.isRootNode ? "300px": props.isLongString ? "280px": "220px" };
+  height: ${(props) => props.isRootNode ? "1000px": props.isLongString ? "125px": "100px" };
+  width: ${(props) => props.isRootNode ? "400px": props.isLongString ? "280px": "220px" };
   position: absolute;
-  top: ${(props) => props.isRootNode ? "-65px": props.isLongString ? "-30px": "-26px" };
-  left: ${(props) => props.isRootNode ? "-50px": props.isLongString ? "-35px": "-3px" };
+  top: ${(props) => props.isRootNode ? "-95px": props.isLongString ? "-30px": "-26px" };
+  left: ${(props) => props.isRootNode ? "-100px": props.isLongString ? "-35px": "-3px" };
 `
 
 const GroundWithGrass = styled.div`
@@ -30,7 +30,7 @@ const GroundWithGrass = styled.div`
   background-image: ${(props) => props.isRootNode ? "url(node/ground.png)": null };
   height: ${(props) => props.isRootNode ? "700px": "0" };
   width: ${(props) => props.isRootNode ? "1500px": "0" };
-  top: 455px;
+  top: 615px;
   left: -650px;
   z-index: 1000;
 `
@@ -42,9 +42,21 @@ const Ground = styled.div`
   background-image: ${(props) => props.isRootNode ? "url(node/ground.svg)": null };
   height: ${(props) => props.isRootNode ? "10000px": "0" };
   width: ${(props) => props.isRootNode ? "10000px": "0" };
-  top: 485px;
+  top: 645px;
   left: -5000px;
   z-index: 999;
+`
+
+const SuggestIcon = styled.div`
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: ${(props) => props.isSuggest ? "url(node/butterfly/yellow.png)": null };
+  height: ${(props) => props.isSuggest ? "70px": "0" };
+  width: ${(props) => props.isSuggest ? "1500px": "0" };
+  top: -60px;
+  left: 185px;
+  z-index: 1000;
 `
 
 const NodeContainer = styled.div`
@@ -118,11 +130,12 @@ function MindMapNode({ id, data, isCorrect}) {
   const [isRootNode, setIsRootNode] = useState(false);
   const [isLongString, setIsLongString] = useState(false)
 
-  const { nodes, getNodeFlippedStatus, toggleNodeFlipped, themeColorId } = useStore(state => ({
+  const { nodes, getNodeFlippedStatus, toggleNodeFlipped, themeColorId, suggestNode } = useStore(state => ({
     nodes: state.nodes,
     getNodeFlippedStatus: state.getNodeFlippedStatus,
     toggleNodeFlipped: state.toggleNodeFlipped,
-    themeColorId: state.themeColorId
+    themeColorId: state.themeColorId,
+    suggestNode: state.suggestNode
   }));
 
   const flipped = getNodeFlippedStatus(id);
@@ -161,6 +174,7 @@ function MindMapNode({ id, data, isCorrect}) {
   const onNodeClick = () => {
     toggleNodeFlipped(id);
     console.log("onNodeClick: ", flipped);
+    console.log("suggestNode.id: ", suggestNode && suggestNode.id === id);
   };
 
   return (
@@ -171,6 +185,7 @@ function MindMapNode({ id, data, isCorrect}) {
     <NodeContainer id={id}>
       <InputWrapper className="inputWrapper  dragHandle" id={id} isCorrect={isCorrectLocal} isRootNode={isRootNode} onClick={() => onNodeClick()}>
       <TestDiv isCorrect={isCorrectLocal} isRootNode={isRootNode} isLongString={isLongString}  themeColorId={themeColorId}/>
+      <SuggestIcon isSuggest={suggestNode && suggestNode.id === id}/>
         <DragHandleArea id={id} className="dragHandle">
           <P
             value={data.label}
