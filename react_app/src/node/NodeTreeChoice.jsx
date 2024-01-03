@@ -130,7 +130,7 @@ function NodeTreeChoice() {
                 const edgesJSON = JSON.parse(edges);
                 setLoadedMapData(tree, mapId, themeName, nodesJSON, edgesJSON);
                 setGauge(allNodes, cleared_nodes);
-                navigate("/map");
+                navigate("/map", { replace: true });
             });
     }
 

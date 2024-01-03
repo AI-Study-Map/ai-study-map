@@ -15,7 +15,7 @@ import 'reactflow/dist/style.css';
 import Header from '../layout/Header';
 import QuestionMenu from './QuestionMenu';
 import styled from 'styled-components';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import GaugeBar from '../components/GaugeBar';
 
 const SuggestNodeWrapper = styled.div`
@@ -96,7 +96,34 @@ const Flow = () =>  {
   useEffect(() => {
     setSuggestNode();
     console.log("suggestNode:", suggestNode);
+
+    // ページから離れる場合にアラートを出す（戻るボタンは機能しない）
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, [])
+
+const blockBrowserBack = useCallback(() => {
+    window.history.go(1)
+}, [])
+
+useEffect(() => {
+    // 直前の履歴に現在のページを追加
+    window.history.pushState(null, '', window.location.href)
+
+    // 直前の履歴と現在のページのループ
+    window.addEventListener('popstate', blockBrowserBack)
+    return () => {
+        window.removeEventListener('popstate', blockBrowserBack)
+    }
+}, [blockBrowserBack])
 
   // const defaultViewport = { x: 500, y: 500, zoom: 1.0 };
 
