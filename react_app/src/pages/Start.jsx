@@ -17,8 +17,9 @@ const Title = styled.h1`
 
 const Example = styled.div`
   text-align: center;
-  margin-top:40px;
-  font-size: 30px;
+  margin-top: 15px;
+  font-size: 25px;
+  padding-right: 30%;
 `
 
 function CustomTabPanel(props) {

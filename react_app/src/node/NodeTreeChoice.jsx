@@ -20,14 +20,40 @@ const Button = styled.div`
 const Selecter = styled.div`
     padding: 0.5rem 1rem;
     margin: 3em 1em;
-    
+`
+
+export const StartButton = styled.button`
+    width: 180px;
+    height: 60px;
+    border-radius: 10px 0 10px 0;
+    border: 0;
+    box-shadow: 0px 1px 2px #8a8a8a;
+    background-color: #FFE867;
+    color: #66A83E;
+    font-weight: bold;
+    font-size: 20px;
+    position: relative;
+    bottom: 53px;
+    right: 20%;
+    &:hover {
+        background-color: #7BC74D;
+        color: #FFE867;
+        cursor: pointer;
+    }
+`
+
+export const Text = styled.p`
+    color: #17594A;
+    text-decoration:underline;
+    text-decoration-color: #17594A;
+    font-weight: bold;
 `
 
 const API_MAP_LOAD = "http://localhost:8000/api/load/map";
 const API_MAP_NUMOFMAP = "http://localhost:8000/api/load/num_of_map";
 
 const options = [
-    { value: 'default', label: 'テーマを選択してください' },
+    { value: 'default', label: '学習したいテーマを選択' },
     // { value: 1, label: 'Python' },
     // { value: 2, label: 'アジアの郷土料理' },
 ];
@@ -71,7 +97,7 @@ function NodeTreeChoice() {
 
                 // optionsを初期化
                 options.splice(0);
-                options.push({ value: 'default', label: 'テーマを選択してください' })
+                options.push({ value: 'default', label: '学習したいテーマを選択' })
                 //mapデータをoptionsに追加
                 for (let i=0; i<parseData.length; i++) {
                     options.push({ value: parseData[i].map_id, label: parseData[i].theme_name })
@@ -117,21 +143,44 @@ function NodeTreeChoice() {
                 <h2>下記のメニューからテーマを選択して学習を再開しましょう</h2>
                 <p>
                     あなたが作成して学習したテーマのマインドマップを<br/>
-                    「テーマを選択してください」から選択することができます。
+                    「学習したいテーマを選択」から選択することができます。
                 </p>
                 </Starter>
                 
                 <Selecter>
-                    <p>並び替え（五十音順、作成日時順）や検索</p>
+                    <Text>ライブラリからマインドマップを開く</Text>
                 <Select
                     options={options}
                     defaultValue={selectedValue}
                     onChange={(value) => { setSelectedValue(value); }}
+                    theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          text: '#cccccc',
+                          primary25: '#FFE867',
+                          primary: '#7BC74D',
+                        },
+                      })}
+                    styles={{control: (provided, state) => ({
+                        ...provided,
+                        width: '50%',
+                        height: '48px',
+                        borderRadius: '10px',
+                        color: '#fff',
+                        border: '1px solid #FFE867',
+                        backgroundColor: '#FAFFF7',
+                        boxShadow: "inset 0px 2px 2px #cccccc",
+                        '&:hover': {
+                          border: '1px solid #7BC74D',
+                          cursor: 'pointer',
+                        },
+                      }), width: "100px"}}
                 />
-                </Selecter>
                 <Button buttonIsDisabled={buttonIsDisabled}>
-                <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>選択してマインドマップ作成</button>
+                    <StartButton disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>はじめる</StartButton>
                 </Button>
+                </Selecter>
             </>
             }
         </>

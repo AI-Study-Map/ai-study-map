@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid/non-secure';
 import useStore from './store';
 import styled from 'styled-components';
 import LoadingScreenTreeMake from '../components/LoadingScreenTreeMake';
+import { StartButton, Text } from './NodeTreeChoice';
 
 const Starter = styled.div`
     border-bottom: 5px dotted #FFE867;
@@ -16,8 +17,7 @@ const Starter = styled.div`
 `
 
 const Button = styled.div`
-    display: flex;
-    justify-content: center;
+    text-align: right;
 `
 const Selecter = styled.div`
     padding: 0.5rem 1rem;
@@ -32,13 +32,9 @@ const FormWrapper = styled.div`
     margin-top: 3em;
     display: flex;
     flex-direction: column;
-    align-items: center;
     font-family: "Noto Sans Japanese"; 
     form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        
+        margin: 5px 30px;
     }
 
     label {
@@ -46,22 +42,21 @@ const FormWrapper = styled.div`
     }
 
     input {
-        width: 15em;
-        height: 3em;
+        width: 40%;
+        height: 2em;
         font-size: 1em;
         font-weight: 1000;
         padding: 0.5em;
-        border: 4px solid #ccc;
         border-radius: 10px;
-        outline: none;
-        font-family: "Noto Sans Japanese"; 
-        transition: border-color 0.5s ease;
+        box-shadow: inset 0px 2px 2px #cccccc;
+        border: 1px solid #FFE867;
 
         &:hover {
-            border-color: #4CAF50;
+            border: 1px solid #7BC74D;
         }
         &:focus {
-            border-color: #4CAF50;
+            border: 1px solid #7BC74D;
+            outline: #7BC74D 1px solid;
         }
 
     }
@@ -69,6 +64,17 @@ const FormWrapper = styled.div`
 
 const Wrapper = styled.div`
     /* display: table; */
+`
+
+const StartTreeButton = styled(StartButton)`
+    background-color: #7BC74D;
+    color: #FFE867;
+    bottom: 60px;
+    right: 30%;
+    &:hover {
+        background-color: #FFE867;
+        color: #66A83E;
+    }
 `
 
 const API_MAP_MAKE = "http://localhost:8000/api/gpt_calling/make_map";
@@ -148,7 +154,7 @@ function NodeTreeMake() {
             <Starter>
             <h2>下記の入力欄にテーマを入力して学習を始めましょう</h2>
             <p>
-                あなたが学びたいもののテーマを入力して「マインドマップ作成」を押すことで<br/>
+                あなたが学びたいもののテーマを入力して「はじめる」を押すことで<br/>
                 入力したテーマに基づくマインドマップがChatGPTによって作成されます。
             </p>
             </Starter>
@@ -156,16 +162,16 @@ function NodeTreeMake() {
                 <FormWrapper>
                     <form  onLoad={handleInputChange} >
                         <label>
-                            
+                            <Text>自由にマインドマップ作成</Text>
                             <input
                                 onChange={handleInputChange}
-                                placeholder='自由にテーマを決めましょう'
+                                placeholder='学習したいテーマを入力'
                             />
                         </label>
                     </form>
                 </FormWrapper>
                 <Button>
-                <button disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>マインドマップ作成</button>
+                    <StartTreeButton disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>はじめる</StartTreeButton>
                 </Button>
             </Wrapper>
             </>
