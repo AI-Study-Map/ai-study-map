@@ -22,16 +22,38 @@ const SuggestNodeWrapper = styled.div`
   font-size: 20px;
   color: #17594A;
   position: absolute;
-  top: 6.6%;
+  top: 6%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
   pointer-events: none;
-  border: 2px solid #17594A;
-  padding: 30px 105px;
-  border-radius: 10px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: ${(props) => props.textLength && props.textLength > 7 ? "url(suggestion/signboard-large.png)": "url(suggestion/signboard.png)"};
+  width: 340px;
+  height: 100px;
 `;
 
+const SuggestNodeTextWrapper = styled.p`
+  display: flex;
+  justify-content: center;
+`
+
+const SuggestNodeText1 = styled.p`
+  position: relative;
+  color: #FAFFF7;
+  float: left;
+  min-width: 100px;
+  margin-left: 10px;
+`
+
+const SuggestNodeText2 = styled.p`
+  position: relative;
+  color: #17594A;
+  float: left;
+  font-size: 30px;
+  margin-top: 20px;
+`
 
 const selector = (state) => ({
   nodes: state.nodes,
@@ -101,7 +123,13 @@ const Flow = () =>  {
         {/* <Background color="#000"/> */}
         <Controls showInteractive={false} />
         <SuggestNodeWrapper>
-          おすすめノード：{suggestNode? suggestNode.data.label: "なし"}
+          <SuggestNodeTextWrapper>
+            <SuggestNodeText1>おすすめ：</SuggestNodeText1>
+            <SuggestNodeText2 textLength={() =>
+              suggestNode ? suggestNode.data.label.length : 2
+            }>
+            {suggestNode ? suggestNode.data.label: "なし"}</SuggestNodeText2>
+          </SuggestNodeTextWrapper>
         </SuggestNodeWrapper>
         <GaugeBar ClearNodes={(clearedNodes)} AllNodes={(allNodes)} theme={themeName} />
         <Panel position="top-left" className="header">
