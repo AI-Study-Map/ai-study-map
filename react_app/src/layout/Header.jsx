@@ -2,7 +2,6 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import useAddNode from '../node/useAddNode';
 import MapDataSave from '../save/MapDataSave';
-import MapDataLoad from '../save/MapDataLoad';
 import { useNavigate } from 'react-router-dom';
 import AiStudyMap_logo from '../images/ai-study-map-logo.png';
 import ThemeSwitcher from '../components/ThemeSwitcher';
@@ -100,12 +99,13 @@ const Header = ({ title }) => {
     themeColorId: state.themeColorId
   }));
   const [isOpen, setIsOpen] = useState(false);
+  const [goTop, setGoTop] = useState(false);
 
   const addNewNode = useAddNode();
   const navigate = useNavigate();
 
   const handleGoTop = () => {
-    navigate("/");
+    setGoTop(true);
   }
 
 
@@ -122,10 +122,7 @@ const Header = ({ title }) => {
       </StyledHeader>
       <SidebarMenu $isOpen={isOpen} themeColorId={themeColorId}>
         <SidebarMenuInner themeColorId={themeColorId}>
-          <li onClick={()=>handleGoTop()}><p>ホーム</p></li>
-          {/*<li onClick={() => addNewNode("数値型", "文字列型")}><p>ノードを追加</p></li>*/}
-          <li><p><MapDataSave /></p></li>
-          <li><p><MapDataLoad /></p></li>
+          <li onClick={()=>handleGoTop()}><p><MapDataSave goTop={goTop}/>セーブしてホームに戻る</p></li>
           <li><ThemeSwitcher /></li>
         </SidebarMenuInner>
       </SidebarMenu>
