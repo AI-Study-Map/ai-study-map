@@ -17,8 +17,9 @@ const Title = styled.h1`
 
 const Example = styled.div`
   text-align: center;
-  margin-top:40px;
-  font-size: 30px;
+  margin-top: 15px;
+  font-size: 25px;
+  padding-right: 30%;
 `
 
 function CustomTabPanel(props) {
@@ -56,6 +57,7 @@ function CustomTabPanel(props) {
 
 function Start() {
     const [value, setValue] = React.useState(0);
+    const [isTabsDisabled, setIsTabsDisabled] = React.useState(true);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -67,6 +69,10 @@ function Start() {
         navigate("/library");
     }
 
+    const handleEnableTabs = () => {
+        setIsTabsDisabled(false);
+    };
+
     return (
         <div>
             <GlobalStyle />
@@ -75,15 +81,20 @@ function Start() {
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                         <Tab label="Set Theme" {...a11yProps(0)} />
-                        <Tab label="Library" {...a11yProps(1)} />
+                        <Tab label="Set Theme" {...a11yProps(1)} disabled={isTabsDisabled} />
+                        <Tab label="Library" {...a11yProps(2)} disabled={isTabsDisabled} />
                     </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
+                <Title>チュートリアル</Title>
+                <button onClick={handleEnableTabs}>チュートリアル完了</button>
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
                 <Title>セットテーマ</Title>
                 <NodeTreeMake />
                 <Example>テーマ例: 料理、スポーツ、Python</Example>
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
+            <CustomTabPanel value={value} index={2}>
                 <Title>ライブラリ</Title>
                 <NodeTreeChoice />
             </CustomTabPanel>

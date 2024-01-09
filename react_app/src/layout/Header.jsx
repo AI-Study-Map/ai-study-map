@@ -5,9 +5,14 @@ import MapDataSave from '../save/MapDataSave';
 import MapDataLoad from '../save/MapDataLoad';
 import { useNavigate } from 'react-router-dom';
 import AiStudyMap_logo from '../images/ai-study-map-logo.png';
+import ThemeSwitcher from '../components/ThemeSwitcher';
+import useStore from '../node/store';
+
+const themeColors = ["#FFE867", "#FFC8C8", "#FF7F67", "#478577"]
+const subThemeColors = ["#7BC74D", "#66A83E", "#CD7160", "#70C79D"]
 
 const StyledHeader = styled.header`
-  background-color: #FFE867;
+  background-color: ${(props) => themeColors[props.themeColorId]};
   background-image: url(${AiStudyMap_logo});
   background-repeat: no-repeat;
   background-position: 30px;
@@ -29,7 +34,7 @@ const SidebarMenu = styled.div`
   margin-top: 0;
   transform: translateX(${props => (props.$isOpen ? "0" : "250px")});
   transition: transform 250ms ease-in-out;
-  background: #FFE867;
+  background: ${(props) => themeColors[props.themeColorId]};
   z-index: 10000;
 `;
 
@@ -39,7 +44,7 @@ const SidebarMenuInner = styled.ul`
   border-top: 1px solid rgba(255, 255, 255, 0.10);
   li {
     list-style: none;
-    color: #7BC74D;
+    color: ${(props) => props.themeColorId === 2 || props.themeColorId === 3 ? "#FAFFF7": "#7BC74D"};
     text-transform: uppercase;
     font-weight: bold;
     padding: 20px;
@@ -52,8 +57,8 @@ const SidebarMenuInner = styled.ul`
       color: rgba(255, 255, 255, 0.50);
     }
     &:hover {
-    background-color: #7BC74D; // ホバー時の背景色変更
-    color: #fff; // ホバー時の文字色変更
+    background-color: ${(props) => subThemeColors[props.themeColorId]}; // ホバー時の背景色変更
+    color: ${(props) => props.themeColorId === 2 || props.themeColorId === 3 ? "#FAFFF7": themeColors[props.themeColorId]}; // ホバー時の文字色変更
   }
   }
 `;
@@ -70,7 +75,7 @@ const SidebarIconToggle = styled.label`
 `;
 
 const Spinner = styled.div`
-  background-color: #7BC74D;
+  background-color: ${(props) => props.themeColorId === 2 || props.themeColorId === 3 ? "#FAFFF7": "#7BC74D"};
   height: 3px;
   width: 22px;
   position: absolute;
@@ -91,6 +96,9 @@ const Spinner = styled.div`
 
 
 const Header = ({ title }) => {
+  const { themeColorId } = useStore(state => ({
+    themeColorId: state.themeColorId
+  }));
   const [isOpen, setIsOpen] = useState(false);
 
   const addNewNode = useAddNode();
@@ -104,20 +112,21 @@ const Header = ({ title }) => {
 
   return (
     <>
-      <StyledHeader>
+      <StyledHeader themeColorId={themeColorId}>
         {title}
         <SidebarIconToggle onClick={() => setIsOpen(!isOpen)}>
-          <Spinner className="diagonal part-1" $isOpen={isOpen} />
-          <Spinner className="horizontal" $isOpen={isOpen} />
-          <Spinner className="diagonal part-2" $isOpen={isOpen} />
+          <Spinner className="diagonal part-1" $isOpen={isOpen} themeColorId={themeColorId}/>
+          <Spinner className="horizontal" $isOpen={isOpen} themeColorId={themeColorId}/>
+          <Spinner className="diagonal part-2" $isOpen={isOpen} themeColorId={themeColorId}/>
         </SidebarIconToggle>
       </StyledHeader>
-      <SidebarMenu $isOpen={isOpen}>
-        <SidebarMenuInner>
+      <SidebarMenu $isOpen={isOpen} themeColorId={themeColorId}>
+        <SidebarMenuInner themeColorId={themeColorId}>
           <li onClick={()=>handleGoTop()}><p>ホーム</p></li>
           {/*<li onClick={() => addNewNode("数値型", "文字列型")}><p>ノードを追加</p></li>*/}
           <li><p><MapDataSave /></p></li>
           <li><p><MapDataLoad /></p></li>
+          <li><ThemeSwitcher /></li>
         </SidebarMenuInner>
       </SidebarMenu>
     </>

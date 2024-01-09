@@ -15,23 +15,45 @@ import 'reactflow/dist/style.css';
 import Header from '../layout/Header';
 import QuestionMenu from './QuestionMenu';
 import styled from 'styled-components';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import GaugeBar from '../components/GaugeBar';
 
 const SuggestNodeWrapper = styled.div`
   font-size: 20px;
   color: #17594A;
   position: absolute;
-  top: 6.6%;
+  top: 6%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
   pointer-events: none;
-  border: 2px solid #17594A;
-  padding: 30px 105px;
-  border-radius: 10px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: ${(props) => props.textLength && props.textLength > 7 ? "url(suggestion/signboard-large.png)": "url(suggestion/signboard.png)"};
+  width: 340px;
+  height: 100px;
 `;
 
+const SuggestNodeTextWrapper = styled.p`
+  display: flex;
+  justify-content: center;
+`
+
+const SuggestNodeText1 = styled.p`
+  position: relative;
+  color: #FAFFF7;
+  float: left;
+  min-width: 100px;
+  margin-left: 10px;
+`
+
+const SuggestNodeText2 = styled.p`
+  position: relative;
+  color: #17594A;
+  float: left;
+  font-size: 30px;
+  margin-top: 20px;
+`
 
 const selector = (state) => ({
   nodes: state.nodes,
@@ -74,7 +96,34 @@ const Flow = () =>  {
   useEffect(() => {
     setSuggestNode();
     console.log("suggestNode:", suggestNode);
+
+    // ページから離れる場合にアラートを出す（戻るボタンは機能しない）
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, [])
+
+const blockBrowserBack = useCallback(() => {
+    window.history.go(1)
+}, [])
+
+useEffect(() => {
+    // 直前の履歴に現在のページを追加
+    window.history.pushState(null, '', window.location.href)
+
+    // 直前の履歴と現在のページのループ
+    window.addEventListener('popstate', blockBrowserBack)
+    return () => {
+        window.removeEventListener('popstate', blockBrowserBack)
+    }
+}, [blockBrowserBack])
 
   // const defaultViewport = { x: 500, y: 500, zoom: 1.0 };
 
@@ -95,12 +144,19 @@ const Flow = () =>  {
         connectionLineType={ConnectionLineType.Straight}
         // defaultViewport={defaultViewport}
         fitView
+        minZoom={0.1}
       >
-        {/* <Background color="#FAFFF7" style={{"backgroundColor": "#FAFFF7"}}/> */}
-        <Background color="#000"/>
+        <Background color="#000" style={{"backgroundColor": "#FAFFF7"}}/>
+        {/* <Background color="#000"/> */}
         <Controls showInteractive={false} />
         <SuggestNodeWrapper>
-          おすすめノード：{suggestNode? suggestNode.data.label: "なし"}
+          <SuggestNodeTextWrapper>
+            <SuggestNodeText1>おすすめ：</SuggestNodeText1>
+            <SuggestNodeText2 textLength={() =>
+              suggestNode ? suggestNode.data.label.length : 2
+            }>
+            {suggestNode ? suggestNode.data.label: "なし"}</SuggestNodeText2>
+          </SuggestNodeTextWrapper>
         </SuggestNodeWrapper>
         <GaugeBar ClearNodes={(clearedNodes)} AllNodes={(allNodes)} theme={themeName} />
         <Panel position="top-left" className="header">

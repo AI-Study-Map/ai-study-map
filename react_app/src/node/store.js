@@ -576,6 +576,9 @@ import {
     allNodes: 0,
     clearedNodes: 0,
     setGauge: (allNodes, clearedNodes) => {set({ allNodes: allNodes, clearedNodes: clearedNodes })},
+
+    themeColorId: 0,
+    setThemeColorId: (id) => set({ themeColorId: id }),
   }));
   
   export default useStore;
