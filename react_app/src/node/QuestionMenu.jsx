@@ -35,6 +35,7 @@ const StyledQuestionHeader = styled.div`
       font-weight: bold;
       margin-left: 20px;
       margin-top: 27px;
+      width: 350px;
     }
 `;
 
@@ -70,7 +71,7 @@ const StyledQuestionButtons = styled.div`
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 22px;
+  top: 18px;
   right: 15px;
   font-size: 20px;
   background: none;
