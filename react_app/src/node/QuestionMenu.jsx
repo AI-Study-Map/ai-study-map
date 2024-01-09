@@ -25,7 +25,7 @@ const StyledQuestionHeader = styled.div`
   background-color:#FFE867;
   height: 8vh;
     p {
-      color: #17594A;
+      color: #213363;
       font-size: 25px;
       font-weight: bold;
       margin-left: 20px;

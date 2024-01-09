@@ -38,6 +38,7 @@ const ResponseLogArea = styled.div`
   z-index: 10000000;
   font-weight: 400;
   font-family: "Noto Sans Japanese"; 
+  color:#213363;
 `
 
 const ButtonContainer = styled.div`
@@ -58,7 +59,7 @@ const StyledButton = styled.button`
   padding: 4px 8px; // ボタンのパディング（必要に応じて）
   width: 120px;
   // font
-  color: var(--1, #17594A);
+  color: var(--1, #213363);
   text-align: center;
   font-size: 20px;
   font-style: normal;
