@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import useStore from './store';
 import useAddNode from './useAddNode';
 import LoadingScreen from '../components/LoadingScreen';
-import Clear_animation from '../images/clear_animation.gif';
+import Clear_animation from '../images/clear-loop.gif';
 import '../noto_sans_jp.css'
 
 const themeColors = ["#FFE867", "#FFC8C8", "#FF8B67", "#478577"]
@@ -107,19 +107,20 @@ const Overlay = styled.div`
 `;
 
 const RedCircle = styled.div`
-  img{width: 411.2px;
-  height: 316.8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  position: absolute;
-  top: 37%; /* 上下中央に配置 */
-  left: 70%; /* 左右中央に配置 */
-  transform: translate(-50%, -50%); /* 中央揃え */
-  animation: ${fadeIn} 0.3s ease-in-out;}
-  
+  img{
+    width: 520px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    position: absolute;
+    top: 37%; /* 上下中央に配置 */
+    left: 42.2%; /* 左右中央に配置 */
+    transform: translate(-50%, -50%); /* 中央揃え */
+    animation: ${fadeIn} 0.3s ease-in-out;
+  } 
 `;
 
 const ClearText = styled.p`
