@@ -601,7 +601,7 @@ def make_map(request):
 def save_map(request): 
     map_id = request.data['map_id']
     graph_structure = request.data['graph_structure']
-    graph_structure = json.dumps(graph_structure)
+    # graph_structure = json.dumps(graph_structure) 基本的な操作に対する影響はないことを確認
     theme_name = request.data['theme_name']
     cleared_nodes = request.data['cleared_nodes']
 
