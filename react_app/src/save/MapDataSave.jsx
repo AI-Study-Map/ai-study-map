@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useStore from '../node/store';
+import { useNavigate } from 'react-router-dom';
 
 const API_MAP_SAVE = "http://localhost:8000/api/save/map";
 const API_NODE_SAVE = "http://localhost:8000/api/save/node";
@@ -7,7 +8,9 @@ const API_EDGE_SAVE = "http://localhost:8000/api/save/edge";
 const API_HOST_CREATENEWNODE = 'http://localhost:8000/api/save/create_newnode';
 
 //メモ：map作るときにrootnodeを作成してそれをnode登録する
-function MapDataSave() {
+function MapDataSave(props) {
+    const navigate = useNavigate();
+    const {goTop} = props;
     const {
         nodes, edges, tree, themeName, mapId, clearedNodes
     } = useStore((state) => ({
@@ -18,6 +21,13 @@ function MapDataSave() {
         mapId: state.mapId,
         clearedNodes: state.clearedNodes,
     }));
+
+    useEffect(() =>{
+        if (goTop) {
+            handleSave();
+            navigate("/start");
+        }
+    }, [goTop])
 
     const handleSave = async () => {
         console.log("Save start---");
@@ -123,7 +133,7 @@ function MapDataSave() {
 
     return (
         <>
-            <button onClick={() => handleSave()}>Save</button>
+            {/* <button onClick={() => handleSave()}>Save</button> */}
         </>
     );
 }

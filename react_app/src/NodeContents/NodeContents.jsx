@@ -44,6 +44,7 @@ const ResponseLogArea = styled.div`
   z-index: 10000000;
   font-weight: 400;
   font-family: "Noto Sans Japanese"; 
+  color:#213363;
 `
 
 const ButtonContainer = styled.div`
