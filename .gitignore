@@ -1,26 +1,7 @@
-# Python artifacts
-*.pyc
-*.pyo
-*.egg-info/
-__pycache__/
-*.log
-
-# Django specific
-*.log
-*.pot
-*.pyc
+django_env
 db.sqlite3
-media/
-settings_local.py
-prompt_test.py
-
-# Virtual environment
-django_env/
-
-# IDE-specific
-.vscode/
-.idea/
-
-# OS generated
+.vscode
+__pycache__
+*.pyc
 .DS_Store
-Thumbs.db
+.env
