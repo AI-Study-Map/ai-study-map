@@ -22,12 +22,12 @@ export const GlobalStyle = createGlobalStyle`
 export const Container = styled.div`
   display: flex; //横並び
   justify-content: space-around;
-  padding: 6rem 0 4rem 0;
+  padding: rem 0 4rem 0;
 `;
 
 const LeftSection = styled.div` // コンテナ左
   width: 45%;
-  min-width: 250px;
+  min-width: 300px;
   padding: 1rem 2rem;
   flex: 0.5;
   margin: 2rem 1rem 2rem 6rem;
@@ -55,7 +55,7 @@ const LeftSection = styled.div` // コンテナ左
     text-align: center;
     line-height: 1.5em;
     padding-left: 1em;
-    padding-top: 1em;
+    padding-top: 0.5em;
   }
   p {
     color: #213363;
@@ -63,6 +63,11 @@ const LeftSection = styled.div` // コンテナ左
     line-height: 1.5em;
     margin-top: 1em;
     background-color: #FAFFF7;
+  }
+
+  .pc {
+    font-size: 20px;
+    line-height: 1.1em;
   }
   
   @media screen and (max-width: 1600px){
@@ -146,11 +151,14 @@ const BottomSection = styled.div`
   min-width: 250px;
   max-height: 350px;
   padding: 2rem 2rem;
-  margin: 8rem 4rem 4rem 4rem;
+  margin: 0 4rem 4rem 4rem;
   flex: 0.5;
   border: 5px dotted #FFE867;
   border-radius: 10px;
   border-width: 4px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
   
   h1 {
     color: #17594A;
@@ -158,8 +166,8 @@ const BottomSection = styled.div`
   }
 
   .btn {
-    text-align: right;
-    margin-right: 1.5rem;
+    /* text-align: right; */
+    /* margin-right: 1.5rem; */
   }
 
   button {
@@ -167,14 +175,15 @@ const BottomSection = styled.div`
     color: #FAFFF7;
     font-size: 20px;
     font-weight: bold;
-    margin: 5rem 0.5rem 0 0.5rem;
+    margin: 0rem 0.5rem 0 0.5rem;
     padding: 1rem 1rem;
     border: none;
     border-radius: 25px 5px 25px 5px;
     cursor: pointer;
   }
   button:hover {
-    background-color: #62a439;
+    background-color: #FFE867;
+    color: #7BC74D;
   }
   /* クリックしたら波紋が広がる */
   .btnripple {
@@ -251,9 +260,9 @@ function Top() {
             </svg>
         </ScrollDown>
         <BottomSection>
-          <h1><span class="pc">AI Study Mapを</span><span class="pc">はじめよう(仮)</span></h1>
+          <h1><span class="pc">AI Study Mapを</span></h1>
           <div className="btn">
-            <button className="btnripple" onClick={()=>handleGoStart()}>はじめる(仮)</button>
+            <button className="btnripple" onClick={()=>handleGoStart()}>はじめる</button>
           </div>
           {/* <NodeTreeChoice />
           <NodeTreeMake /> */}

@@ -28,6 +28,7 @@ const Title = styled.div`
   border-bottom: 1px solid #17594A;
   padding: 2px 100px 2px 12px;
   text-align: left;
+  background-color: #ffe86781;
 `;
 
 const ThemeText = styled.span`
@@ -64,7 +65,7 @@ const GaugeBar = ({ ClearNodes, AllNodes, theme }) => {
     <Wrapper>
       <Contents>
         <Title>
-          <ThemeText>{theme}</ThemeText> Study Map
+          <ThemeText>"{theme}"</ThemeText> Study Map
         </Title>
         <Box sx={{ width: '100%', textAlign: 'center' }}>
           <LinearProgressWithLabel color="success" value={((ClearNodes / AllNodes) * 100)} />
