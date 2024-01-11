@@ -79,10 +79,10 @@ function Start() {
             <Header />
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                        <Tab label="Set Theme" {...a11yProps(0)} />
-                        <Tab label="Set Theme" {...a11yProps(1)} disabled={isTabsDisabled} />
-                        <Tab label="Library" {...a11yProps(2)} disabled={isTabsDisabled} />
+                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" sx={{'& .MuiTabs-indicator': {backgroundColor: '#7BC74D'}}}>
+                        <Tab label="Tutorial" {...a11yProps(0)} sx={{'&.Mui-selected': {color: '#7BC74D'}}}/>
+                        <Tab label="Set Theme" {...a11yProps(1)} disabled={isTabsDisabled} sx={{'&.Mui-selected': {color: '#7BC74D'}}}/>
+                        <Tab label="Library" {...a11yProps(2)} disabled={isTabsDisabled} sx={{'&.Mui-selected': {color: '#7BC74D'}}}/>
                     </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
