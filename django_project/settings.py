@@ -29,7 +29,7 @@ env.read_env(os.path.join(BASE_DIR, ".env"))
 #シークレットキーはsettings_local.pyに記述
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
