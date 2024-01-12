@@ -2,9 +2,9 @@
 # exit on error
 set -o errexit
 
-cd django_project
-
 pip install -r requirements.txt
+
+cd django_project
 
 python manage.py collectstatic --no-input
 python manage.py migrate
