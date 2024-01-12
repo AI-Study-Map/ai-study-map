@@ -10,5 +10,5 @@ class ItemListCreate(generics.ListCreateAPIView):
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    return HttpResponse("This page is index.html")
 
