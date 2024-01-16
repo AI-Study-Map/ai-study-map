@@ -11,6 +11,14 @@ const subThemeColors = ["#7BC74D", "#66A83E", "#CD7160", "#70C79D"]
 const hoverSubThemeColors = ["#5d953b", "#48782b", "#955246", "#559878"]
 const fontColors = ["#7BC74D", "#66A83E", "#FAFFF7", "#FAFFF7"]
 
+const LoadingScreenArea = styled.div`
+  cursor: default;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
+
 const MenuWrapper = styled.div`
   position: fixed;
   top: 0;
@@ -411,7 +419,9 @@ function QuestionMenu() {
             <p>{nodeTitle}</p>
           </StyledQuestionHeader>
           {isQuestionMenuLoading ? 
-          <LoadingScreen />
+          <LoadingScreenArea>
+            <img src="load/question-loading.gif" alt="loading gif"></img>
+          </LoadingScreenArea>
           :
           <>
           <StyledQuestionContent>

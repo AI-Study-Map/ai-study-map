@@ -15,13 +15,6 @@ const Title = styled.h1`
   margin: -10px 0px;
 `
 
-const Example = styled.div`
-  text-align: center;
-  margin-top: 15px;
-  font-size: 25px;
-  padding-right: 30%;
-`
-
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
   
@@ -96,7 +89,6 @@ function Start() {
             <CustomTabPanel value={value} index={0/*1*/}>
                 <Title>セットテーマ</Title>
                 <NodeTreeMake />
-                <Example>テーマ例: 料理、スポーツ、Python</Example>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1/*2*/}>
                 <Title>ライブラリ</Title>
