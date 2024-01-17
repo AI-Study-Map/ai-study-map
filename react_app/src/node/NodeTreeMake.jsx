@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
-import Select from 'react-select';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { nanoid } from 'nanoid/non-secure';
 import useStore from './store';
 import styled from 'styled-components';
-import LoadingScreenTreeMake from '../components/LoadingScreenTreeMake';
 import { StartButton, Text } from './NodeTreeChoice';
 
 const Starter = styled.div`
@@ -25,7 +23,15 @@ const Selecter = styled.div`
     
 `
 const LoadingScreenWrapper = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     margin: auto;
+    text-align: center;
+    img {
+        height: 400px;
+    }
 `
 
 const FormWrapper = styled.div`
@@ -64,6 +70,13 @@ const FormWrapper = styled.div`
 
 const Wrapper = styled.div`
     /* display: table; */
+`
+
+const Example = styled.div`
+  text-align: center;
+  margin-top: 15px;
+  font-size: 25px;
+  padding-right: 30%;
 `
 
 const StartTreeButton = styled(StartButton)`
@@ -157,7 +170,7 @@ function NodeTreeMake() {
         <>
         {isCommonLoading ? 
         <LoadingScreenWrapper>
-            <LoadingScreenTreeMake /> 
+            <img src="load/loading-donguri.gif" alt="loading gif"></img>
         </LoadingScreenWrapper>
         :
             <>
@@ -184,6 +197,7 @@ function NodeTreeMake() {
                     <StartTreeButton disabled={buttonIsDisabled} onClick={()=>handleButton()} className='btnripple'>はじめる</StartTreeButton>
                 </Button>
             </Wrapper>
+            <Example>テーマ例: 料理、スポーツ、Python</Example>
             </>
         }
         </>

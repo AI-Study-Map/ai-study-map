@@ -94,9 +94,13 @@ const LeftSection = styled.div` // コンテナ左
 const RightSection = styled.div` // コンテナ右
   width: 750px;
   height: 420px;
-  background-color: #857f7f;
   margin: 4rem 0 0 0;
 `;
+
+const IntroductionVideo = styled.video`
+  /* width: 750px; */
+  height: 420px;
+`
 
 const ScrollDown = styled.div`
   .arrows {
@@ -260,8 +264,7 @@ function Top() {
             </p>
         </LeftSection>
         <RightSection>
-          <div className="spinner">
-          </div>
+          <IntroductionVideo src="introduction.mp4" controls></IntroductionVideo>
         </RightSection>
         </Container>
         <ScrollDown>

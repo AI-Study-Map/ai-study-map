@@ -64,7 +64,7 @@ const SuggestIcon = styled.div`
   background-repeat: no-repeat;
   background-image: ${(props) => props.isSuggest ? `url("node/butterfly/pattern${props.themeColorId+1}.png")`: null };
   height: ${(props) => props.isSuggest ? "70px": "0" };
-  width: ${(props) => props.isSuggest ? "1500px": "0" };
+  width: ${(props) => props.isSuggest ? "80px": "0" };
   top: -60px;
   left: 185px;
   z-index: 1000;
