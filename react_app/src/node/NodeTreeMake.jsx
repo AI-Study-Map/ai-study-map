@@ -77,6 +77,7 @@ const Example = styled.div`
   margin-top: 15px;
   font-size: 25px;
   padding-right: 30%;
+  color: #213363;
 `
 
 const StartTreeButton = styled(StartButton)`

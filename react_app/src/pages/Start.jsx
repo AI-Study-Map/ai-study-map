@@ -16,14 +16,6 @@ const Title = styled.h1`
   color: #213363;
 `
 
-const Example = styled.div`
-  text-align: center;
-  margin-top: 15px;
-  font-size: 25px;
-  padding-right: 30%;
-  color: #213363;
-`
-
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
   
@@ -84,9 +76,9 @@ function Start() {
                     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" sx={{'& .MuiTabs-indicator': {backgroundColor: '#7BC74D'}}}>
                         {/*<Tab label="Tutorial" {...a11yProps(0)} sx={{'&.Mui-selected': {color: '#7BC74D'}}} />*/}
                         <Tab label="Set Theme" {...a11yProps(0/*1*/)}  // disabled={isTabsDisabled} 
-                        sx={{'&.Mui-selected': {color: '#7BC74D'}}}/>
+                        sx={{'&.Mui-selected': {color: '#213363'}}}/>
                         <Tab label="Library" {...a11yProps(1/*2*/)} // disabled={isTabsDisabled} 
-                        sx={{'&.Mui-selected': {color: '#7BC74D'}}}/>
+                        sx={{'&.Mui-selected': {color: '#213363'}}}/>
                     </Tabs>
             </Box>
             {/*
