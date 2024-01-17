@@ -151,7 +151,11 @@ function NodeTreeMake() {
                 const nodesJSON = JSON.parse(nodes);
                 const edgesJSON = JSON.parse(edges);
                 const RootNode = [nodesJSON[0]];
-                const FirstNode = [nodesJSON[1], nodesJSON[2], nodesJSON[3], nodesJSON[4]];
+                const FirstNode = [];
+                for (let i=1; i<nodesJSON.length; i++) {
+                    FirstNode.push(nodesJSON[i]);
+                } 
+                console.log("FirstNode: ", FirstNode);
                 setFirstLoadedMap(FirstNode);
                 setLoadedMapData(tree, mapId, themeName, RootNode, edgesJSON);
                 setGauge(allNodes, cleared_nodes);
