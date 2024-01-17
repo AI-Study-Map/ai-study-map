@@ -43,7 +43,7 @@ const GroundWithGrass = styled.div`
   width: ${(props) => props.isRootNode ? "1500px" : "0"};
   top: 615px;
   left: -650px;
-  z-index: 1000;
+  z-index: 1000000000;
 `
 
 const Ground = styled.div`

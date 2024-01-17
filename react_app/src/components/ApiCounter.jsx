@@ -65,7 +65,7 @@ const ApiCounter = () => {
                 {/* <button onClick={() => handleApiCount(0)}>APIカウント</button>
                 <button onClick={() => handleApiCount(1)}>tree-1</button>
                 <button onClick={() => handleApiCount(2)}>node-1</button> */}
-                <button onClick={() => handleApiCount(3)}>debug用clear</button>
+                {/* <button onClick={() => handleApiCount(3)}>debug用clear</button> */}
             </Wrapper>
         }
         </>
