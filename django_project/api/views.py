@@ -473,89 +473,248 @@ def make_map(request):
     #rootノードとその直下の子ノード4つのみを抽出しnodesに格納
     #edgesにはrootノードとその直下の子ノード4つの間のエッジを格納
     #idd == 1 はrootノード
-    #TODO: 初期ノードが４以外の時にも対応する
-    nodes = [
-       {
-         'id': generate(),
-         'type': 'mindmap',
-         'data': { 'label': json_tree['name'] },
-         'position': { 'x': 0, 'y': 0 },
-         'dragHandle': '.dragHandle',
-         'idd': 1,
-         'isCorrect': False,
-         'priority': json_tree['priority']
-        #  draggable
-       },
-       {
-         'id': generate(),
-         'type': 'mindmap',
-         'data': { 'label': json_tree['children'][0]['name'] },
-         'position': { 'x': 200, 'y': -70 },
-         'dragHandle': '.dragHandle',
-         'idd': 2,
-         'isCorrect': False,
-         'priority': json_tree['children'][0]['priority']
-       },
-       {
-         'id': generate(),
-         'type': 'mindmap',
-         'data': { 'label': json_tree['children'][1]['name'] },
-         'position': { 'x': 200, 'y': 100 },
-         'dragHandle': '.dragHandle',
-         'idd': 2,
-         'isCorrect': False,
-         'priority': json_tree['children'][1]['priority']
-       },
-       {
-         'id': generate(),
-         'type': 'mindmap',
-         'data': { 'label': json_tree['children'][2]['name'] },
-         'position': { 'x': -200, 'y': -70 },
-         'dragHandle': '.dragHandle',
-         'idd': 2,
-         'isCorrect': False,
-         'priority': json_tree['children'][2]['priority']
-       },
-        {
-          'id': generate(),
-          'type': 'mindmap',
-          'data': { 'label': json_tree['children'][3]['name'] },
-          'position': { 'x': -200, 'y': 100 },
-          'dragHandle': '.dragHandle',
-          'idd': 2,
-          'isCorrect': False,
-          'priority': json_tree['children'][3]['priority']
-        }
-     ]
-    edges =  [
-        {
-            'id': generate(),
-            'source': nodes[0]['id'],
-            'target': nodes[1]['id']
-        },
-        {
-            'id': generate(),
-            'source': nodes[0]['id'],
-            'target': nodes[2]['id']
-        },
-        {
-            'id': generate(),
-            'source': nodes[0]['id'],
-            'target': nodes[3]['id']
-        },
-        {
-            'id': generate(),
-            'source': nodes[0]['id'],
-            'target': nodes[4]['id']
-        }
-    ]
+    #json_tree['children']の要素数を取得
+    children_count = len(json_tree['children'])
+    print("CHILDREN COUNT: ", children_count)
+    if children_count == 4:
+        nodes = [
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['name'] },
+                'position': { 'x': 0, 'y': 0 },
+                'dragHandle': '.dragHandle',
+                'idd': 1,
+                'isCorrect': False,
+                'priority': json_tree['priority']
+            #  draggable
+            },
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['children'][0]['name'] },
+                'position': { 'x': 200, 'y': -70 },
+                'dragHandle': '.dragHandle',
+                'idd': 2,
+                'isCorrect': False,
+                'priority': json_tree['children'][0]['priority']
+            },
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['children'][1]['name'] },
+                'position': { 'x': 200, 'y': 100 },
+                'dragHandle': '.dragHandle',
+                'idd': 2,
+                'isCorrect': False,
+                'priority': json_tree['children'][1]['priority']
+            },
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['children'][2]['name'] },
+                'position': { 'x': -200, 'y': -70 },
+                'dragHandle': '.dragHandle',
+                'idd': 2,
+                'isCorrect': False,
+                'priority': json_tree['children'][2]['priority']
+            },
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['children'][3]['name'] },
+                'position': { 'x': -200, 'y': 100 },
+                'dragHandle': '.dragHandle',
+                'idd': 2,
+                'isCorrect': False,
+                'priority': json_tree['children'][3]['priority']
+            }
+            ]
+        edges =  [
+            {
+                'id': generate(),
+                'source': nodes[0]['id'],
+                'target': nodes[1]['id']
+            },
+            {
+                'id': generate(),
+                'source': nodes[0]['id'],
+                'target': nodes[2]['id']
+            },
+            {
+                'id': generate(),
+                'source': nodes[0]['id'],
+                'target': nodes[3]['id']
+            },
+            {
+                'id': generate(),
+                'source': nodes[0]['id'],
+                'target': nodes[4]['id']
+            }
+        ]
 
-    #json_treeのid:Noneに作成したnodeのidを追加
-    json_tree['id'] = nodes[0]['id']
-    json_tree['children'][0]['id'] = nodes[1]['id']
-    json_tree['children'][1]['id'] = nodes[2]['id']
-    json_tree['children'][2]['id'] = nodes[3]['id']
-    json_tree['children'][3]['id'] = nodes[4]['id']
+        #json_treeのid:Noneに作成したnodeのidを追加
+        json_tree['id'] = nodes[0]['id']
+        json_tree['children'][0]['id'] = nodes[1]['id']
+        json_tree['children'][1]['id'] = nodes[2]['id']
+        json_tree['children'][2]['id'] = nodes[3]['id']
+        json_tree['children'][3]['id'] = nodes[4]['id']
+
+    elif children_count == 3:
+        nodes = [
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['name'] },
+                'position': { 'x': 0, 'y': 0 },
+                'dragHandle': '.dragHandle',
+                'idd': 1,
+                'isCorrect': False,
+                'priority': json_tree['priority']
+            #  draggable
+            },
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['children'][0]['name'] },
+                'position': { 'x': 200, 'y': -70 },
+                'dragHandle': '.dragHandle',
+                'idd': 2,
+                'isCorrect': False,
+                'priority': json_tree['children'][0]['priority']
+            },
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['children'][1]['name'] },
+                'position': { 'x': 200, 'y': 100 },
+                'dragHandle': '.dragHandle',
+                'idd': 2,
+                'isCorrect': False,
+                'priority': json_tree['children'][1]['priority']
+            },
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['children'][2]['name'] },
+                'position': { 'x': -200, 'y': -70 },
+                'dragHandle': '.dragHandle',
+                'idd': 2,
+                'isCorrect': False,
+                'priority': json_tree['children'][2]['priority']
+            }
+            ]
+        edges =  [
+            {
+                'id': generate(),
+                'source': nodes[0]['id'],
+                'target': nodes[1]['id']
+            },
+            {
+                'id': generate(),
+                'source': nodes[0]['id'],
+                'target': nodes[2]['id']
+            },
+            {
+                'id': generate(),
+                'source': nodes[0]['id'],
+                'target': nodes[3]['id']
+            }
+        ]
+
+        #json_treeのid:Noneに作成したnodeのidを追加
+        json_tree['id'] = nodes[0]['id']
+        json_tree['children'][0]['id'] = nodes[1]['id']
+        json_tree['children'][1]['id'] = nodes[2]['id']
+        json_tree['children'][2]['id'] = nodes[3]['id']
+
+    elif children_count == 2:
+        nodes = [
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['name'] },
+                'position': { 'x': 0, 'y': 0 },
+                'dragHandle': '.dragHandle',
+                'idd': 1,
+                'isCorrect': False,
+                'priority': json_tree['priority']
+            #  draggable
+            },
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['children'][0]['name'] },
+                'position': { 'x': 200, 'y': -70 },
+                'dragHandle': '.dragHandle',
+                'idd': 2,
+                'isCorrect': False,
+                'priority': json_tree['children'][0]['priority']
+            },
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['children'][1]['name'] },
+                'position': { 'x': 200, 'y': 100 },
+                'dragHandle': '.dragHandle',
+                'idd': 2,
+                'isCorrect': False,
+                'priority': json_tree['children'][1]['priority']
+            }
+            ]
+        edges =  [
+            {
+                'id': generate(),
+                'source': nodes[0]['id'],
+                'target': nodes[1]['id']
+            },
+            {
+                'id': generate(),
+                'source': nodes[0]['id'],
+                'target': nodes[2]['id']
+            }
+        ]
+
+        #json_treeのid:Noneに作成したnodeのidを追加
+        json_tree['id'] = nodes[0]['id']
+        json_tree['children'][0]['id'] = nodes[1]['id']
+        json_tree['children'][1]['id'] = nodes[2]['id']
+    
+    elif children_count == 1:
+        nodes = [
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['name'] },
+                'position': { 'x': 0, 'y': 0 },
+                'dragHandle': '.dragHandle',
+                'idd': 1,
+                'isCorrect': False,
+                'priority': json_tree['priority']
+            #  draggable
+            },
+            {
+                'id': generate(),
+                'type': 'mindmap',
+                'data': { 'label': json_tree['children'][0]['name'] },
+                'position': { 'x': 200, 'y': -70 },
+                'dragHandle': '.dragHandle',
+                'idd': 2,
+                'isCorrect': False,
+                'priority': json_tree['children'][0]['priority']
+            }
+            ]
+        edges =  [
+            {
+                'id': generate(),
+                'source': nodes[0]['id'],
+                'target': nodes[1]['id']
+            }
+        ]
+
+        #json_treeのid:Noneに作成したnodeのidを追加
+        json_tree['id'] = nodes[0]['id']
+        json_tree['children'][0]['id'] = nodes[1]['id']
 
     #json_treeの要素数をカウント
     total_nodes = count_json_tree(json_tree)
