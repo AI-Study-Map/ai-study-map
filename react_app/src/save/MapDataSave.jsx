@@ -10,7 +10,7 @@ const API_HOST_CREATENEWNODE = 'http://localhost:8000/api/save/create_newnode';
 //メモ：map作るときにrootnodeを作成してそれをnode登録する
 function MapDataSave(props) {
     const navigate = useNavigate();
-    const {goTop} = props;
+    const {goStart, goTop} = props;
     const {
         nodes, edges, tree, themeName, mapId, clearedNodes
     } = useStore((state) => ({
@@ -23,9 +23,16 @@ function MapDataSave(props) {
     }));
 
     useEffect(() =>{
-        if (goTop) {
+        if (goStart) {
             handleSave();
             navigate("/start");
+        }
+    }, [goStart])
+
+    useEffect(() =>{
+        if (goTop) {
+            handleSave();
+            navigate("/");
         }
     }, [goTop])
 

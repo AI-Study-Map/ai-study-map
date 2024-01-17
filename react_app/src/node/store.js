@@ -12,7 +12,7 @@ import {
   // // setLoadedMapDataによってmapIdが設定される (各コンポーネントはmapIdを読み込む)
   //   firstSetMapId: 1, //本来は初期値null 
   //   setFirstSetMapId: (firstSetMapId) => set({ firstSetMapId: firstSetMapId }),
-
+    apiLock: {tree: false, node: false},
     themeName: "", // setLoadedMapDataで設定
     mapId: null, // setLoadedMapDataで設定
     firstNodes: [], //setFirstLoadMapで設定
@@ -554,7 +554,16 @@ import {
   
     userId: null,
     isDemo: false,
-    setUserId: (userId) => {set({ userId: userId })},
+    setUserId: (userId) => {
+      const userIdLocal = localStorage.getItem("userId");
+      if (userIdLocal === null) {
+        userId = nanoid();
+        set({ userId: userId });
+        localStorage.setItem("userId", userId);
+      } else {
+        set({ userId: userIdLocal });
+      }
+    },
     setIsDemo: (boolean) => {set({ isDemo: boolean })},
 
     suggestNode: null,
@@ -579,6 +588,78 @@ import {
 
     themeColorId: 0,
     setThemeColorId: (id) => set({ themeColorId: id }),
+
+    apiTree: null,
+    // setApiTree: (apiTree) => set({ apiTree: apiTree }),
+
+    apiNode: null,
+    // setApiNode: (apiNode) => set({ apiNode: apiNode }),
+
+    handleApiCount: (mode) => {
+      //mode 0:初期化、1:tree-1、2:node-1、3:debug用 初期値に戻す
+      if (mode === 0) {
+          //localStorageからapiTreeとapiNodeを取得、値が存在しなければ1と5をセット
+          const apiTreeLocal = localStorage.getItem("apiTree");
+          const apiNodeLocal = localStorage.getItem("apiNode");
+          if (apiTreeLocal === null) {
+              set({apiTree: 2});
+              set({apiNode: 20});
+              localStorage.setItem("apiTree", 2);
+              localStorage.setItem("apiNode", 20);
+              console.log("rout a")
+          } else {
+              let apiTreeLocalInt = parseInt(apiTreeLocal);
+              let apiNodeLocalInt = parseInt(apiNodeLocal);
+              if (apiTreeLocalInt === 0 || apiNodeLocalInt === 0) {
+                  if (apiTreeLocalInt === 0 ) {
+                      set({ apiLock: {tree: true} });
+                      set({apiTree: apiTreeLocalInt});
+                      set({apiNode: apiNodeLocalInt});
+                      console.log("rout c");
+                  }
+                  if (apiNodeLocalInt === 0) {
+                      set({ apiLock: {node: true} });
+                      set({apiTree: apiTreeLocalInt});
+                      set({apiNode: apiNodeLocalInt});
+                      console.log("rout d");
+                  } 
+              }
+              else {
+                set({apiTree: apiTreeLocalInt});
+                set({apiNode: apiNodeLocalInt});
+                  console.log("rout b");
+              }
+          }
+      }
+      if (mode === 1) {
+          //LocalStorageからapiTreeを取得しperseIntして1を引いてsetApiTreeとlocalStorageにセット
+          //apiTreeが0になったらapiをLockする
+          const apiTreeLocal = localStorage.getItem("apiTree");
+          let apiTreeLocalInt = parseInt(apiTreeLocal);
+          apiTreeLocalInt--;
+          if (apiTreeLocalInt === 0) {
+              set({ apiLock: {tree: true} })
+          }
+          set({apiTree: apiTreeLocalInt});
+          localStorage.setItem("apiTree", apiTreeLocalInt);
+      }
+      if (mode === 2) {
+          //LocalStorageからapiNodeを取得しperseIntして1を引いてsetApiNodeとlocalStorageにセット
+          //apiNodeが0になったらapiをLockする
+          const apiNodeLocal = localStorage.getItem("apiNode");
+          let apiNodeLocalInt = parseInt(apiNodeLocal);
+          apiNodeLocalInt--;
+          if (apiNodeLocalInt === 0) {
+              set({ apiLock: {node: true} })
+          }
+          set({apiNode: apiNodeLocalInt});
+          localStorage.setItem("apiNode", apiNodeLocalInt);
+      }
+      if (mode === 3) {
+          localStorage.clear();
+          set({ apiLock: {tree: false, node: false} });
+      }
+  },
   }));
   
   export default useStore;

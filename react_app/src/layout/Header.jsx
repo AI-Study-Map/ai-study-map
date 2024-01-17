@@ -6,16 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import AiStudyMap_logo from '../images/ai-study-map-logo.png';
 import ThemeSwitcher from '../components/ThemeSwitcher';
 import useStore from '../node/store';
+import ApiCounter from '../components/ApiCounter';
 
 const themeColors = ["#FFE867", "#FFC8C8", "#FF7F67", "#478577"]
 const subThemeColors = ["#7BC74D", "#66A83E", "#CD7160", "#70C79D"]
 
 const StyledHeader = styled.header`
   background-color: ${(props) => themeColors[props.themeColorId]};
-  background-image: url(${AiStudyMap_logo});
-  background-repeat: no-repeat;
-  background-position: 30px;
-  background-size: contain;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,6 +20,19 @@ const StyledHeader = styled.header`
   color: #7BC74D;
   position: relative;
   z-index: 10;
+`;
+
+
+const Logo = styled.div`
+  background-image: url(${AiStudyMap_logo});
+  background-repeat: no-repeat;
+  background-position: 30px;
+  background-size: contain;
+  flex-shrink: 0;
+  height: 100%;
+  width: 150px;
+  left: 0px;
+  position: absolute;
 `;
 
 const SidebarMenu = styled.div`
@@ -99,10 +109,15 @@ const Header = ({ title }) => {
     themeColorId: state.themeColorId
   }));
   const [isOpen, setIsOpen] = useState(false);
+  const [goStart, setGoStart] = useState(false);
   const [goTop, setGoTop] = useState(false);
 
   const addNewNode = useAddNode();
   const navigate = useNavigate();
+
+  const handleGoStart = () => {
+    setGoStart(true);
+  }
 
   const handleGoTop = () => {
     setGoTop(true);
@@ -113,7 +128,11 @@ const Header = ({ title }) => {
   return (
     <>
       <StyledHeader themeColorId={themeColorId}>
+      <Logo onClick={() => handleGoTop()} >
+        <MapDataSave goStart={goStart} goTop={goTop}/>
+      </Logo>
         {title}
+        <ApiCounter />
         <SidebarIconToggle onClick={() => setIsOpen(!isOpen)}>
           <Spinner className="diagonal part-1" $isOpen={isOpen} themeColorId={themeColorId}/>
           <Spinner className="horizontal" $isOpen={isOpen} themeColorId={themeColorId}/>
@@ -122,7 +141,7 @@ const Header = ({ title }) => {
       </StyledHeader>
       <SidebarMenu $isOpen={isOpen} themeColorId={themeColorId}>
         <SidebarMenuInner themeColorId={themeColorId}>
-          <li onClick={()=>handleGoTop()}><p><MapDataSave goTop={goTop}/>セーブしてホームに戻る</p></li>
+          <li onClick={()=>handleGoStart()}><p><MapDataSave goStart={goStart} goTop={goTop}/>セーブしてホームに戻る</p></li>
           <li><ThemeSwitcher /></li>
         </SidebarMenuInner>
       </SidebarMenu>

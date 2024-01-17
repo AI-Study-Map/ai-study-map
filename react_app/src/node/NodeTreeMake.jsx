@@ -9,8 +9,8 @@ import { StartButton, Text } from './NodeTreeChoice';
 
 const Starter = styled.div`
     border-bottom: 5px dotted #FFE867;
+    color: #213363;
     p {
-        color:#213363;
         font-size: 15px;
         font-weight: bold;
     }
@@ -82,7 +82,8 @@ const API_MAP_MAKE = "http://localhost:8000/api/gpt_calling/make_map";
 function NodeTreeMake() {
     const [formData, setFormData] = useState("");
     const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
-    const{ setLoadedMapData, setFirstLoadedMap, isCommonLoading, setIsCommonLoading, setGauge
+    const{ setLoadedMapData, setFirstLoadedMap, isCommonLoading, setIsCommonLoading, setGauge,
+        apiLock, handleApiCount
       } = useStore(
           state => ({
             setLoadedMapData: state.setLoadedMapData,
@@ -90,6 +91,8 @@ function NodeTreeMake() {
             isCommonLoading: state.isCommonLoading,
             setIsCommonLoading: state.setIsCommonLoading,
             setGauge: state.setGauge,
+            apiLock: state.apiLock,
+            handleApiCount: state.handleApiCount
           })
         );
     const navigate = useNavigate();
@@ -107,19 +110,20 @@ function NodeTreeMake() {
     
     // ボタンが押されたら、テーマに応じたマインドマップを作成
     const handleButton = () => {
-        setIsCommonLoading(true);
-        setButtonIsDisabled(true);
-        const mapId = nanoid();
-        const thisFormData = formData;
-        console.log("MAKE MAP START--- MAP THEME: ", thisFormData, "\nMAP ID: ", mapId);
-        fetch(`${API_MAP_MAKE}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({"map_id": mapId, "theme": thisFormData}),
-          }).then((response) => response.json())
-          .then((data) => {
+        if (apiLock.tree === false) {
+            setIsCommonLoading(true);
+            setButtonIsDisabled(true);
+            const mapId = nanoid();
+            const thisFormData = formData;
+            console.log("MAKE MAP START--- MAP THEME: ", thisFormData, "\nMAP ID: ", mapId);
+            fetch(`${API_MAP_MAKE}`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({"map_id": mapId, "theme": thisFormData}),
+            }).then((response) => response.json())
+            .then((data) => {
                 const parseData = JSON.parse(data) 
                 console.log("loaded data: ", parseData);
         
@@ -138,9 +142,15 @@ function NodeTreeMake() {
                 setLoadedMapData(tree, mapId, themeName, RootNode, edgesJSON);
                 setGauge(allNodes, cleared_nodes);
                 console.log("NODES:", nodesJSON);
+
+                handleApiCount(1);
                 setIsCommonLoading(false);
                 navigate("/map");
             });
+        } else {
+            console.log("API LOCKED");
+            alert("APIの利用上限により、マップを作れません。\n過去に作成したマップは見ることができます。");
+        }
     }
 
     return (

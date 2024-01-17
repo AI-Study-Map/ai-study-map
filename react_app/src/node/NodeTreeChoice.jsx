@@ -7,8 +7,8 @@ import LoadingScreen from '../components/LoadingScreen';
 
 const Starter = styled.div`
     border-bottom: 5px dotted #FFE867;
+    color:#213363;
     p {
-        color:#213363;
         font-size: 15px;
         font-weight: bold;
     }
@@ -43,9 +43,9 @@ export const StartButton = styled.button`
 `
 
 export const Text = styled.p`
-    color: #17594A;
+    color: #213363;
     text-decoration:underline;
-    text-decoration-color: #17594A;
+    text-decoration-color: #213363;
     font-weight: bold;
 `
 
@@ -62,12 +62,14 @@ function NodeTreeChoice() {
     const [selectedValue, setSelectedValue] = useState(options[0]);
     const [buttonIsDisabled, setButtonIsDisabled] = useState(false);
     
-    const{ setLoadedMapData, isCommonLoading, setIsCommonLoading, setGauge
+    const{ setLoadedMapData, isCommonLoading, setIsCommonLoading, setGauge,
+        userId
       } = useStore(
           state => ({
             setLoadedMapData: state.setLoadedMapData,
             isCommonLoading: state.isCommonLoading,
             setGauge: state.setGauge,
+            userId: state.userId
           })
         );
     const navigate = useNavigate();
@@ -90,6 +92,7 @@ function NodeTreeChoice() {
             headers: {
                 'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({"user_id": userId}),
             }).then((response) => response.json())
             .then((data) => {
                 const parseData = JSON.parse(data)

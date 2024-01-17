@@ -6,6 +6,7 @@ import TopLogo from '../images/TopLogo.png'
 import NodeTreeMake from "../node/NodeTreeMake";
 import { useNavigate } from 'react-router-dom';
 import '../noto_sans_jp.css'
+import useStore from '../node/store';
 
 export const GlobalStyle = createGlobalStyle`
   html {
@@ -225,8 +226,19 @@ const BottomSection = styled.div`
 `;
 
 function Top() {
+  const{ handleApiCount, setUserId
+  } = useStore(
+      state => ({
+        handleApiCount: state.handleApiCount,
+        setUserId: state.setUserId,
+      })
+    );
+
   const navigate = useNavigate();
+
   const handleGoStart = () => {
+    handleApiCount(0);
+    setUserId();
     navigate("/start");
   }
 

@@ -158,7 +158,7 @@ function NodeContents(props) {
     const{ questionMenuIsOpen, setQuestionMenu, nodeTitle, nodes, tree, 
       setQuestionTitle, selectedNodeId, setQuestion, mapId, setSelectedNodeId, appendFirstNodes,
       firstNodes, setIsQuestionMenuLoading, setSuggestNode, updateNodeIsCorrect, toggleNodeFlipped,
-      setGauge, clearedNodes, allNodes, themeColorId
+      setGauge, clearedNodes, allNodes, themeColorId, apiLock, handleApiCount
     } = useStore(
         state => ({
           questionMenuIsOpen: state.questionMenuIsOpen,
@@ -181,6 +181,8 @@ function NodeContents(props) {
           clearedNodes: state.clearedNodes,
           allNodes: state.allNodes,
           themeColorId: state.themeColorId,
+          apiLock: state.apiLock,
+          handleApiCount: state.handleApiCount,
         })
       );
 
@@ -214,6 +216,12 @@ function NodeContents(props) {
 
     // titleが変更されると実行される
     useEffect(() => {
+      let isNodeLock = 99;
+      if (apiLock.node) {
+        isNodeLock = 1;
+      } else {
+        isNodeLock = 0;
+      }
       setIsLoading(true);
       console.log("title: ", title);
       console.log("selectedNodeId:", selectedNodeId);
@@ -231,7 +239,7 @@ function NodeContents(props) {
         const example = "学習を始める を押して、木に最初の葉っぱを付けましょう！";
         setDescription(description);
         setExample(example);
-        setGauge(allNodes, clearedNodes);
+        setGauge(allNodes, clearedNodes+1);
         fetch(`${API_SAVE_ISCORRECT}`, {
           method: 'POST',
           headers: {
@@ -247,70 +255,94 @@ function NodeContents(props) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ nodeId: id, mapId: mapId, user_input: title, parentNode: parentsList, resend: "false" }),
+          body: JSON.stringify({ nodeId: id, mapId: mapId, user_input: title, parentNode: parentsList, resend: "false",  apiLock: isNodeLock}),
         })
         .then((response) => response.json())
         .then((data) => {
-        // ChatGPTからの応答をパースして、説明文と例文を取得、set
-        console.log("data", data);
-        const parsedContent = JSON.parse(data);
+          console.log("data", data);
+          const parsedContent = JSON.parse(data);
+          console.log("parsedContent", parsedContent);
+          if (parsedContent.code === 0) {
+            // ChatGPTからの応答をパースして、説明文と例文を取得、set
+            setDescription(parsedContent.description);
+            setExample(parsedContent.example);
+            setIsLoading(false);
+          }
+          if (parsedContent.code === 1) {
+            // ChatGPTからの応答をパースして、説明文と例文を取得、set
+            setDescription(parsedContent.description);
+            setExample(parsedContent.example);
+            setIsLoading(false);
+            handleApiCount(2);
+          }
+          if (parsedContent.code === 2) {
+            alert("ノード作成数が上限に達しました\n 過去作成したノードは見ることができます")
+            setDescription("");
+            setExample("");
+            setIsLoading(false);
+          }
+        });
+      }
+    }, [title]);
+
+    const handleAddExplain = () => {
+      if (apiLock.node) {
+        alert("APIの利用上限に達しました\n 過去作成したノードは見ることができます")
+      } else {
+          setIsLoading(true);
+          setIsAddExplain(true);
+          //inputlogの最後の要素を取得し、文章を追加
+          const thisTitle = title;
+          const thisDescription = description;
+          const thisId = id;
+          
+          fetch(`${API_HOST_DESCRIPTION}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({"title": thisTitle, "nodeId": thisId, "mapId": mapId, "description": thisDescription }),
+            })
+          .then((response) => response.json())
+          .then((data) => {
+          const chatReply = JSON.parse(data);
+          console.log(chatReply);
+          // responselogの最後の要素を取得、ChatGPTからの応答を繋げる
+          setDescription(description + "\n\n" + chatReply.add_description);
+          setIsLoading(false);
+        });
+      }
+    }
+    
+
+    const handleResend = () => {
+      if (apiLock.node) {
+        alert("APIの利用上限に達しました\n 過去作成したノードは見ることができます")
+      } else {
+        setIsLoading(true);
+        setIsRegenerate(true);
+        const thisId = id;
+          fetch(`${API_HOST}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({nodeId: thisId, user_input: title, mapId: mapId, parentNode: parentNodeList, resend: "true" }),
+            })
+          .then((response) => response.json())
+          .then((data) => {
+            const parsedContent = JSON.parse(data);
             console.log("parsedContent", parsedContent);
             setDescription(parsedContent.description);
             setExample(parsedContent.example);
             setIsLoading(false);
         });
       }
-    }, [title]);
-
-    const handleAddExplain = () => {
-        setIsLoading(true);
-        setIsAddExplain(true);
-        //inputlogの最後の要素を取得し、文章を追加
-        const thisTitle = title;
-        const thisDescription = description;
-        const thisId = id;
-        
-        fetch(`${API_HOST_DESCRIPTION}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({"title": thisTitle, "nodeId": thisId, "mapId": mapId, "description": thisDescription }),
-          })
-        .then((response) => response.json())
-        .then((data) => {
-        const chatReply = JSON.parse(data);
-        console.log(chatReply);
-        // responselogの最後の要素を取得、ChatGPTからの応答を繋げる
-        setDescription(description + "\n\n" + chatReply.add_description);
-        setIsLoading(false);
-      });
-    }
-    
-
-    const handleResend = () => {
-      setIsLoading(true);
-      setIsRegenerate(true);
-      const thisId = id;
-        fetch(`${API_HOST}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({nodeId: thisId, user_input: title, mapId: mapId, parentNode: parentNodeList, resend: "true" }),
-          })
-        .then((response) => response.json())
-        .then((data) => {
-          const parsedContent = JSON.parse(data);
-          console.log("parsedContent", parsedContent);
-          setDescription(parsedContent.description);
-          setExample(parsedContent.example);
-          setIsLoading(false);
-      });
     };
 
     const handleAddQuestion = () => {
         setIsQuestionMenuLoading(true);
+        setQuestionMenu(true);
         //ノード名と説明文をセット
         const thisId = id;
         const thisTitle = title;
@@ -327,27 +359,45 @@ function NodeContents(props) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"nodeId": thisId, "mapId": mapId, "title": thisTitle, "description": desc, "example": exa, "parentNode": parentNodeList}),
+            body: JSON.stringify({"nodeId": thisId, "mapId": mapId, "title": thisTitle, "description": desc, "example": exa, "parentNode": parentNodeList, "apiLock": apiLock.node}),
           })
           .then((response) => response.json())
           .then((data) => {
             const qData = JSON.parse(data);
             console.log("qData", qData);
             //responseを各欄に反映
-            setQuestion(
-              qData.question, qData.question_a,
-              qData.question_b, qData.question_c,
-              qData.question_d, qData.true_answer
-            )
+            if (qData.code === 0) {
+              setQuestion(
+                qData.question, qData.question_a,
+                qData.question_b, qData.question_c,
+                qData.question_d, qData.true_answer)
+              console.log("nodeTitle: ", title);
+              setQuestionTitle(title);
+              setQuestionMenu(true);
+            }
+            if (qData.code === 1) {
+              setQuestion(
+                qData.question, qData.question_a,
+                qData.question_b, qData.question_c,
+                qData.question_d, qData.true_answer)
+              console.log("nodeTitle: ", title);
+              setQuestionTitle(title);
+              setQuestionMenu(true);
+              handleApiCount(2);
+            }
+            if (qData.code === 2) {
+              alert("ノード作成数が上限に達しました\n 過去作成したノードは見ることができます")
+              setQuestion("", "", "", "", "", "")
+              setQuestionTitle("");
+              setQuestionMenu(false);
+            }
             setIsQuestionMenuLoading(false);
           });
 
           } catch (error) {
             console.error('QuestionMakeError:', error);
           }
-          console.log("nodeTitle: ", title);
-          setQuestionTitle(title);
-          setQuestionMenu(true);
+          
     }
     
     const handleAddFirstNode = () => {
