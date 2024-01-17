@@ -19,7 +19,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 class SaveMapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Map
-        fields = ['map_id', 'theme_name', 'graph_structure']
+        fields = ['map_id', 'theme_name', 'graph_structure', 'total_nodes', 'cleared_nodes']
 
 class SaveNodeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,3 +35,8 @@ class CreateNewNodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Node
         fields = ['node_id', 'map_id', 'idd', 'x_coordinate', 'y_coordinate', 'title']
+
+class SaveIsClearedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Node
+        fields = ['node_id', 'map_id', 'is_cleared']

@@ -2,8 +2,22 @@ import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import useStore from './store';
 import useAddNode from './useAddNode';
+import LoadingScreen from '../components/LoadingScreen';
+import Clear_animation from '../images/clear-loop.gif';
+import '../noto_sans_jp.css'
 
-const API_HOST_QUESTION = 'http://localhost:8000/api/gpt_calling/question';
+const themeColors = ["#FFE867", "#FFC8C8", "#FF8B67", "#478577"]
+const subThemeColors = ["#7BC74D", "#66A83E", "#CD7160", "#70C79D"]
+const hoverSubThemeColors = ["#5d953b", "#48782b", "#955246", "#559878"]
+const fontColors = ["#7BC74D", "#66A83E", "#FAFFF7", "#FAFFF7"]
+
+const LoadingScreenArea = styled.div`
+  cursor: default;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
 
 const MenuWrapper = styled.div`
   position: fixed;
@@ -21,14 +35,15 @@ const StyledQuestionHeader = styled.div`
   display: flex;
   width: 450px;
   align-items: center;
-  background-color:#FFE867;
+  background-color:${(props) => themeColors[props.themeColorId]};
   height: 8vh;
     p {
-      color: #17594A;
+      color: ${(props) => fontColors[props.themeColorId]};
       font-size: 25px;
       font-weight: bold;
       margin-left: 20px;
       margin-top: 27px;
+      width: 350px;
     }
 `;
 
@@ -49,7 +64,7 @@ const StyledQuestionButtons = styled.div`
   height: 32vh;
   overflow-y: auto; /* ボタンがはみ出す場合にスクロールバーを表示 */
   padding: 10px;
-  background-color:#FFE867;
+  background-color:${(props) => themeColors[props.themeColorId]};
   overflow-y: auto;
   white-space: nowrap;
   
@@ -57,20 +72,24 @@ const StyledQuestionButtons = styled.div`
     font-size: 18px;
     font-weight: bold;
     margin: 7px 0px 15px 10px;
-    color: #17594A;
+    color: ${(props) => fontColors[props.themeColorId]};
 
   }
 `;
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 22px;
+  top: 18px;
   right: 15px;
   font-size: 20px;
   background: none;
   border: none;
   cursor: pointer;
 `;
+
+const ClosePath = styled.path`
+  fill: ${(props) => fontColors[props.themeColorId]};
+`
 
 const fadeIn = keyframes`
   0% {
@@ -96,22 +115,20 @@ const Overlay = styled.div`
 `;
 
 const RedCircle = styled.div`
-  width: 200px;
-  height: 200px;
-  border: 30px solid #FF7A53;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #FF7A53;
-  font-size: 24px;
-  font-weight: bold;
-  position: absolute;
-  top: 40%; /* 上下中央に配置 */
-  left: 50%; /* 左右中央に配置 */
-  transform: translate(-50%, -50%); /* 中央揃え */
-  animation: ${fadeIn} 0.3s ease-in-out;
+  img{
+    width: 520px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    position: absolute;
+    top: 37%; /* 上下中央に配置 */
+    left: 42.2%; /* 左右中央に配置 */
+    transform: translate(-50%, -50%); /* 中央揃え */
+    animation: ${fadeIn} 0.3s ease-in-out;
+  } 
 `;
 
 const ClearText = styled.p`
@@ -125,10 +142,9 @@ const ClearText = styled.p`
   animation: ${fadeIn} 0.3s ease-in-out;
 `;
 
-const NextButton = styled.button`
+const NextButton = styled.svg`
   width: 45%;
   height: 2.5em;
-  background-color: #2BA287;
   color: #FAFFF7;
   font-size: 25px;
   border: none;
@@ -137,15 +153,28 @@ const NextButton = styled.button`
   cursor: pointer;
   margin-top: 20px;
   position: absolute;
-  top: 75%; /* 上下中央より下側に配置 */
-  left: 50%; /* 左右中央に配置 */
-  transform: translateX(-50%); /* 中央揃え */
-  animation: ${fadeIn} 0.3s ease-in-out;
+  top: 75%;
+  left: 50%;
+  transform: translateX(-50%);
+  path {
+    animation: ${fadeIn} 0.3s ease-in-out;
+    transition: 0.3s ease;
+  }
+  text {
+    animation: ${fadeIn} 0.3s ease-in-out;
+    fill: #FAFFF7;
+    font-family: "Noto Sans Japanese"; 
+    font-size: 60px;
+    position: absolute;
+    font-weight: 400;
+    transform: translate(0, 5%);
+  }
   &:hover {
- background-color: #229379; /* ホバー時の背景色 */
+    path {
+      fill: #229379;
+    }
   }
 `;
-
 const ErrorMessage = styled.p`
   color: #ff3636;
   font-size: 16px;
@@ -155,7 +184,7 @@ const ErrorMessage = styled.p`
 `;
 
 const ButtonAAndC = styled.button`
-  background-color: ${props => props.disabled ? '#ccc' : '#7BC74D'};
+  background-color: ${props => props.disabled ? '#ccc' : `${subThemeColors[props.themeColorId]}`};
   color: #FAFFF7;
   border: none;
   border-radius: 10px;
@@ -168,12 +197,12 @@ const ButtonAAndC = styled.button`
   width: 200px;
   white-space: normal;
   &:hover {
-    background-color: ${props => props.disabled ? '#ccc' : '#5E9E3E'};
+    background-color: ${props => props.disabled ? '#ccc' : `${hoverSubThemeColors[props.themeColorId]}`};
   }
 `;
 
 const ButtonBAndD = styled.button`
-  background-color: ${props => props.disabled ? '#ccc' : '#7BC74D'}; /* ボタンの背景色 */
+  background-color: ${props => props.disabled ? '#ccc' : `${subThemeColors[props.themeColorId]}`}; /* ボタンの背景色 */
   color: #FAFFF7; /* ボタンのテキスト色 */
   border: none;
   border-radius: 10px; /* 角の取れたデザイン */
@@ -185,9 +214,12 @@ const ButtonBAndD = styled.button`
   white-space: normal;
 
   &:hover {
-    background-color: ${props => props.disabled ? '#ccc' : '#5E9E3E'}; /* ホバー時の背景色 */
+    background-color: ${props => props.disabled ? '#ccc' : `${hoverSubThemeColors[props.themeColorId]}`}; /* ホバー時の背景色 */
   }
+  transition: background-color 0.5s;
 `;
+
+const API_SAVE_ISCORRECT = "http://localhost:8000/api/save/is_cleared";
 
 function QuestionMenu() {
   const newAddNode = useAddNode();
@@ -209,6 +241,7 @@ function QuestionMenu() {
   const { nodes, questionMenuIsOpen, setQuestionMenu, nodeTitle, nodeContent, 
     nodeExample, setQuestionTitle, selectedNodeId, getQUestion, toggleNodeFlipped,
     question_phrase, question_a, question_b, question_c, question_d, correctAns, tree, updateNodeIsCorrect,
+    isQuestionMenuLoading, mapId, setSuggestNode, setGauge, clearedNodes, allNodes, themeColorId,
   } = useStore(
     state => ({
       nodes: state.nodes,
@@ -228,10 +261,16 @@ function QuestionMenu() {
       question_d: state.question_d,
       correctAns: state.correctAnswer,
       tree: state.tree,
-      toggleNodeFlipped: state.toggleNodeFlipped
+      isQuestionMenuLoading: state.isQuestionMenuLoading,
+      toggleNodeFlipped: state.toggleNodeFlipped,
+      mapId: state.mapId,
+      setSuggestNode: state.setSuggestNode,
+      setGauge: state.setGauge,
+      clearedNodes: state.clearedNodes,
+      allNodes: state.allNodes,
+      themeColorId: state.themeColorId,
     })
   );
-  
 
   // ユーザの回答が正解か判断し、エフェクトを表示
   const handleCheckAnswer = (user_answer) => {
@@ -244,6 +283,14 @@ function QuestionMenu() {
         c: false,
         d: false
       });
+      // DBのis_clearedをtrueにする
+      fetch(`${API_SAVE_ISCORRECT}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({"node_id": selectedNodeId, "map_id": mapId, "is_cleared": "true"}),
+      });
     } else {
       setError('不正解です。もう一度選択してください。');
       setDisabledOptions({
@@ -253,7 +300,8 @@ function QuestionMenu() {
     }
   };
 
-  const findChildrenByName = (node, name) => {
+  //旧ver バグあり
+  const findChildrenByName = (node, name) => { 
       if (node.name === name) {
         return node.children.map(child => child.name);
       }
@@ -264,6 +312,21 @@ function QuestionMenu() {
         }
       }
       return null;
+  }
+
+  //新ver 
+  //idを指定して子ノードのnameのリストを返す関数
+  const findChildrenById = (node, id) => {
+    if (node.id !== null && node.id === id) {
+      return node.children.map(child => child.name);
+    }
+    for (let child of node.children) {
+      const result = findChildrenById(child, id);
+      if (result) {
+        return result;
+      }
+    } 
+    return null;
   }
 
   // idを指定して正解済みかの真偽値を返す関数
@@ -282,7 +345,6 @@ function QuestionMenu() {
   // const setTitleMatchedAsCorrect = (nodes, title) => {
   //   nodes.forEach(node => {
   //     if (node.data && node.data.label === title) {
-  //       console.log("きたーーーーーーー", node.data.label, title)
   //       node.isCorrect = true;
   //     }
   //   });
@@ -292,16 +354,20 @@ function QuestionMenu() {
   const handleHideEffect = () => {
     setShowEffect(false);
     setQuestionMenu(false);
-    updateNodeIsCorrect(nodeTitle);
+    updateNodeIsCorrect(selectedNodeId);
+    setGauge(allNodes, clearedNodes+1);
     const dictTree = JSON.parse(tree);
-    const childrenNames = findChildrenByName(dictTree, nodeTitle);
-    if (childrenNames === null) {
-      console.log("子ノードがありません")
-      return 
+    const childrenNames = findChildrenById(dictTree, selectedNodeId);
+    if (childrenNames.length === 0) {
+      console.log("子ノードがありません");
+      setSuggestNode();
+      toggleNodeFlipped(selectedNodeId);
+      return;
     } else {
       newAddNode(childrenNames, childrenNames.length);
+      setSuggestNode();
+      toggleNodeFlipped(selectedNodeId);
     }
-    toggleNodeFlipped(selectedNodeId);
   };
 
   // CLEARエフェクトを非表示、問題メニューを非表示のみ
@@ -345,34 +411,54 @@ function QuestionMenu() {
       <MenuWrapper open={questionMenuIsOpen}>
         <CloseButton onClick={() => setQuestionMenu(false)}>
           <svg width="20" height="20" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path id="Union" fillRule="evenodd" clipRule="evenodd" d="M31.1223 1.17157C32.6844 -0.390524 35.217 -0.390524 36.7791 1.17157C38.3412 2.73367 38.3412 5.26633 36.7791 6.82843L24.6322 18.9753L36.7791 31.1223C38.3412 32.6844 38.3412 35.217 36.7791 36.7791C35.217 38.3412 32.6844 38.3412 31.1223 36.7791L18.9754 24.6322L6.82842 36.7791C5.26632 38.3412 2.73366 38.3412 1.17156 36.7791C-0.390536 35.217 -0.390537 32.6844 1.17156 31.1223L13.3185 18.9753L1.17158 6.82843C-0.390521 5.26633 -0.390521 2.73367 1.17158 1.17157C2.73367 -0.390524 5.26633 -0.390524 6.82843 1.17157L18.9754 13.3185L31.1223 1.17157Z" fill="#7BC74D"/>
+            <ClosePath id="Union" fillRule="evenodd" clipRule="evenodd" d="M31.1223 1.17157C32.6844 -0.390524 35.217 -0.390524 36.7791 1.17157C38.3412 2.73367 38.3412 5.26633 36.7791 6.82843L24.6322 18.9753L36.7791 31.1223C38.3412 32.6844 38.3412 35.217 36.7791 36.7791C35.217 38.3412 32.6844 38.3412 31.1223 36.7791L18.9754 24.6322L6.82842 36.7791C5.26632 38.3412 2.73366 38.3412 1.17156 36.7791C-0.390536 35.217 -0.390537 32.6844 1.17156 31.1223L13.3185 18.9753L1.17158 6.82843C-0.390521 5.26633 -0.390521 2.73367 1.17158 1.17157C2.73367 -0.390524 5.26633 -0.390524 6.82843 1.17157L18.9754 13.3185L31.1223 1.17157Z" themeColorId={themeColorId}/>
           </svg>
         </CloseButton>
         <div id='clearEffect'>
-          <StyledQuestionHeader>
+          <StyledQuestionHeader themeColorId={themeColorId}>
             <p>{nodeTitle}</p>
           </StyledQuestionHeader>
+          {isQuestionMenuLoading ? 
+          <LoadingScreenArea>
+            <img src="load/question-loading.gif" alt="loading gif"></img>
+          </LoadingScreenArea>
+          :
+          <>
           <StyledQuestionContent>
             <p>問題</p>
             <p>{question}</p>
           </StyledQuestionContent>
-          <StyledQuestionButtons>
+          <StyledQuestionButtons themeColorId={themeColorId}>
             <p id='buttonMessage'>正しい選択肢を選んでください</p>
             <ErrorMessage>{error}</ErrorMessage>
-            <ButtonAAndC onClick={() => handleCheckAnswer("a")} disabled={disabledOptions["a"]}>A: {answerA}</ButtonAAndC>
-            <ButtonBAndD onClick={() => handleCheckAnswer("b")} disabled={disabledOptions["b"]}>B: {answerB}</ButtonBAndD> <br></br>
-            <ButtonAAndC onClick={() => handleCheckAnswer("c")} disabled={disabledOptions["c"]}>C: {answerC}</ButtonAAndC>
-            <ButtonBAndD onClick={() => handleCheckAnswer("d")} disabled={disabledOptions["d"]}>D: {answerD}</ButtonBAndD>
-            
+            <ButtonAAndC onClick={() => handleCheckAnswer("a")} disabled={disabledOptions["a"]} themeColorId={themeColorId}>A: {answerA}</ButtonAAndC>
+            <ButtonBAndD onClick={() => handleCheckAnswer("b")} disabled={disabledOptions["b"]} themeColorId={themeColorId}>B: {answerB}</ButtonBAndD> <br></br>
+            <ButtonAAndC onClick={() => handleCheckAnswer("c")} disabled={disabledOptions["c"]} themeColorId={themeColorId}>C: {answerC}</ButtonAAndC>
+            <ButtonBAndD onClick={() => handleCheckAnswer("d")} disabled={disabledOptions["d"]} themeColorId={themeColorId}>D: {answerD}</ButtonBAndD>  
           </StyledQuestionButtons>
+          </>
+          
+          }
           {showEffect && (
             <>
               <Overlay />
-              <RedCircle />
+              <RedCircle>
+                <img src={Clear_animation} alt="gif" />
+              </RedCircle>
               <ClearText>CLEAR!!</ClearText>
               {isCorrect ? 
-              <NextButton onClick={handleClose} className="next-button">閉じる</NextButton>
-              : <NextButton onClick={handleHideEffect} className="next-button">次のノードへ</NextButton>}
+              <NextButton onClick={handleClose} className="next-button">
+                <svg viewBox="0 0 419 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 30C0 13.4315 13.4315 0 30 0H419V85C419 101.569 405.569 115 389 115H0V30Z" fill="#2BA287"/>
+                  <text x="50%" y="50%" alignmentBaseline="middle" textAnchor="middle">閉じる</text>
+                </svg>
+              </NextButton>
+              : <NextButton onClick={handleHideEffect} className="next-button">
+                  <svg viewBox="0 0 419 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 30C0 13.4315 13.4315 0 30 0H419V85C419 101.569 405.569 115 389 115H0V30Z" fill="#2BA287"/>
+                  <text x="50%" y="50%" alignmentBaseline="middle" textAnchor="middle">次のノードへ</text>
+                </svg>
+                </NextButton>}
             </>
           )}
         </div>

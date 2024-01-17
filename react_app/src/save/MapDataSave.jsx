@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useStore from '../node/store';
+import { useNavigate } from 'react-router-dom';
 
 const API_MAP_SAVE = "http://localhost:8000/api/save/map";
 const API_NODE_SAVE = "http://localhost:8000/api/save/node";
@@ -7,16 +8,33 @@ const API_EDGE_SAVE = "http://localhost:8000/api/save/edge";
 const API_HOST_CREATENEWNODE = 'http://localhost:8000/api/save/create_newnode';
 
 //メモ：map作るときにrootnodeを作成してそれをnode登録する
-function MapDataSave() {
+function MapDataSave(props) {
+    const navigate = useNavigate();
+    const {goStart, goTop} = props;
     const {
-        nodes, edges, tree, themeName, mapId,
+        nodes, edges, tree, themeName, mapId, clearedNodes
     } = useStore((state) => ({
         nodes: state.nodes, 
         edges: state.edges,
         tree: state.tree,
         themeName: state.themeName,
         mapId: state.mapId,
+        clearedNodes: state.clearedNodes,
     }));
+
+    useEffect(() =>{
+        if (goStart) {
+            handleSave();
+            navigate("/start");
+        }
+    }, [goStart])
+
+    useEffect(() =>{
+        if (goTop) {
+            handleSave();
+            navigate("/");
+        }
+    }, [goTop])
 
     const handleSave = async () => {
         console.log("Save start---");
@@ -31,7 +49,7 @@ function MapDataSave() {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"map_id": mapId, "graph_structure": tree, "theme_name": themeName }),
+            body: JSON.stringify({"map_id": mapId, "graph_structure": tree, "theme_name": themeName, "cleared_nodes": clearedNodes }),
           })
         .then((response) => response.json())
         .then((data) => {
@@ -122,7 +140,7 @@ function MapDataSave() {
 
     return (
         <>
-            <button onClick={() => handleSave()}>Save</button>
+            {/* <button onClick={() => handleSave()}>Save</button> */}
         </>
     );
 }

@@ -5,7 +5,7 @@ function Page404() {
     const navigate = useNavigate();
 
     const handleButtonGoTop = () => {
-        navigate("/top");
+        navigate("/");
     }
     
     const handleButtonGoMap = () => {

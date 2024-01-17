@@ -12,9 +12,10 @@ import {
   // // setLoadedMapDataによってmapIdが設定される (各コンポーネントはmapIdを読み込む)
   //   firstSetMapId: 1, //本来は初期値null 
   //   setFirstSetMapId: (firstSetMapId) => set({ firstSetMapId: firstSetMapId }),
-
+    apiLock: {tree: false, node: false},
     themeName: "", // setLoadedMapDataで設定
     mapId: null, // setLoadedMapDataで設定
+    firstNodes: [], //setFirstLoadMapで設定
     nodes: [], //setLoadedMapDataで設定
     //[
     //   {
@@ -103,10 +104,10 @@ import {
         }),
       });
     },
-    updateNodeIsCorrect: (title) => {
+    updateNodeIsCorrect: (id) => {
       set({
         nodes: get().nodes.map((node) => {
-          if (node.data.label === title) {
+          if (node.id === id) {
             // it's important to create a new object here, to inform React Flow about the changes
             node.isCorrect = true;
           }
@@ -116,8 +117,9 @@ import {
       });
     },
     addChildNode: (parentNode, position, nodeName) => {
+      const newNodeId = nanoid();
       const newNode = {
-        id: nanoid(),
+        id: newNodeId,
         type: 'mindmap',
         data: { label: nodeName },
         position,
@@ -125,6 +127,7 @@ import {
         parentNode: parentNode.id,
         idd: parentNode.idd + 1,
         isCorrect: false,
+        priority: 9999,
       };
   
       const newEdge = {
@@ -137,6 +140,60 @@ import {
         nodes: [...get().nodes, newNode],
         edges: [...get().edges, newEdge],
       });
+
+      //newNodeのidをtreeに追加
+      const searchNode = (tree, parentNodeId, childNodeId) => {
+        if (tree.id !== null && tree.id === parentNodeId) {
+          for (let child of tree.children) {
+            if (child.name === nodeName) {
+              child.id = childNodeId;
+              return true; // Return true when the task is finished
+            }
+          }
+        } else {
+          for (let child2 of tree.children) {
+            const result = searchNode(child2, parentNodeId, childNodeId);
+            if (result) {
+              return true; // Return true when the task is finished
+            }
+          }
+        }
+        return false;
+      }
+      //idでnodeを検索してpriorityを返す
+      const findNodePriorityById = (node, id) => {
+        if (node.id !== null && node.id === id) {
+          return node.priority;
+        }
+        for (let child of node.children) {
+          const result = findNodePriorityById(child, id);
+          if (result) {
+            return result;
+          }
+        }
+        return null;
+      }
+
+      const tree = get().tree;
+      const dictTree = JSON.parse(tree)
+      const taskFinished = searchNode(dictTree, parentNode.id, newNodeId);
+      if (taskFinished) {
+        set({ tree: JSON.stringify(dictTree) });
+      }
+      const tree2 = get().tree;
+      const dictTree2 = JSON.parse(tree2);
+      const priority = findNodePriorityById(dictTree2, newNodeId);
+      //priorityを更新したnodesをset
+      if (priority) {
+        set({
+          nodes: get().nodes.map((node) => {
+            if (node.id === newNodeId) {
+              node.priority = priority;
+            }
+            return node;
+          })
+        });
+      }
       
       // DBに新しいノードを追加
       fetch(API_HOST_CREATENEWNODE, {
@@ -463,8 +520,146 @@ import {
     //   ]
     // },
     setLoadedMapData(tree, mapId, themeName, nodes, edges) {
+      //nodesの中でiddが1のものに、{draggable:false}を追加
+      const nodesLocal = nodes;
+      for (let node of nodesLocal) {
+        if (node.idd === 1) {
+          node["draggable"] = false;
+        }
+      }
       set({ tree: tree, mapId: mapId, themeName: themeName, nodes: nodes, edges: edges })
     },
+    
+    setFirstLoadedMap(node) {
+      //これ(root node)に{draggable:false}を追加
+      node["draggable"] = false; 
+      set({ firstNodes: node })
+      console.log("FirstNODES", get().firstNodes);
+    },
+
+    appendFirstNodes: (nodeList) => {
+      const nodesLocal = get().nodes;
+      for (let node of nodeList) {
+        nodesLocal.push(node);
+      }
+      set({ nodes: nodesLocal });
+    },
+
+    //QuestionMenuのローディング画面管理
+    isQuestionMenuLoading: false,
+    setIsQuestionMenuLoading: (boolean) => {set({ isQuestionMenuLoading: boolean })},
+
+    isCommonLoading: false,
+    setIsCommonLoading: (boolean) => {set({ isCommonLoading: boolean })},
+  
+    userId: null,
+    isDemo: false,
+    setUserId: (userId) => {
+      const userIdLocal = localStorage.getItem("userId");
+      if (userIdLocal === null) {
+        userId = nanoid();
+        set({ userId: userId });
+        localStorage.setItem("userId", userId);
+      } else {
+        set({ userId: userIdLocal });
+      }
+    },
+    setIsDemo: (boolean) => {set({ isDemo: boolean })},
+
+    suggestNode: null,
+    //setSuggestNode suggestNodeを設定する
+    //suggestNodeは、nodesの中でisCorrectがFalseのうち、最もpriorityの値が小さいノード
+    setSuggestNode: () => {
+      const nodes = get().nodes;
+      let suggestNode = null;
+      let minPriority = 9999;
+      for (let node of nodes) {
+        if (node.isCorrect === false && node.priority < minPriority) {
+          suggestNode = node;
+          minPriority = node.priority;
+        }
+      }
+      set({ suggestNode: suggestNode });
+    },
+
+    allNodes: 0,
+    clearedNodes: 0,
+    setGauge: (allNodes, clearedNodes) => {set({ allNodes: allNodes, clearedNodes: clearedNodes })},
+
+    themeColorId: 0,
+    setThemeColorId: (id) => set({ themeColorId: id }),
+
+    apiTree: null,
+    // setApiTree: (apiTree) => set({ apiTree: apiTree }),
+
+    apiNode: null,
+    // setApiNode: (apiNode) => set({ apiNode: apiNode }),
+
+    handleApiCount: (mode) => {
+      //mode 0:初期化、1:tree-1、2:node-1、3:debug用 初期値に戻す
+      if (mode === 0) {
+          //localStorageからapiTreeとapiNodeを取得、値が存在しなければ1と5をセット
+          const apiTreeLocal = localStorage.getItem("apiTree");
+          const apiNodeLocal = localStorage.getItem("apiNode");
+          if (apiTreeLocal === null) {
+              set({apiTree: 2});
+              set({apiNode: 20});
+              localStorage.setItem("apiTree", 2);
+              localStorage.setItem("apiNode", 20);
+              console.log("rout a")
+          } else {
+              let apiTreeLocalInt = parseInt(apiTreeLocal);
+              let apiNodeLocalInt = parseInt(apiNodeLocal);
+              if (apiTreeLocalInt === 0 || apiNodeLocalInt === 0) {
+                  if (apiTreeLocalInt === 0 ) {
+                      set({ apiLock: {tree: true} });
+                      set({apiTree: apiTreeLocalInt});
+                      set({apiNode: apiNodeLocalInt});
+                      console.log("rout c");
+                  }
+                  if (apiNodeLocalInt === 0) {
+                      set({ apiLock: {node: true} });
+                      set({apiTree: apiTreeLocalInt});
+                      set({apiNode: apiNodeLocalInt});
+                      console.log("rout d");
+                  } 
+              }
+              else {
+                set({apiTree: apiTreeLocalInt});
+                set({apiNode: apiNodeLocalInt});
+                  console.log("rout b");
+              }
+          }
+      }
+      if (mode === 1) {
+          //LocalStorageからapiTreeを取得しperseIntして1を引いてsetApiTreeとlocalStorageにセット
+          //apiTreeが0になったらapiをLockする
+          const apiTreeLocal = localStorage.getItem("apiTree");
+          let apiTreeLocalInt = parseInt(apiTreeLocal);
+          apiTreeLocalInt--;
+          if (apiTreeLocalInt === 0) {
+              set({ apiLock: {tree: true} })
+          }
+          set({apiTree: apiTreeLocalInt});
+          localStorage.setItem("apiTree", apiTreeLocalInt);
+      }
+      if (mode === 2) {
+          //LocalStorageからapiNodeを取得しperseIntして1を引いてsetApiNodeとlocalStorageにセット
+          //apiNodeが0になったらapiをLockする
+          const apiNodeLocal = localStorage.getItem("apiNode");
+          let apiNodeLocalInt = parseInt(apiNodeLocal);
+          apiNodeLocalInt--;
+          if (apiNodeLocalInt === 0) {
+              set({ apiLock: {node: true} })
+          }
+          set({apiNode: apiNodeLocalInt});
+          localStorage.setItem("apiNode", apiNodeLocalInt);
+      }
+      if (mode === 3) {
+          localStorage.clear();
+          set({ apiLock: {tree: false, node: false} });
+      }
+  },
   }));
   
   export default useStore;
