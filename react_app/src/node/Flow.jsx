@@ -22,7 +22,7 @@ const SuggestNodeWrapper = styled.div`
   font-size: 20px;
   color: #17594A;
   position: absolute;
-  top: 6%;
+  top: ${(props) => props.textLength && props.textLength > 7 ? "13%": "6%"};
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
@@ -30,8 +30,9 @@ const SuggestNodeWrapper = styled.div`
   background-size: contain;
   background-repeat: no-repeat;
   background-image: ${(props) => props.textLength && props.textLength > 7 ? "url(suggestion/signboard-large.png)": "url(suggestion/signboard.png)"};
-  width: 340px;
-  height: 100px;
+  /* width: 340px; */
+  width: ${(props) => props.textLength && props.textLength > 7 ? "500px": "340px"};
+  height: ${(props) => props.textLength && props.textLength > 7 ? "200px": "100px"};
 `;
 
 const SuggestNodeTextWrapper = styled.p`
@@ -45,6 +46,7 @@ const SuggestNodeText1 = styled.p`
   float: left;
   min-width: 100px;
   margin-left: 10px;
+  margin-top: ${(props) => props.textLength && props.textLength > 7 ? "30px": "20px"};
 `
 
 const SuggestNodeText2 = styled.p`
@@ -52,7 +54,7 @@ const SuggestNodeText2 = styled.p`
   color: #17594A;
   float: left;
   font-size: 30px;
-  margin-top: 20px;
+  margin-top: ${(props) => props.textLength && props.textLength > 7 ? "30px": "20px"};
 `
 
 const selector = (state) => ({
@@ -149,12 +151,10 @@ useEffect(() => {
         <Background color="#000" style={{"backgroundColor": "#FAFFF7"}}/>
         {/* <Background color="#000"/> */}
         <Controls showInteractive={false} />
-        <SuggestNodeWrapper>
+        <SuggestNodeWrapper textLength={suggestNode ? suggestNode.data.label.length : 2}>
           <SuggestNodeTextWrapper>
-            <SuggestNodeText1>おすすめ：</SuggestNodeText1>
-            <SuggestNodeText2 textLength={() =>
-              suggestNode ? suggestNode.data.label.length : 2
-            }>
+            <SuggestNodeText1 textLength={suggestNode ? suggestNode.data.label.length : 2}>おすすめ：</SuggestNodeText1>
+            <SuggestNodeText2 textLength={suggestNode ? suggestNode.data.label.length : 2}>
             {suggestNode ? suggestNode.data.label: "なし"}</SuggestNodeText2>
           </SuggestNodeTextWrapper>
         </SuggestNodeWrapper>
