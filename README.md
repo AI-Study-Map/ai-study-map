@@ -29,20 +29,29 @@ AI-Study-MapはChatGPTとマインドマップを活用して学習をするこ�
 <br/>
 
 ## アプリケーションのイメージ
-![AI-Study-Map1](https://github.com/AI-Study-Map/ai-study-map/assets/85663346/0a93775d-7e24-4049-92a0-7ee058bc8ac5)
+![プレゼンテーション1](https://github.com/AI-Study-Map/ai-study-map/assets/85663346/95799dee-ba2b-4129-a36f-7982f384d738)
+
+
 
 <br/>
 
 ## 機能画面別一覧
-| ホーム画面 |　テーマ選択画面 |
+| ホーム画面 |　テーマ入力画面 |
 | ---- | ---- |
-| <img width="960" alt="2023-12-06" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/aae522f7-f471-4956-844a-c0dc09f142d9"> | <img width="960" alt="2023-12-06 (4)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/81cf7864-273a-4d36-894c-f1aff0d03427"> |
-| AI-Study-Mapを活用して学ぶためのスタート地点です。 | 学習したいテーマを決めて入力することによってマインドマップが作成され、あなたのAI-Study-Map学習が始まります。 |
+| <img width="960" alt="2023-12-06" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/89c9f98d-9489-4d46-ba71-9aa94a6df63a"> | <img width="960" alt="2024-01-20 (2)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/f38bde21-fef6-4c0a-82b1-b36d6e15578b"> |
+| AI-Study-Mapを活用して学ぶためのスタート地点です。 | 学習を始めたいテーマを入力することでマインドマップが作成されます！ |
 
-| マインドマップ画面 | 問題画面 |
+| テーマ選択画面 | マインドマップ画面 |
 | ---- | ---- |
-| <img width="960" alt="2023-12-07 (2)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/1c338888-814d-4db9-8285-3dd6dc1e519a"> | <img width="960" alt="2023-12-07 (5)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/b6de2c88-5bf4-45c6-a659-80800c9f4786"> |
-| マインドマップの作成が終わると実際のテーマを決めたマインドマップが画面上に反映され、テーマノードから学習を始めることができます。 | ノードに関する4択問題を解き進めることで、現在のノードに関連するノードが追加されていきます。 |
+| <img width="960" alt="2024-01-20 (1)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/a3defbcb-8624-4761-85af-b597a74803ea"> | <img width="960" alt="2023-12-07 (2)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/1c338888-814d-4db9-8285-3dd6dc1e519a"> |
+| 学習したいテーマを決めて入力することによってマインドマップが作成され、あなたのAI-Study-Map学習が始まります。 | マインドマップの作成が終わると実際のテーマを決めたマインドマップが画面上に反映され、テーマノードから学習を始めることができます。 |
+
+<!--
+| 問題画面 |  |
+| ---- | ---- |
+| <img width="960" alt="2023-12-07 (5)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/b6de2c88-5bf4-45c6-a659-80800c9f4786"> |  |
+| ノードに関する4択問題を解き進めることで、現在のノードに関連するノードが追加されていきます。 |  |
+-->
 
 <br/>
 
@@ -51,12 +60,12 @@ AI-Study-MapはChatGPTとマインドマップを活用して学習をするこ�
 <tr>
 <td>ノードの木構造作成</td>
 <td>入力されたテーマをもとにChatGPTがそれに関連する木構造を作成しマインドマップを表示します。</td>
-<td><img width="620" alt="2023-12-09 (2)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/ecf74f13-1420-4380-99c0-f733fef0e1aa"></td>
+<td><img width="721" alt="2024-01-17" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/713a2ee5-fc85-4bb3-b7e8-ca02aaf86f11"></td>
 </tr>
 <tr>
 <td>説明文</td>
 <td>選択したノードに関する文章をChatGPTが作成して表示しています。文章には説明文や例が書いてあります。</td>
-<td><img width="417" alt="2023-12-09 (4)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/01eff363-6d7b-4e2d-a473-6144af98e789"></td>
+<td><img width="308" alt="2024-01-17 (1)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/e3dcb4fc-7f85-460d-adc9-590c3db83003"></td>
 </tr>
 <tr>
 <td>選択問題</td>
@@ -66,6 +75,6 @@ AI-Study-MapはChatGPTとマインドマップを活用して学習をするこ�
 <tr>
 <td>詳細説明（説明文追加）</td>
 <td>先ほどの説明文だけで理解が不十分だった際に説明文をつけ足すことができます。</td>
-<td><img width="449" alt="2023-12-09 (6)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/3d8f9cd6-9368-40f7-8b63-2b041ca14686"></td>
+<td><img width="388" alt="2024-01-20 (48)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/0dd2b6fb-e22d-4181-b2be-6dd8397a9e57"></td>
 </tr>
 </table>
