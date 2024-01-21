@@ -43,7 +43,7 @@ AI-Study-MapはChatGPTとマインドマップを活用して学習をするこ�
 
 | テーマ選択画面 | マインドマップ画面 |
 | ---- | ---- |
-| <img width="960" alt="2024-01-20 (1)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/a3defbcb-8624-4761-85af-b597a74803ea"> | <img width="960" alt="2023-12-07 (2)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/1c338888-814d-4db9-8285-3dd6dc1e519a"> |
+| <img width="960" alt="2024-01-20 (1)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/a3defbcb-8624-4761-85af-b597a74803ea"> | <img width="960" alt="2024-01-20 (29)" src="https://github.com/AI-Study-Map/ai-study-map/assets/85663346/fa7c9cdb-d24d-418d-96fb-205cf16d1111"> |
 | 学習したいテーマを決めて入力することによってマインドマップが作成され、あなたのAI-Study-Map学習が始まります。 | マインドマップの作成が終わると実際のテーマを決めたマインドマップが画面上に反映され、テーマノードから学習を始めることができます。 |
 
 <!--
