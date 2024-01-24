@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import Header from '../layout/Header';
+import { GlobalStyle, BottomSection } from './Top';
 
 
 function Page404() {
@@ -7,18 +9,15 @@ function Page404() {
     const handleButtonGoTop = () => {
         navigate("/");
     }
-    
-    const handleButtonGoMap = () => {
-        navigate("/map");
-    }
 
     return (
         <div>
-            <h1>404 Not Found</h1>
-            <button onClick={()=>handleButtonGoTop()}>Topへ</button>
-            <br />
-            <h1></h1>
-            <button onClick={()=>handleButtonGoMap()}>Mapへ</button>
+            <GlobalStyle />
+            <Header />
+            <BottomSection>
+                <h1>ページがありません</h1>
+                <button onClick={()=>handleButtonGoTop()}>Topへ</button>
+            </BottomSection>
         </div>
     )
 }

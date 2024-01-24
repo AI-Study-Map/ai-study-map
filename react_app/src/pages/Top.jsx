@@ -152,7 +152,7 @@ const ScrollDown = styled.div`
   }
 `;
 
-const BottomSection = styled.div`
+export const BottomSection = styled.div`
   min-width: 250px;
   max-height: 350px;
   padding: 2rem 2rem;
